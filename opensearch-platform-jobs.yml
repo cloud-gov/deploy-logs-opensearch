@@ -1,0 +1,327 @@
+instance_groups:
+#######################################################
+#First deploy group - opensearch_master, maintenance
+#######################################################
+- name: opensearch_master
+  instances: 3
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch-platform
+    release: opensearch
+    provides:
+      opensearch-platform: {as: opensearch_master}
+    consumes:
+      opensearch-platform: {from: opensearch_master}
+    properties:
+      opensearch:
+        cluster_name: opensearch-platform
+        node:
+          allow_master: true
+          allow_data: false
+        limits:
+          fd: 131072  # 2 ** 17
+        health:
+          timeout: 900
+        recovery:
+          delay_allocation_restart: "15m"
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+  vm_type: opensearch_es_master
+  persistent_disk_type: opensearch_es_master
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+    static_ips:
+    - (( grab terraform_outputs.opensearch_static_ips.[7]))
+    - (( grab terraform_outputs.opensearch_static_ips.[8]))
+    - (( grab terraform_outputs.opensearch_static_ips.[9]))
+  update:
+    max_in_flight: 1 # Should never update more than one ES master node at a time or cluster will go down
+
+- name: maintenance
+  instances: 1
+  vm_extensions: [errand-profile]
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch-platform
+    release: opensearch
+    consumes:
+      opensearch-platform: {from: opensearch_master}
+    properties:
+      opensearch:
+        heap_size: 2G
+        config_options: {"xpack.monitoring.enabled": false}
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+  - name: curator
+    release: opensearch
+    properties:
+      curator:
+        purge_logs:
+          retention_period: 30
+        actions:
+        - action: index_settings
+          description: >-
+            Sets indices older than 1 day to be read only
+          options:
+            index_settings:
+              index:
+                blocks:
+                  write: true
+          filters:
+          - filtertype: pattern
+            kind: regex
+            value: logs*
+          - filtertype: age
+            source: creation_date
+            direction: older
+            unit: days
+            unit_count: 1
+  - name: opensearch_config
+    release: opensearch
+    properties:
+      opensearch_config:
+        app_index_prefix: logs-platform
+        component_templates:
+        - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
+        - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
+        - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
+        - index-mappings-lfc: /var/vcap/jobs/opensearch-config-lfc/component-index-mappings.json
+        - index-mappings-app-lfc: /var/vcap/jobs/opensearch-config-lfc/component-index-mappings-app.json
+        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch-config-lfc/component-index-mappings-platform.json
+        index_templates:
+        - index-mappings-lfc: /var/vcap/jobs/opensearch-config-lfc/index-mappings.json
+        - index-mappings-app-lfc: /var/vcap/jobs/opensearch-config-lfc/index-mappings-app.json
+        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch-config-lfc/index-mappings-platform.json
+  - name: opensearch-config-lfc
+    release: opensearch-for-cloudfoundry
+    properties:
+      opensearch_config:
+        base_index_component_name: index-mappings-lfc
+        app_index_component_name: index-mappings-app-lfc
+        platform_index_component_name: index-mappings-platform-lfc
+        index_mappings_component_name: index-mappings
+        index_settings_component_name: index-settings
+        shards_and_replicas_component_name: shards-and-replicas
+  - name: opensearch_exporter
+    release: prometheus
+    properties:
+      opensearch_exporter:
+        es:
+          uri: http://localhost:9200
+          all: true
+  - name: upload-opensearch_dashboards-objects
+    release: opensearch-for-cloudfoundry
+    properties:
+      opensearch_config:
+        app_index_prefix: logs-platform
+      cloudfoundry:
+        system_domain: (( grab $CF_SYSTEM_DOMAIN ))
+        user: (( grab $CF_USERNAME ))
+        password: (( grab $CF_PASSWORD ))
+        logs_hostname: logs-platform
+      opensearch_dashboards_objects:
+        host_name: logs-platform
+        login_fqdn: opslogin.fr.cloud.gov
+        upload_patterns:
+        - {type: index-pattern, pattern: "/var/vcap/jobs/upload-opensearch_dashboards-objects/opensearch_dashboards-objects/index-pattern/*.json"}
+        - {type: search, pattern: "/var/vcap/jobs/upload-opensearch_dashboards-objects/opensearch_dashboards-objects/search/platform-*.json"}
+        - {type: visualization, pattern: "/var/vcap/jobs/upload-opensearch_dashboards-objects/opensearch_dashboards-objects/visualization/Platform-*.json"}
+        - {type: dashboard, pattern: "/var/vcap/jobs/upload-opensearch_dashboards-objects/opensearch_dashboards-objects/dashboard/Platform-*.json"}
+  vm_type: opensearch_maintenance
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+  update:
+    serial: true # Block on this job to create deploy group 1
+
+#########################################################
+#2nd deploy group - opensearch_data, opensearch_dashboards, ingestors
+#########################################################
+- name: opensearch_data
+  instances: 9
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch-platform
+    release: opensearch
+    consumes:
+      opensearch-platform: {from: opensearch_master}
+    properties:
+      opensearch:
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_master: false
+          allow_data: true
+        limits:
+          fd: 131072  # 2 ** 17
+        health:
+          timeout: 900
+        recovery:
+          delay_allocation_restart: "15m"
+        config_options: {"xpack.monitoring.enabled": false}
+  vm_type: opensearch_es_data
+  persistent_disk_type: opensearch_es_platform_data
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+  update:
+    max_in_flight: 1 # Only update 1 ES data node at a time or risk downtime
+
+- name: opensearch_dashboards
+  instances: 2
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch-platform
+    release: opensearch
+    consumes:
+      opensearch-platform: {from: opensearch_master}
+    properties:
+      opensearch:
+        heap_size: 2G
+  - name: opensearch_dashboards-platform
+    release: opensearch
+    consumes:
+      opensearch-platform: {from: opensearch_master}
+    provides:
+      opensearch_dashboards-platform: {as: opensearch_dashboards_link}
+    properties:
+      opensearch_dashboards:
+        port: 5602
+        memory_limit: 75
+        default_app_id: "dashboard/Platform-Overview"
+        env:
+        - NODE_ENV: production
+        health:
+          timeout: 600
+  - name: oauth2-proxy
+    release: oauth2-proxy
+    properties:
+      address: http://127.0.0.1:5601
+      upstream: http://127.0.0.1:5602
+      provider: oidc
+      client_id: (( param "specify oauth-proxy client" ))
+      client_secret: (( param "specify oauth-proxy client secret" ))
+      cookie_secret: (( param "specify oauth-proxy cookie secret" ))
+      email_domain: gsa.gov
+  - name: secureproxy
+    release: secureproxy
+    properties:
+      secureproxy:
+        listen_port: 5600
+        proxy_port: 5601
+  vm_type: elasticsearch_kibana
+  vm_extensions: 
+  - platform-opensearch_dashboards-lb
+  - 50GB_ephemeral_disk
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+
+- name: ingestor
+  instances: 5
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch-platform
+    release: opensearch
+    consumes:
+      opensearch-platform: {from: opensearch_master}
+    properties:
+      opensearch:
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        heap_size: 1G
+        config_options: {"xpack.monitoring.enabled": false}
+  - name: ingestor_syslog
+    release: opensearch
+    consumes:
+      opensearch: {from: opensearch_master}
+    provides:
+      ingestor: {as: ingestor_link}
+    properties:
+      logstash:
+        jvm_options:
+        - "-Dlog4j2.formatMsgNoLookups=true"
+        queue:
+          max_bytes: 30gb
+      logstash_parser:
+        opensearch:
+          # Use per-day indexing strategy
+          index: "logs-platform-%{+YYYY.MM.dd}"
+          index_type: "%{@type}"
+          data_hosts: [127.0.0.1]
+        filters:
+        - path: /var/vcap/packages/opensearch-config-logstash-filters/logstash-filters-default.conf
+        - content: |
+            if [@source][component] == "snort" {
+              grok {
+                match => {
+                  "@message" => "\[%{INT:gid}:%{INT:sid}:%{INT:rev}\]\s%{DATA:msg}\s\{%{DATA:proto}\}\s%{IP:src_ip}:%{INT:src_port}\s->\s%{IP:dst_ip}:%{INT:dst_port}"
+                }
+              }
+            }
+            if [@source][component] == "clamd" {
+              grok {
+                match => {
+                  "@message" => "%{WORD:event_type}:\s%{DATA:file_path}:\s%{DATA:signature_name}\sFOUND"
+                }
+              }
+            }
+        outputs:
+        - plugin: s3
+          options:
+            region: (( grab terraform_outputs.vpc_region ))
+            bucket: (( grab terraform_outputs.platform_logs_bucket_name ))
+            access_key_id: (( grab terraform_outputs.platform_logs_bucket_access_key_id_curr ))
+            secret_access_key: (( grab terraform_outputs.platform_logs_bucket_secret_access_key_curr ))
+            server_side_encryption: true
+            prefix: "%{+yyyy/MM/dd/HH/mm}"
+            encoding: "gzip"
+            temporary_directory: /var/vcap/data/ingestor_syslog/s3_temp
+            # note that this is different than in the archivers
+            # here, we're uploading the parsed message as json, not the raw log line
+            codec: json
+        - plugin: opensearch
+          options: {}
+        deployment_dictionary:
+        - /var/vcap/packages/opensearch-config/deployment_lookup.yml
+        - /var/vcap/jobs/parser-config-lfc/config/deployment_lookup.yml
+  - name: parser-config-lfc
+    release: opensearch-for-cloudfoundry
+
+  vm_type: opensearch_ingestor
+  vm_extensions: [platform-syslog-lb]
+  persistent_disk_type: opensearch_ingestor
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+
+###########################
+#3rd deploy group - errands
+###########################
+- name: smoke-tests
+  instances: 1
+  vm_type: errand_small
+  vm_extensions: [errand-profile]
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+  lifecycle: errand
+  release: opensearch
+  jobs:
+  - name: smoke_tests
+    release: opensearch
+    consumes:
+      opensearch: {from: opensearch_master}
+      ingestor_link: {from: ingestor_syslog}
