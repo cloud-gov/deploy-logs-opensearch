@@ -32,18 +32,6 @@ instance_groups:
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
     release: opensearch
-  - name: snort-config
-    release: snort
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-platform"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080003; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-platform"; http_uri; classtype:web-application-attack; sid:343080005; rev:1;)'
-        - (( concat "suppress gen_id 1, sig_id 343080004, track by_src, ip " instance_groups.maintenance.networks.services.static_ips.[0] ))
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-platform"; http_uri; classtype:web-application-attack; sid:343080005; rev:1;)'
-        - (( concat "suppress gen_id 1, sig_id 343080005, track by_src, ip " instance_groups.maintenance.networks.services.static_ips.[0] ))
   persistent_disk: 10240
   stemcell: default
   vm_type: t3.large
