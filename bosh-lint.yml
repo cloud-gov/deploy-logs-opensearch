@@ -1,4 +1,0 @@
-static_ips:
-  disable: true
-instance_group_name:
-  disable: true

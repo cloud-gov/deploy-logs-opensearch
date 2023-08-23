@@ -4,46 +4,10 @@ instance_groups:
   instances: 1
   networks:
   - name: services
-    static_ips:
-    - (( replace ))
-    - (( grab terraform_outputs.opensearch_static_ips.[0]))
 
 - name: opensearch_data
   instances: 3
   vm_type: t3.large
-
-- name: maintenance
-  vm_type: t3.medium
-  instances: 1
-  jobs:
-  - name: curator
-    release: opensearch
-    properties:
-      curator:
-        purge_logs:
-          retention_period: 90
-
-- name: redis
-  instances: 1
-  vm_type: t3.small
-
-- name: archiver
-  vm_type: t3.medium
-  instances: 1
-  jobs:
-  - name: ingestor_cloudfoundry-firehose
-    properties:
-      cloudfoundry:
-        api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
-
-- name: ingestor
-  vm_type: t3.medium
-  instances: 1
-  jobs:
-  - name: ingestor_cloudfoundry-firehose
-    properties:
-      cloudfoundry:
-        api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
 
 - name: opensearch_dashboards
   vm_type: t3.large
@@ -52,20 +16,24 @@ instance_groups:
   - name: route_registrar
     consumes:
       nats-tls:
-        from: nats-tls
         deployment: cf-development
+        from: nats-tls
     properties:
-      #nats:
-      #  tls:
-      #    enabled: true
-      #    client_cert: "(( !/bosh/cf-development/nats_client_cert.certificate ))"
-      #    client_key: "(( !/bosh/cf-development/nats_client_cert.private_key ))"
+      nats:
+        tls:
+          client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
+          client_key: ((/bosh/cf-development/nats_client_cert.private_key))
+          enabled: true
       route_registrar:
         routes:
-        - name: opensearch
-          uris: [logs.dev.us-gov-west-1.aws-us-gov.cloud.gov]
+        - name: opensearch-dashboard
+          port: 5601
+          registration_interval: 2s
+          timeout: 1s
+          uris:
+          - logs-beta.dev.us-gov-west-1.aws-us-gov.cloud.gov
+    release: routing
   - name: bosh-dns-aliases
-    release: bosh-dns-aliases
     properties:
       aliases:
       - domain: nats.service.cf.internal
@@ -75,6 +43,7 @@ instance_groups:
           instance_group: nats
           network: default
           query: '*'
+    release: bosh-dns-aliases
 
 - name: smoke-tests
   vm_type: t3.small
