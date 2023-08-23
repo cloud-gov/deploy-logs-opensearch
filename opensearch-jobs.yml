@@ -32,6 +32,8 @@ instance_groups:
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
     release: opensearch
+  azs:
+  - z1
   persistent_disk: 10240
   stemcell: default
   vm_type: t3.large
@@ -136,6 +138,8 @@ instance_groups:
   persistent_disk: 10240
   stemcell: default
   vm_type: t3.large
+  azs:
+  - z1
   networks:
    - name: services
   env:

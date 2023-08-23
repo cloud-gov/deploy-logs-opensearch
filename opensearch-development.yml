@@ -1,5 +1,5 @@
 instance_groups:
-- name: opensearch_master
+- name: opensearch_manager
   vm_type: t3.medium
   instances: 1
   networks:
