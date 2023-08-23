@@ -42,9 +42,6 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
-    - get: common-secrets
-      resource: common-development
-      trigger: true
     - get: opensearch-config
       trigger: true
     - get: opensearch-release
@@ -52,8 +49,18 @@ jobs:
     - get: opensearch-stemcell-jammy
       trigger: true
   - task: opensearch-manifest
-    config:
-      <<: *manifest-config
+    config: &manifest-config
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          aws_access_key_id: ((ecr_aws_key))
+          aws_secret_access_key: ((ecr_aws_secret))
+          repository: harden-concourse-task
+          aws_region: us-gov-west-1
+          tag: ((harden-concourse-task-tag))
+      inputs:
+      - name: opensearch-config
       run:
         path: sh
         args:
@@ -62,7 +69,6 @@ jobs:
           SPRUCE_FILE_BASE_PATH=opensearch-config spruce merge \
             opensearch-config/opensearch-deployment.yml \
             opensearch-config/opensearch-jobs.yml \
-            common-secrets/opensearch-development.yml \
             opensearch-config/opensearch-development.yml \
             > opensearch-manifest/manifest.yml
       outputs:
@@ -76,8 +82,6 @@ jobs:
       manifest: opensearch-manifest/manifest.yml
       releases:
       - opensearch-release/*.tgz
-      # - opensearch-for-cloudfoundry-release/*.tgz
-      - prometheus-release/*.tgz
       stemcells:
       - opensearch-stemcell-jammy/*.tgz
       ops_files:
@@ -124,20 +128,6 @@ resources:
     region_name: ((aws-region))
     server_side_encryption: AES256
 
-- name: master-bosh-root-cert
-  type: s3-iam
-  source:
-    bucket: ((opensearch-private-bucket))
-    region_name: ((aws-region))
-    versioned_file: master-bosh.crt
-
-- name: common-development
-  type: s3-iam
-  source:
-    bucket: ((opensearch-private-bucket))
-    versioned_file: opensearch-development.yml
-    region_name: ((aws-region))
-
 - name: opensearch-release
   type: s3-iam
   source:
@@ -177,16 +167,6 @@ resources:
   type: slack-notification
   source:
     url: ((slack-webhook-url))
-
-- name: tests-timer
-  type: time
-  source:
-    interval: 30m
-
-- name: check-backup-timer
-  type: time
-  source:
-    interval: 30m
 
 resource_types:
 - name: slack-notification
