@@ -10,6 +10,7 @@ update:
   update_watch_time: 5000-6000000
   max_in_flight: 1
   max_errors: 1
+variables: []
 
 name: opensearch
 
