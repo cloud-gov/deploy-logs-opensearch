@@ -44,12 +44,15 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-config
       trigger: true
+    - get: common-secrets
+      resource: common-development
+      trigger: true
     - get: opensearch-release
       trigger: true
     - get: opensearch-stemcell-jammy
       trigger: true
   - task: opensearch-manifest
-    config: &manifest-config
+    config: 
       platform: linux
       image_resource:
         type: registry-image
@@ -61,6 +64,7 @@ jobs:
           tag: ((harden-concourse-task-tag))
       inputs:
       - name: opensearch-config
+      - name: common-secrets
       run:
         path: sh
         args:
@@ -69,6 +73,7 @@ jobs:
           SPRUCE_FILE_BASE_PATH=opensearch-config spruce merge \
             opensearch-config/opensearch-deployment.yml \
             opensearch-config/opensearch-jobs.yml \
+            common-secrets/opensearch-development.yml \
             opensearch-config/opensearch-development.yml \
             > opensearch-manifest/manifest.yml
       outputs:
@@ -78,7 +83,7 @@ jobs:
         CF_PASSWORD: ((cf-password-development))
         CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
   - put: opensearch-development-deployment
-    params: &deploy-params
+    params:
       manifest: opensearch-manifest/manifest.yml
       releases:
       - opensearch-release/*.tgz
@@ -141,20 +146,12 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: ((cg-deploy-opensearch-git-url))
+    branch: ((cg-deploy-opensearch-git-branch))
 
 - name: opensearch-stemcell-jammy
   source:
     name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
   type: bosh-io-stemcell
-
-- name: opensearch-development-deployment
-  type: bosh-deployment
-  source: &bosh-params-development
-    target: ((opensearch-development-deployment-bosh-target))
-    client: ((opensearch-development-deployment-bosh-client))
-    client_secret: ((opensearch-development-deployment-bosh-client-secret))
-    ca_cert: ((opensearch-development-ca-cert))
-    deployment: opensearch
 
 - name: pipeline-tasks
   type: git
@@ -167,6 +164,22 @@ resources:
   type: slack-notification
   source:
     url: ((slack-webhook-url))
+
+- name: common-development
+  type: s3-iam
+  source:
+    bucket: ((opensearch-private-bucket))
+    versioned_file: opensearch-development.yml
+    region_name: ((aws-region))
+
+- name: opensearch-development-deployment
+  type: bosh-deployment
+  source: &bosh-params-development
+    target: ((opensearch-development-deployment-bosh-target))
+    client: ((opensearch-development-deployment-bosh-client))
+    client_secret: ((opensearch-development-deployment-bosh-client-secret))
+    ca_cert: ((opensearch-development-ca-cert))
+    deployment: opensearch
 
 resource_types:
 - name: slack-notification
