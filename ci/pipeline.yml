@@ -172,7 +172,10 @@ resources:
 - name: opensearch-development-deployment
   type: bosh-deployment
   source: &bosh-params-development
-    <<: ((bosh-director-info.development))
+    target: ((bosh-director-info.development.environment))
+    client: ((bosh-director-info.development.client))
+    client_secret: ((bosh-director-info.development.client_secret))
+    ca_cert: ((bosh-director-info.development.ca_cert))
     deployment: logs-opensearch
 
 resource_types:
