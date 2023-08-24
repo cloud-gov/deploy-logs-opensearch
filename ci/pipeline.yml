@@ -131,7 +131,6 @@ resources:
 - name: opensearch-release
   type: s3-iam
   source:
-    <<: *bosh-releases-bucket-info
     bucket: ((s3-bosh-releases-bucket))
     region_name: ((aws-region))
     regexp: opensearch-([\d\.]*).tgz
