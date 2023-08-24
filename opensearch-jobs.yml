@@ -1,194 +1,44 @@
 instance_groups:
 #######################################################
-#First deploy group - opensearch_master, maintenance
+#First deploy group - opensearch_manager
 #######################################################
-- name: opensearch_master
+- name: opensearch_manager
   instances: 3
   jobs:
   - name: bpm
     release: bpm
   - name: opensearch
-    release: opensearch
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
     provides:
-      opensearch: {as: opensearch_master}
-    consumes:
-      opensearch: {from: opensearch_master}
+      opensearch:
+        as: opensearch_manager
     properties:
       opensearch:
-        cluster_name: opensearch
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        node:
-          allow_master: true
-          allow_data: false
+        clustername: opensearch
         limits:
-          fd: 131072  # 2 ** 17
-        health:
-          timeout: 900
-        recovery:
-          delay_allocation_restart: "15m"
-        config_options:
-          indices.query.bool.max_clause_count: 2048
-  - name: snort-config
-    release: snort
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-platform"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080003; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-platform"; http_uri; classtype:web-application-attack; sid:343080005; rev:1;)'
-        - (( concat "suppress gen_id 1, sig_id 343080004, track by_src, ip " instance_groups.maintenance.networks.services.static_ips.[0] ))
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-platform"; http_uri; classtype:web-application-attack; sid:343080005; rev:1;)'
-        - (( concat "suppress gen_id 1, sig_id 343080005, track by_src, ip " instance_groups.maintenance.networks.services.static_ips.[0] ))
-  persistent_disk_type: opensearch_es_master
-  stemcell: default
-  azs: [z1]
-  networks:
-  - name: services
-    static_ips:
-    - (( grab terraform_outputs.opensearch_static_ips.[0]))
-    - (( grab terraform_outputs.opensearch_static_ips.[1]))
-    - (( grab terraform_outputs.opensearch_static_ips.[2]))
-  vm_extensions: [opensearch-lb]
-  update:
-    max_in_flight: 1 # Should never update more than one ES master node at a time or cluster will go down
-
-- name: redis
-  instances: 1
-  jobs:
-  - name: bpm
-    release: bpm
-  - {name: redis, release: opensearch-for-cloudfoundry}
-  persistent_disk_type: opensearch_redis
-  stemcell: default
-  azs: [z1]
-  networks:
-  - name: services
-
-- name: maintenance
-  instances: 1
-  vm_extensions: [errand-profile]
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
-    properties:
-      opensearch:
+          fd: 131072 # 2 ** 17
+        node:
+          allow_cluster_manager: true
+          allow_data: false
+        http:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((opensearch_node.certificate))
+            private_key: ((opensearch_node.private_key))
+        http_host: 127.0.0.1
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
-  - name: curator
     release: opensearch
-    properties:
-      curator:
-        execute:
-          daily: true
-          hourly: false
-        purge_logs:
-          retention_period: 180
-        actions:
-        - action: forcemerge
-          description: >-
-            Force merging of older indices to make their shards more compact
-            and search-optimized
-          options:
-            ignore_empty_list: true
-            max_num_segments: 1
-          filters:
-          - filtertype: pattern
-            kind: regex
-            value: logs*
-          - filtertype: age
-            source: creation_date
-            direction: older
-            unit: days
-            unit_count: 90
-          - filtertype: forcemerged
-            max_num_segments: 1
-            exclude: true
-        - action: index_settings
-          description: >-
-            Sets indices older than 1 day to be read only
-          options:
-            index_settings:
-              index:
-                blocks:
-                  write: true
-          filters:
-          - filtertype: pattern
-            kind: regex
-            value: logs*
-          - filtertype: age
-            source: creation_date
-            direction: older
-            unit: days
-            unit_count: 1
-
-  - name: opensearch_config
-    release: opensearch
-    properties:
-      opensearch_config:
-        component_templates:
-        - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
-        - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
-        - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
-        - index-mappings-lfc: /var/vcap/jobs/opensearch-config-lfc/component-index-mappings.json
-        - index-mappings-app-lfc: /var/vcap/jobs/opensearch-config-lfc/component-index-mappings-app.json
-        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch-config-lfc/component-index-mappings-platform.json
-        index_templates:
-        - index-mappings-lfc: /var/vcap/jobs/opensearch-config-lfc/index-mappings.json
-        - index-mappings-app-lfc: /var/vcap/jobs/opensearch-config-lfc/index-mappings-app.json
-        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch-config-lfc/index-mappings-platform.json
-  - name: opensearch-config-lfc
-    release: opensearch-for-cloudfoundry
-    properties:
-      opensearch_config:
-        app_index_settings:
-          index.mapping.total_fields.limit: 2000
-          index.queries.cache.enabled: "false"
-        base_index_component_name: index-mappings-lfc
-        app_index_component_name: index-mappings-app-lfc
-        platform_index_component_name: index-mappings-platform-lfc
-        index_mappings_component_name: index-mappings
-        index_settings_component_name: index-settings
-        shards_and_replicas_component_name: shards-and-replicas
-  - name: opensearch_exporter
-    release: prometheus
-    properties:
-      opensearch_exporter:
-        es:
-          uri: http://localhost:9200
-          all: true
-
-
-  # TODO: Drop after https://github.com/cloudfoundry-community/opensearch-for-cloudfoundry/pull/267 is merged
-  - name: cron
-    release: cron
-    properties:
-      cron:
-        entries:
-        - script:
-            name: slow-logs
-            contents: (( file "cronjobs/slow-logs.sh" ))
-          variables:
-            HOST: (( grab instance_groups.opensearch_master.networks.services.static_ips.[0] ))
-          minute: "0"
-          hour: "0"
-          day: "*"
-          month: "*"
-          wday: "*"
-          user: root
+  azs:
+  - z1
+  persistent_disk: 10240
   stemcell: default
-  azs: [z1]
+  vm_type: t3.large
   networks:
-  - name: services
-    static_ips:
-    - (( grab terraform_outputs.opensearch_static_ips.[5] ))
-  update:
-    serial: true # Block on this job to create deploy group 1
+   - name: services
 
 #########################################################
 #2nd deploy group - opensearch_data, opensearch_dashboards, ingestors
@@ -200,12 +50,11 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
         node:
-          allow_master: false
+          allow_cluster_manager: false
           allow_data: true
         limits:
           fd: 131072  # 2 ** 17
@@ -218,13 +67,14 @@ instance_groups:
           indices.query.bool.max_clause_count: 2048
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
-  persistent_disk_type: opensearch_es_data
+  persistent_disk: 10240
   stemcell: default
   azs: [z1]
+  vm_type: t3.large
   networks:
   - name: services
   update:
-    max_in_flight: 1 # Only update 1 ES data node at a time or risk downtime
+    max_in_flight: 1 # Only update 1 data node at a time or risk downtime
   env:
     bosh:
       swap_size: 0
@@ -236,194 +86,62 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
-    properties:
-      opensearch:
-        heap_size: 2G
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
+    consumes: *consumes-opensearch-manager
   - name: opensearch_dashboards
-    release: opensearch
-    provides:
-      opensearch_dashboards: {as: opensearch_dashboards_link}
-    consumes:
-      opensearch: {from: opensearch_master}
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_dashboards:
-        memory_limit: 75
-        default_app_id: "dashboard/App-Overview"
-        console.enabled: false
         config_options:
           server.maxPayloadBytes: 4194304
-          # max CSV report size ~20M
-          # should never exceed http.max_content_length, which defaults to 100M
-          xpack.reporting.csv.maxSizeBytes: 20971520
+        console.enabled: false
+        defaultappid: dashboard/App-Overview
         env:
         - NODE_ENV: production
-        source_files: [/var/vcap/jobs/kibana-auth-plugin/config/config.sh]
         health:
           timeout: 600
-  - name: kibana-auth-plugin
-    release: opensearch-for-cloudfoundry
-    properties:
-      kibana-auth:
-        cloudfoundry:
-          skip_ssl_validation: false
-          client_id: kibana_oauth2_client
-          system_org: cloud-gov-operators # Org Managers of this org get admin access
-        session_key: (( param "specify kibana session key" ))
+        memory_limit: 75
+    provides:
+      opensearch-dashboard:
+        as: opensearch_link
+    release: opensearch
   - name: route_registrar
-    release: routing
+    consumes:
+      nats-tls:
+        deployment: cf-development
+        from: nats-tls
     properties:
+      nats:
+        tls:
+          client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
+          client_key: ((/bosh/cf-development/nats_client_cert.private_key))
+          enabled: true
       route_registrar:
         routes:
-        - name: opensearch
-          registration_interval: 2s
+        - name: opensearch-dashboard
           port: 5601
-          health_check:
-            name: opensearch_dashboards-up
-            script_path: /var/vcap/jobs/opensearch_dashboards/bin/post-start
+          registration_interval: 2s
           timeout: 1s
+          uris:
+          - logs-beta.dev.us-gov-west-1.aws-us-gov.cloud.gov
+    release: routing
+  - name: bosh-dns-aliases
+    properties:
+      aliases:
+      - domain: nats.service.cf.internal
+        targets:
+        - deployment: cf-development
+          domain: bosh
+          instance_group: nats
+          network: default
+          query: '*'
+    release: bosh-dns-aliases
+  persistent_disk: 10240
   stemcell: default
-  azs: [z1]
+  vm_type: t3.large
+  azs:
+  - z1
   networks:
-  - name: services
-  vm_extensions: 
-  - 50GB_ephemeral_disk
+   - name: services
   env:
     bosh:
       swap_size: 0
-
-- name: archiver
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
-    properties:
-      opensearch:
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        migrate_data_path: true
-  - name: archiver_syslog
-    release: opensearch
-    properties:
-      logstash:
-        queue:
-          max_bytes: 30gb
-      logstash_archiver:
-        files: 16384
-      logstash_ingestor:
-        outputs:
-        - plugin: s3
-          options:
-            region: (( grab terraform_outputs.vpc_region ))
-            bucket: (( grab terraform_outputs.opensearch_archive_bucket_name ))
-            validate_credentials_on_root_bucket: false  # https://github.com/logstash-plugins/logstash-output-s3/issues/132
-            server_side_encryption: true
-            time_file: 5
-            prefix: "%{+yyyy/MM/dd/HH/mm}"
-            encoding: "gzip"
-  - name: ingestor_cloudfoundry-firehose
-    release: opensearch-for-cloudfoundry
-    properties:
-      cloudfoundry:
-        firehose_subscription_id: opensearch-archiver
-        firehose_events:
-        - LogMessage
-        - ContainerMetric
-        firehose_client_id: opensearch_firehose_ingestor
-        firehose_cc_pull_interval: 300s
-        skip_ssl_validation: false
-      syslog:
-        host: 127.0.0.1
-        port: 5514
-  persistent_disk_type: opensearch_ingestor
-  stemcell: default
-  azs: [z1]
-  networks:
-  - name: services
-  vm_extensions: 
-  - opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-
-
-- name: ingestor
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
-    properties:
-      opensearch:
-        heap_size: 1G
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-  - name: ingestor_syslog
-    release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
-    provides:
-      ingestor: {as: ingestor_link}
-    properties:
-      logstash:
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        queue:
-          max_bytes: 30gb
-      logstash_parser:
-        opensearch:
-          # Use per-day indexing strategy
-          index: "logs-app-%{+YYYY.MM.dd}"
-          index_type: "%{@type}"
-          data_hosts: [127.0.0.1]
-        filters:
-        - opensearch-for-cf: /var/vcap/packages/opensearch-config-logstash-filters/logstash-filters-default.conf
-        deployment_dictionary:
-        - /var/vcap/packages/opensearch-config/deployment_lookup.yml
-        - /var/vcap/jobs/parser-config-lfc/config/deployment_lookup.yml
-  - name: ingestor_cloudfoundry-firehose
-    release: opensearch-for-cloudfoundry
-    properties:
-      cloudfoundry:
-        firehose_subscription_id: opensearch-ingestor
-        firehose_events:
-        - LogMessage
-        - ContainerMetric
-        firehose_client_id: opensearch_firehose_ingestor
-        firehose_cc_pull_interval: 300s
-        skip_ssl_validation: false
-      syslog:
-        host: 127.0.0.1
-        port: 5514
-  - name: parser-config-lfc
-    release: opensearch-for-cloudfoundry
-  persistent_disk_type: opensearch_ingestor
-  stemcell: default
-  azs: [z1]
-  networks:
-  - name: services
-
-###########################
-#3nd deploy group - errands
-###########################
-- name: smoke-tests
-  instances: 1
-  vm_extensions: [errand-profile]
-  stemcell: default
-  azs: [z1]
-  networks:
-  - name: services
-  lifecycle: errand
-  release: opensearch
-  jobs:
-  - name: smoke_tests
-    release: opensearch
-    consumes:
-      opensearch: {from: opensearch_master}
-      ingestor_link: {from: ingestor_syslog}
