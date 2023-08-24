@@ -133,10 +133,10 @@ resources:
 - name: opensearch-release
   type: s3-iam
   source:
-    bucket: ((s3-bosh-blobstore-info.bucket_name))
-    region: ((s3-bosh-blobstore-info.region))
+    bucket: ((s3-bosh-releases-bucket))
+    region: ((aws-region))
     regexp: opensearch-([\d\.]*).tgz
-    server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
+    server_side_encryption: AES256
 
 - name: opensearch-config
   type: git
