@@ -116,25 +116,24 @@ resources:
 
 - name: opensearch-final-builds-dir-tarball
   type: s3-iam
-  source:
+  source: &bosh-releases-bucket-info
     bucket: ((s3-bosh-releases-bucket))
-    versioned_file: final-builds-dir-opensearch.tgz
     region_name: ((aws-region))
     server_side_encryption: AES256
+    versioned_file: final-builds-dir-opensearch.tgz
 
 - name: opensearch-releases-dir-tarball
   type: s3-iam
   source:
-    bucket: ((s3-bosh-releases-bucket))
+    <<: *bosh-releases-bucket-info
     versioned_file: releases-dir-opensearch.tgz
-    region_name: ((aws-region))
-    server_side_encryption: AES256
 
 - name: opensearch-release
   type: s3-iam
   source:
+    <<: *bosh-releases-bucket-info
     bucket: ((s3-bosh-releases-bucket))
-    region: ((aws-region))
+    region_name: ((aws-region))
     regexp: opensearch-([\d\.]*).tgz
     server_side_encryption: AES256
 
