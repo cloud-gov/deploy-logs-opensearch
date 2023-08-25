@@ -11,8 +11,7 @@ jobs:
 - name: build-opensearch-release
   plan:
   - in_parallel:
-    - get: release-git-repo
-      resource: opensearch-release-git-repo
+    - get: opensearch-release-git-repo
       trigger: true
     - get: pipeline-tasks
     - get: final-builds-dir-tarball
@@ -29,14 +28,15 @@ jobs:
           aws_secret_access_key: ((ecr_aws_secret))
           repository: harden-concourse-task
           aws_region: us-gov-west-1
-          tag: ((harden-concourse-task-tag))
+          semver_constraint: ">= 1.0.0"
       inputs:
-      - name: deploy-logs-opensearch-config
+      - name: opensearch-release-git-repo
       run:
         path: sh
         args:
         - -exc
         - |
+          cd opensearch-release-git-repo
           bundle install
           # run release template unit tests
           bundle exec rspec
@@ -47,7 +47,11 @@ jobs:
       PRIVATE_YML_CONTENT: |-
         ---
         blobstore:
-          options: ((s3-bosh-blobstore-info))
+          options:
+            region: ((s3-bosh-blobstore-info.region))
+            bucket_name: ((s3-bosh-blobstore-info.bucket_name))
+            credentials_source: ((s3-bosh-blobstore-info.credentials_source))
+            server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
   - in_parallel:
     - put: opensearch-release
       tags: [iaas]
