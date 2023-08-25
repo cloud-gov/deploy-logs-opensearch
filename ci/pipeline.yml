@@ -1,5 +1,13 @@
 ---
 jobs:
+
+- name: set-self
+  plan:
+    - get: deploy-logs-opensearch-config
+      trigger: true
+    - set_pipeline: self
+      file: deploy-logs-opensearch-config/ci/pipeline.yml
+
 - name: build-opensearch-release
   plan:
   - in_parallel:
@@ -11,6 +19,28 @@ jobs:
       resource: opensearch-final-builds-dir-tarball
     - get: releases-dir-tarball
       resource: opensearch-releases-dir-tarball
+  - task: run-tests
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          aws_access_key_id: ((ecr_aws_key))
+          aws_secret_access_key: ((ecr_aws_secret))
+          repository: harden-concourse-task
+          aws_region: us-gov-west-1
+          semver_constraint: ">= 1.0.0"
+      inputs:
+      - name: release-git-repo
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd release-git-repo
+          bundle install
+          # run release template unit tests
+          bundle exec rspec
   - task: finalize-release
     file: pipeline-tasks/finalize-bosh-release.yml
     tags: [iaas]
@@ -19,10 +49,10 @@ jobs:
         ---
         blobstore:
           options:
-            region: ((aws-region))
-            bucket_name: ((cg-s3-blobstore-bucket))
-            credentials_source: env_or_profile
-            server_side_encryption: AES256
+            region: ((s3-bosh-blobstore-info.region))
+            bucket_name: ((s3-bosh-blobstore-info.bucket_name))
+            credentials_source: ((s3-bosh-blobstore-info.credentials_source))
+            server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
   - in_parallel:
     - put: opensearch-release
       tags: [iaas]
@@ -42,8 +72,9 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
-    - get: opensearch-config
+    - get: deploy-logs-opensearch-config
       trigger: true
+      passed: [set-self]
     - get: common-secrets
       resource: common-development
       trigger: true
@@ -52,7 +83,7 @@ jobs:
     - get: opensearch-stemcell-jammy
       trigger: true
   - task: opensearch-manifest
-    config: 
+    config:
       platform: linux
       image_resource:
         type: registry-image
@@ -63,18 +94,18 @@ jobs:
           aws_region: us-gov-west-1
           tag: ((harden-concourse-task-tag))
       inputs:
-      - name: opensearch-config
+      - name: deploy-logs-opensearch-config
       - name: common-secrets
       run:
         path: sh
         args:
         - -exc
         - |
-          SPRUCE_FILE_BASE_PATH=opensearch-config spruce merge \
-            opensearch-config/opensearch-deployment.yml \
-            opensearch-config/opensearch-jobs.yml \
+          SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
+            deploy-logs-opensearch-config/opensearch-deployment.yml \
+            deploy-logs-opensearch-config/opensearch-jobs.yml \
             common-secrets/opensearch-development.yml \
-            opensearch-config/opensearch-development.yml \
+            deploy-logs-opensearch-config/opensearch-development.yml \
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
@@ -90,22 +121,24 @@ jobs:
       stemcells:
       - opensearch-stemcell-jammy/*.tgz
       ops_files:
-      - opensearch-config/nats-tls.yml
+      - deploy-logs-opensearch-config/opsfiles/nats-tls-dev.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
   on_failure:
     put: slack
     params: &slack-params
       text: |
-        :x: FAILED to deploy opensearch on development
+        :x: FAILED to deploy logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
+      channel: ((slack-failure-channel))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
   on_success:
     put: slack
     params:
       <<: *slack-params
+      channel: ((slack-success-channel))
       text: |
-        :white_check_mark: Successfully deployed opensearch on development
+        :white_check_mark: Successfully deployed logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 
@@ -119,34 +152,32 @@ resources:
 
 - name: opensearch-final-builds-dir-tarball
   type: s3-iam
-  source:
-    bucket: ((cg-s3-bosh-releases-bucket))
-    versioned_file: final-builds-dir-opensearch.tgz
+  source: &bosh-releases-bucket-info
+    bucket: ((s3-bosh-releases-bucket))
     region_name: ((aws-region))
     server_side_encryption: AES256
+    versioned_file: final-builds-dir-opensearch.tgz
 
 - name: opensearch-releases-dir-tarball
   type: s3-iam
   source:
-    bucket: ((cg-s3-bosh-releases-bucket))
+    <<: *bosh-releases-bucket-info
     versioned_file: releases-dir-opensearch.tgz
-    region_name: ((aws-region))
-    server_side_encryption: AES256
 
 - name: opensearch-release
   type: s3-iam
   source:
-    bucket: ((cg-s3-bosh-releases-bucket))
-    regexp: opensearch-([\d\.]*).tgz
+    bucket: ((s3-bosh-releases-bucket))
     region_name: ((aws-region))
+    regexp: opensearch-([\d\.]*).tgz
     server_side_encryption: AES256
 
-- name: opensearch-config
+- name: deploy-logs-opensearch-config
   type: git
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
-    uri: ((cg-deploy-opensearch-git-url))
-    branch: ((cg-deploy-opensearch-git-branch))
+    uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
+    branch: main
 
 - name: opensearch-stemcell-jammy
   source:
@@ -157,8 +188,8 @@ resources:
   type: git
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
-    uri: ((pipeline-tasks-git-url))
-    branch: ((pipeline-tasks-git-branch))
+    uri: https://github.com/cloud-gov/cg-pipeline-tasks.git
+    branch: main
 
 - name: slack
   type: slack-notification
@@ -168,18 +199,18 @@ resources:
 - name: common-development
   type: s3-iam
   source:
-    bucket: ((opensearch-private-bucket))
+    bucket: ((bosh-s3-vars-bucket))
     versioned_file: opensearch-development.yml
     region_name: ((aws-region))
 
 - name: opensearch-development-deployment
   type: bosh-deployment
   source: &bosh-params-development
-    target: ((opensearch-development-deployment-bosh-target))
-    client: ((opensearch-development-deployment-bosh-client))
-    client_secret: ((opensearch-development-deployment-bosh-client-secret))
-    ca_cert: ((opensearch-development-ca-cert))
-    deployment: opensearch
+    target: ((bosh-director-info.development.environment))
+    client: ((bosh-director-info.development.client))
+    client_secret: ((bosh-director-info.development.client_secret))
+    ca_cert: ((bosh-director-info.development.ca_cert))
+    deployment: logs-opensearch
 
 resource_types:
 - name: slack-notification

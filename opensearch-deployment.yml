@@ -12,7 +12,7 @@ update:
   max_errors: 1
 variables: []
 
-name: opensearch
+name: logs-opensearch
 
 releases:
 - {name: opensearch, version: latest}
