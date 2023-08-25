@@ -19,11 +19,6 @@ instance_groups:
         deployment: cf-development
         from: nats-tls
     properties:
-      nats:
-        tls:
-          client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
-          client_key: ((/bosh/cf-development/nats_client_cert.private_key))
-          enabled: true
       route_registrar:
         routes:
         - name: opensearch-dashboard

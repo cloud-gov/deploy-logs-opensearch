@@ -121,7 +121,8 @@ jobs:
       stemcells:
       - opensearch-stemcell-jammy/*.tgz
       ops_files:
-      - deploy-logs-opensearch-config/nats-tls.yml
+      - deploy-logs-opensearch-config/opsfiles/nats-tls-dev.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
   on_failure:
     put: slack
     params: &slack-params
