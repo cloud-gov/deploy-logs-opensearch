@@ -11,7 +11,8 @@ jobs:
 - name: build-opensearch-release
   plan:
   - in_parallel:
-    - get: opensearch-release-git-repo
+    - get: release-git-repo
+      resource: opensearch-release-git-repo
       trigger: true
     - get: pipeline-tasks
     - get: final-builds-dir-tarball
@@ -30,13 +31,13 @@ jobs:
           aws_region: us-gov-west-1
           semver_constraint: ">= 1.0.0"
       inputs:
-      - name: opensearch-release-git-repo
+      - name: release-git-repo
       run:
         path: sh
         args:
         - -exc
         - |
-          cd opensearch-release-git-repo
+          cd release-git-repo
           bundle install
           # run release template unit tests
           bundle exec rspec
