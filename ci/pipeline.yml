@@ -75,9 +75,6 @@ jobs:
     - get: deploy-logs-opensearch-config
       trigger: true
       passed: [set-self]
-    - get: common-secrets
-      resource: common-development
-      trigger: true
     - get: opensearch-release
       trigger: true
     - get: opensearch-stemcell-jammy
@@ -95,7 +92,6 @@ jobs:
           tag: ((harden-concourse-task-tag))
       inputs:
       - name: deploy-logs-opensearch-config
-      - name: common-secrets
       run:
         path: sh
         args:
@@ -104,7 +100,6 @@ jobs:
           SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
             deploy-logs-opensearch-config/opensearch-deployment.yml \
             deploy-logs-opensearch-config/opensearch-jobs.yml \
-            common-secrets/opensearch-development.yml \
             deploy-logs-opensearch-config/opensearch-development.yml \
             > opensearch-manifest/manifest.yml
       outputs:
@@ -195,13 +190,6 @@ resources:
   type: slack-notification
   source:
     url: ((slack-webhook-url))
-
-- name: common-development
-  type: s3-iam
-  source:
-    bucket: ((bosh-s3-vars-bucket))
-    versioned_file: opensearch-development.yml
-    region_name: ((aws-region))
 
 - name: opensearch-development-deployment
   type: bosh-deployment
