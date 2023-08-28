@@ -23,7 +23,6 @@ jobs:
   - task: run-tests
     config:
       platform: linux
-      image: general-task
       inputs:
       - name: release-git-repo
       run:
@@ -75,9 +74,9 @@ jobs:
       trigger: true
     - get: general-task
   - task: opensearch-manifest
+    image: general-task
     config:
       platform: linux
-      image: general-task
       inputs:
       - name: deploy-logs-opensearch-config
       run:
