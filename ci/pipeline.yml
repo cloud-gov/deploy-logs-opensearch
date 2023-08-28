@@ -19,17 +19,11 @@ jobs:
       resource: opensearch-final-builds-dir-tarball
     - get: releases-dir-tarball
       resource: opensearch-releases-dir-tarball
+    - get: general-task
   - task: run-tests
     config:
       platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          aws_access_key_id: ((ecr_aws_key))
-          aws_secret_access_key: ((ecr_aws_secret))
-          repository: harden-concourse-task
-          aws_region: us-gov-west-1
-          semver_constraint: ">= 1.0.0"
+      image: general-task
       inputs:
       - name: release-git-repo
       run:
@@ -79,17 +73,11 @@ jobs:
       trigger: true
     - get: opensearch-stemcell-jammy
       trigger: true
+    - get: general-task
   - task: opensearch-manifest
     config:
       platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          aws_access_key_id: ((ecr_aws_key))
-          aws_secret_access_key: ((ecr_aws_secret))
-          repository: harden-concourse-task
-          aws_region: us-gov-west-1
-          tag: ((harden-concourse-task-tag))
+      image: general-task
       inputs:
       - name: deploy-logs-opensearch-config
       run:
@@ -200,7 +188,25 @@ resources:
     ca_cert: ((bosh-director-info.development.ca_cert))
     deployment: logs-opensearch
 
+- name: general-task
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: general-task
+    aws_region: us-gov-west-1
+    tag: latest
+
 resource_types:
+- name: registry-image
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: registry-image-resource
+    aws_region: us-gov-west-1
+    tag: latest
+
 - name: slack-notification
   type: docker-image
   source:
