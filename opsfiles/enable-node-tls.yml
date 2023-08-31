@@ -15,7 +15,7 @@
     private_key: ((opensearch_admin.private_key))
 
 - type: replace
-  path: /instance_groups/name=opensearch_manager/jobs/name=opensearch/properties/opensearch/node/ssl?
+  path: /instance_groups/name=opensearch_manager/jobs/name=opensearch/properties/opensearch/node?/ssl?
   value: &node-tls-properties
     dn:
       - "CN=node.opensearch.internal"
@@ -41,7 +41,7 @@
   value: *admin-tls-properties
 
 - type: replace
-  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch/node/ssl?
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch/node?/ssl?
   value: *node-tls-properties
 
 - type: replace
@@ -58,7 +58,7 @@
   value: *admin-tls-properties
 
 - type: replace
-  path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch/node/ssl?
+  path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch/node?/ssl?
   value: *node-tls-properties
 
 - type: replace
