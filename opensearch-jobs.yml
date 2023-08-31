@@ -41,7 +41,7 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    release: openearch
+    release: opensearch
     consumes:
       opensearch:
         from: opensearch_manager
@@ -53,7 +53,7 @@ instance_groups:
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
   - name: opensearch_config
-    release: logsearch
+    release: opensearch
     properties:
       opensearch_config:
         component_templates:
