@@ -1,6 +1,6 @@
 instance_groups:
 #######################################################
-#First deploy group - opensearch_manager
+#First deploy group - opensearch_manager, maintenance
 #######################################################
 - name: opensearch_manager
   instances: 3
@@ -23,12 +23,6 @@ instance_groups:
         node:
           allow_cluster_manager: true
           allow_data: false
-        http:
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((opensearch_node.certificate))
-            private_key: ((opensearch_node.private_key))
-        http_host: 127.0.0.1
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
     release: opensearch
@@ -39,6 +33,39 @@ instance_groups:
   vm_type: t3.large
   networks:
    - name: services
+
+- name: maintenance
+  instances: 1
+  vm_extensions: [errand-profile]
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: openearch
+    consumes:
+      opensearch:
+        from: opensearch_manager
+    properties:
+      opensearch:
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+  - name: opensearch_config
+    release: logsearch
+    properties:
+      opensearch_config:
+        component_templates:
+        - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
+        - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
+        - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
+  stemcell: default
+  azs: [z1]
+  networks:
+  - name: services
+  update:
+    serial: true # Block on this job to create deploy group 1
 
 #########################################################
 #2nd deploy group - opensearch_data, opensearch_dashboards, ingestors
