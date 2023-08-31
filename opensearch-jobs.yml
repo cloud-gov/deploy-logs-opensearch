@@ -62,6 +62,7 @@ instance_groups:
         - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
   stemcell: default
   azs: [z1]
+  vm_type: t3.large
   networks:
   - name: services
   update:
