@@ -31,6 +31,23 @@
     certificate: ((opensearch_node.certificate))
     private_key: ((opensearch_node.private_key))
 
+# maintenance
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch/node/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch/http?/ssl?
+  value: *http-tls-properties
+
 # opensearch_data
 - type: replace
   path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch/http_host?
