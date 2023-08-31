@@ -52,6 +52,7 @@ instance_groups:
           - "-Dlog4j2.formatMsgNoLookups=true"
   - name: opensearch_config
     release: opensearch
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_config:
         component_templates:
