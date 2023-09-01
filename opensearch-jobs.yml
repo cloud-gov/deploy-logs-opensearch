@@ -50,7 +50,7 @@ instance_groups:
           fd: 131072 # 2 ** 17
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
-  - name: opensearch_config_lfc
+  - name: opensearch-config-cf
     properties:
       opensearch_config:
         app_index_component_name: index-mappings-app-lfc
@@ -72,13 +72,13 @@ instance_groups:
         - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
         - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
         - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
-        - index-mappings-lfc: /var/vcap/jobs/opensearch_config_lfc/component-index-mappings.json
-        - index-mappings-app-lfc: /var/vcap/jobs/opensearch_config_lfc/component-index-mappings-app.json
-        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch_config_lfc/component-index-mappings-platform.json
+        - index-mappings-lfc: /var/vcap/jobs/opensearch-config-cf/component-index-mappings.json
+        - index-mappings-app-lfc: /var/vcap/jobs/opensearch-config-cf/component-index-mappings-app.json
+        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch-config-cf/component-index-mappings-platform.json
         index_templates:
-        - index-mappings-lfc: /var/vcap/jobs/opensearch_config_lfc/index-mappings.json
-        - index-mappings-app-lfc: /var/vcap/jobs/opensearch_config_lfc/index-mappings-app.json
-        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch_config_lfc/index-mappings-platform.json
+        - index-mappings-lfc: /var/vcap/jobs/opensearch-config-cf/index-mappings.json
+        - index-mappings-app-lfc: /var/vcap/jobs/opensearch-config-cf/index-mappings-app.json
+        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch-config-cf/index-mappings-platform.json
   stemcell: default
   azs: [z1]
   vm_type: t3.large
