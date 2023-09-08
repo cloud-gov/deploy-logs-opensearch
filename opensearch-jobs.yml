@@ -63,6 +63,54 @@ instance_groups:
         platform_index_component_name: index-mappings-platform-lfc
         shards_and_replicas_component_name: shards-and-replicas
     release: opensearch
+  - consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: curator
+    properties:
+      curator:
+        actions:
+        - action: forcemerge
+          description: Force merging of older indices to make their shards more compact
+            and search-optimized
+          filters:
+          - filtertype: pattern
+            kind: regex
+            value: logs*
+          - direction: older
+            filtertype: age
+            source: creation_date
+            unit: days
+            unit_count: 90
+          - exclude: true
+            filtertype: forcemerged
+            max_num_segments: 1
+          options:
+            ignore_empty_list: true
+            max_num_segments: 1
+        - action: index_settings
+          description: Sets indices older than 1 day to be read only
+          filters:
+          - filtertype: pattern
+            kind: regex
+            value: logs*
+          - direction: older
+            filtertype: age
+            source: creation_date
+            unit: days
+            unit_count: 1
+          options:
+            index_settings:
+              index:
+                blocks:
+                  write: true
+        execute:
+          daily: true
+          hourly: false
+        purge_logs:
+          retention_period: 90
+    release: opensearch
   - name: opensearch_config
     release: opensearch
     consumes: *consumes-opensearch-manager
