@@ -151,6 +151,9 @@ instance_groups:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
     release: opensearch
+    provides:
+      opensearch:
+        as: opensearch_manager
   - name: archiver_syslog
     properties:
       logstash:
