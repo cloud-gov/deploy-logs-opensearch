@@ -89,6 +89,30 @@
     certificate: ((opensearch_dashboard.certificate))
     private_key: ((opensearch_dashboard.private_key))
 
+# archiever
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch_dashboards/properties?/opensearch_dashboards?/opensearch?/ssl?
+  value:
+    ca: ((opensearch_node.ca))
+    certificate: ((opensearch_dashboard.certificate))
+    private_key: ((opensearch_dashboard.private_key))
+
 # variables
 - type: replace
   path: /variables/name=opensearch_ca?
