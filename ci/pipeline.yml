@@ -69,9 +69,15 @@ jobs:
     - get: deploy-logs-opensearch-config
       trigger: true
       passed: [set-self]
+    - get: common-secrets
+      resource: common-development
+      trigger: true
     - get: opensearch-release
       trigger: true
     - get: opensearch-stemcell-jammy
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-development
       trigger: true
     - get: general-task
   - task: opensearch-manifest
@@ -79,16 +85,21 @@ jobs:
     config:
       platform: linux
       inputs:
+      - name: common-secrets
       - name: deploy-logs-opensearch-config
+      - name: terraform-yaml
       run:
         path: sh
         args:
         - -exc
         - |
           SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
+            --prune terraform_outputs \
             deploy-logs-opensearch-config/opensearch-deployment.yml \
             deploy-logs-opensearch-config/opensearch-jobs.yml \
             deploy-logs-opensearch-config/opensearch-development.yml \
+            common-secrets/opensearch-development.yml \
+            terraform-yaml/state.yml \
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
@@ -155,12 +166,19 @@ resources:
     regexp: opensearch-([\d\.]*).tgz
     server_side_encryption: AES256
 
+- name: terraform-yaml-development
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket-development))
+    versioned_file: ((tf-state-file-development))
+    region_name: ((aws-region))
+
 - name: deploy-logs-opensearch-config
   type: git
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
-    branch: main
+    branch: archeive
 
 - name: opensearch-stemcell-jammy
   source:
@@ -187,6 +205,13 @@ resources:
     client_secret: ((bosh-director-info.development.client_secret))
     ca_cert: ((bosh-director-info.development.ca_cert))
     deployment: logs-opensearch
+
+- name: common-development
+  type: s3-iam
+  source:
+    bucket: ((opensearch-private-bucket))
+    versioned_file: opensearch-development.yml
+    region_name: ((aws-region))
 
 - name: general-task
   type: registry-image
