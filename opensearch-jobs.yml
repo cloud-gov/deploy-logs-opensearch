@@ -138,6 +138,64 @@ instance_groups:
 #########################################################
 #2nd deploy group - opensearch_data, opensearch_dashboards, ingestors
 #########################################################
+- name: archiver
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - consumes: *consumes-opensearch-manager
+    name: opensearch
+    properties:
+      opensearch:
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        migrate_data_path: true
+    release: opensearch
+  - name: archiver_syslog
+    properties:
+      logstash:
+        queue:
+          max_bytes: 30gb
+      logstash_archiver:
+        files: 16384
+      logstash_ingestor:
+        outputs:
+        - options:
+            bucket: (( grab terraform_outputs.opensearch_archive_bucket_name ))
+            encoding: gzip
+            prefix: '%{+yyyy/MM/dd/HH/mm}'
+            region: (( grab terraform_outputs.vpc_region ))
+            server_side_encryption: true
+            time_file: 5
+            validate_credentials_on_root_bucket: false
+          plugin: s3
+    release: opensearch
+  - name: ingestor_cloudfoundry-firehose
+    properties:
+      cloudfoundry:
+        api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+        firehose_cc_pull_interval: 300s
+        firehose_client_id: opensearch_firehose_ingestor
+        firehose_client_secret: ((opensearch-firehose-ingestor-client-secret))
+        firehose_events:
+        - LogMessage
+        - ContainerMetric
+        firehose_subscription_id: logsearch-ingestor
+        skip_ssl_validation: false
+      syslog:
+        host: 127.0.0.1
+        port: 5514
+    release: opensearch
+  azs: [z1]
+  networks:
+  - name: services
+  persistent_disk_type: logsearch_ingestor
+  stemcell: default
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  vm_type: t3.medium
+
 - name: opensearch_data
   instances: 11
   jobs:
