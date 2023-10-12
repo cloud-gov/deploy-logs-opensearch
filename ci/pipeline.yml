@@ -178,7 +178,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
-    branch: archeive
+    branch: main
 
 - name: opensearch-stemcell-jammy
   source:
