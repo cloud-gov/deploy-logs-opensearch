@@ -161,7 +161,7 @@ instance_groups:
       logstash_ingestor:
         outputs:
         - options:
-            bucket: (( grab terraform_outputs.logs-opensearch-archive ))
+            bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
             encoding: gzip
             prefix: '%{+yyyy/MM/dd/HH/mm}'
             region: (( grab terraform_outputs.vpc_region ))
