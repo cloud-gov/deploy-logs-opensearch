@@ -176,7 +176,6 @@ instance_groups:
         api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
         firehose_cc_pull_interval: 300s
         firehose_client_id: opensearch_firehose_ingestor
-        firehose_client_secret: ((opensearch-firehose-ingestor-client-secret))
         firehose_events:
         - LogMessage
         - ContainerMetric
