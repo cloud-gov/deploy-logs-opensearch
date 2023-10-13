@@ -69,9 +69,6 @@ jobs:
     - get: deploy-logs-opensearch-config
       trigger: true
       passed: [set-self]
-    - get: common-secrets
-      resource: common-development
-      trigger: true
     - get: opensearch-release
       trigger: true
     - get: opensearch-stemcell-jammy
@@ -85,7 +82,6 @@ jobs:
     config:
       platform: linux
       inputs:
-      - name: common-secrets
       - name: deploy-logs-opensearch-config
       - name: terraform-yaml
       run:
@@ -98,7 +94,6 @@ jobs:
             deploy-logs-opensearch-config/opensearch-deployment.yml \
             deploy-logs-opensearch-config/opensearch-jobs.yml \
             deploy-logs-opensearch-config/opensearch-development.yml \
-            common-secrets/opensearch-development.yml \
             terraform-yaml/state.yml \
             > opensearch-manifest/manifest.yml
       outputs:
@@ -123,14 +118,14 @@ jobs:
       text: |
         :x: FAILED to deploy logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
+      channel: ((slack-failure-channel))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
   on_success:
     put: slack
     params:
       <<: *slack-params
-      channel: '#cg-platform-news'
+      channel: ((slack-success-channel))
       text: |
         :white_check_mark: Successfully deployed logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
@@ -205,13 +200,6 @@ resources:
     client_secret: ((bosh-director-info.development.client_secret))
     ca_cert: ((bosh-director-info.development.ca_cert))
     deployment: logs-opensearch
-
-- name: common-development
-  type: s3-iam
-  source:
-    bucket: ((opensearch-private-bucket))
-    versioned_file: opensearch-development.yml
-    region_name: ((aws-region))
 
 - name: general-task
   type: registry-image
