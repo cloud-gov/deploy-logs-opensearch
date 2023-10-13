@@ -73,6 +73,9 @@ jobs:
       trigger: true
     - get: opensearch-stemcell-jammy
       trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-development
+      trigger: true
     - get: general-task
   - task: opensearch-manifest
     image: general-task
@@ -80,15 +83,18 @@ jobs:
       platform: linux
       inputs:
       - name: deploy-logs-opensearch-config
+      - name: terraform-yaml
       run:
         path: sh
         args:
         - -exc
         - |
           SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
+            --prune terraform_outputs \
             deploy-logs-opensearch-config/opensearch-deployment.yml \
             deploy-logs-opensearch-config/opensearch-jobs.yml \
             deploy-logs-opensearch-config/opensearch-development.yml \
+            terraform-yaml/state.yml \
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
@@ -154,6 +160,13 @@ resources:
     region_name: ((aws-region))
     regexp: opensearch-([\d\.]*).tgz
     server_side_encryption: AES256
+
+- name: terraform-yaml-development
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket-development))
+    versioned_file: ((tf-state-file-development))
+    region_name: ((aws-region))
 
 - name: deploy-logs-opensearch-config
   type: git
