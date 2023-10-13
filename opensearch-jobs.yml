@@ -179,7 +179,7 @@ instance_groups:
         firehose_events:
         - LogMessage
         - ContainerMetric
-        firehose_subscription_id: logsearch-ingestor
+        firehose_subscription_id: opensearch-ingestor
         skip_ssl_validation: false
       syslog:
         host: 127.0.0.1
