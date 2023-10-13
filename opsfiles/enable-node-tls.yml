@@ -89,7 +89,7 @@
     certificate: ((opensearch_dashboard.certificate))
     private_key: ((opensearch_dashboard.private_key))
 
-# archiever
+# archiver
 - type: replace
   path: /instance_groups/name=archiver/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
