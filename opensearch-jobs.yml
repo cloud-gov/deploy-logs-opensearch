@@ -188,7 +188,7 @@ instance_groups:
   azs: [z1]
   networks:
   - name: services
-  persistent_disk_type: logsearch_ingestor
+  persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
   vm_extensions:
   - logs-opensearch-ingestor-profile
