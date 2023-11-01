@@ -195,6 +195,72 @@ instance_groups:
   - 50GB_ephemeral_disk
   vm_type: t3.medium
 
+- name: ingestor
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - consumes:
+      opensearch:
+        from: opensearch_manager
+    name: ingestor_syslog
+    properties:
+      logstash:
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_parser:
+        deployment_dictionary:
+        - /var/vcap/packages/opensearch_config/deployment_lookup.yml
+        - /var/vcap/jobs/parser-config-lfc/config/deployment_lookup.yml
+        filters:
+        - logsearch-for-cf: /var/vcap/packages/opensearch-config-logstash-filters/logstash-filters-default.conf
+        opensearch:
+          data_hosts:
+          - localhost
+          index: logs-app-%{+YYYY.MM.dd}
+          index_type: '%{@type}'
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_link
+    release: opensearch
+  - name: ingestor_cloudfoundry-firehose
+    properties:
+      cloudfoundry:
+        firehose_cc_pull_interval: 300s
+        firehose_client_id: opensearch_firehose_ingestor
+        firehose_events:
+        - LogMessage
+        - ContainerMetric
+        firehose_subscription_id: opensearch-ingestor
+        skip_ssl_validation: false
+      syslog:
+        host: 127.0.0.1
+        port: 5514
+    release: opensearch
+  - name: parser-config-lfc
+    release: opensearch
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  azs: [z1]
+  vm_type: t3.medium
+  networks:
+  - name: services
+
 - name: opensearch_data
   instances: 11
   jobs:
