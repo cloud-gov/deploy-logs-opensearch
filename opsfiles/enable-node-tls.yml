@@ -120,7 +120,7 @@
   value: *node-tls-properties
 
 - type: replace
-  path: /instance_groups/name=ingstor/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
 # variables
