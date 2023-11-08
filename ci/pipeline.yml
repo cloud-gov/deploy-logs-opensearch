@@ -102,6 +102,7 @@ jobs:
         CF_USERNAME: ((cf-username-development))
         CF_PASSWORD: ((cf-password-development))
         CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
+        BOSH_LOG_LEVEL: debug
   - put: opensearch-development-deployment
     params:
       manifest: opensearch-manifest/manifest.yml
