@@ -47,7 +47,7 @@ instance_groups:
     release: opensearch
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       opensearch:
         clustername: opensearch
@@ -71,7 +71,7 @@ instance_groups:
   - name: curator
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       curator:
         actions:
@@ -119,7 +119,7 @@ instance_groups:
     release: opensearch
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       opensearch_config:
         component_templates:
@@ -152,7 +152,7 @@ instance_groups:
   - name: opensearch
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       opensearch:
         jvm_options:
@@ -212,7 +212,7 @@ instance_groups:
     release: opensearch
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       opensearch:
         heap_size: 1G
@@ -222,7 +222,7 @@ instance_groups:
   - name: ingestor_syslog
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       logstash:
         jvm_options:
@@ -280,7 +280,7 @@ instance_groups:
     release: opensearch
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
     properties:
       opensearch:
         node:
@@ -318,7 +318,7 @@ instance_groups:
     release: opensearch
     consumes:
       <<: *consumes-opensearch-manager
-      <<: *&consumes-opensearch-dashboards
+      <<: *consumes-opensearch-dashboards
   - name: opensearch_dashboards
     consumes:
       <<: *consumes-opensearch-manager
