@@ -8,9 +8,12 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
+    consumes:
+      opensearch: &consumes-opensearch-manager
         from: opensearch_manager
+        ip_addresses: true
+      opensearch_dashboards: &consumes-opensearch-dashboards
+        from: opensearch_dashboards
         ip_addresses: true
     provides:
       opensearch:
@@ -42,7 +45,9 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       opensearch:
         clustername: opensearch
@@ -63,11 +68,10 @@ instance_groups:
         platform_index_component_name: index-mappings-platform-lfc
         shards_and_replicas_component_name: shards-and-replicas
     release: opensearch
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    name: curator
+  - name: curator
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       curator:
         actions:
@@ -113,7 +117,9 @@ instance_groups:
     release: opensearch
   - name: opensearch_config
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       opensearch_config:
         component_templates:
@@ -143,8 +149,10 @@ instance_groups:
   jobs:
   - name: bpm
     release: bpm
-  - consumes: *consumes-opensearch-manager
-    name: opensearch
+  - name: opensearch
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       opensearch:
         jvm_options:
@@ -202,17 +210,19 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       opensearch:
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-    name: ingestor_syslog
+  - name: ingestor_syslog
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       logstash:
         jvm_options:
@@ -268,7 +278,9 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
     properties:
       opensearch:
         node:
@@ -304,9 +316,15 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes:
+      <<: *consumes-opensearch-manager
+      <<: *&consumes-opensearch-dashboards
   - name: opensearch_dashboards
-    consumes: *consumes-opensearch-manager
+    consumes:
+      <<: *consumes-opensearch-manager
+    provides:
+      opensearch_dashboards:
+        as: opensearch_dashboards
     properties:
       opensearch_dashboards:
         config_options:
