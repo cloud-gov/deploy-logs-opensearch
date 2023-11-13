@@ -1,0 +1,35 @@
+---
+
+# opensearch_manager
+- type: replace
+  path: /instance_groups/name=opensearch_manager/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
+# maintenance
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
+# opensearch_data
+- type: replace
+  path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
+# opensearch_dashboards
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch_dashboards/properties?/opensearch_dashboards?/opensearch?/enable_proxy_auth
+  value: true
+
+# archiver
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
+
+# ingestor
+- type: replace
+  path: /instance_groups/name=ingestor/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
