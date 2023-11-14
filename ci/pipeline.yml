@@ -112,6 +112,7 @@ jobs:
       ops_files:
       - deploy-logs-opensearch-config/opsfiles/nats-tls-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
   on_failure:
     put: slack
     params: &slack-params
