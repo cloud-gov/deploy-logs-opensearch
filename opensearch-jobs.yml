@@ -8,12 +8,9 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: &consumes-opensearch-manager-and-dashboards
-      opensearch: &consumes-opensearch-manager
+    consumes: &consumes-opensearch-manager
+      opensearch:
         from: opensearch_manager
-        ip_addresses: true
-      opensearch_dashboards: &consumes-opensearch-dashboards
-        from: opensearch_dashboards
         ip_addresses: true
     provides:
       opensearch:
@@ -45,7 +42,7 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
         clustername: opensearch
@@ -67,7 +64,7 @@ instance_groups:
         shards_and_replicas_component_name: shards-and-replicas
     release: opensearch
   - name: curator
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       curator:
         actions:
@@ -113,7 +110,7 @@ instance_groups:
     release: opensearch
   - name: opensearch_config
     release: opensearch
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_config:
         component_templates:
@@ -144,7 +141,7 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
         jvm_options:
@@ -202,7 +199,7 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
         heap_size: 1G
@@ -210,7 +207,7 @@ instance_groups:
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
   - name: ingestor_syslog
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       logstash:
         jvm_options:
@@ -266,7 +263,7 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
         node:
@@ -302,14 +299,9 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager-and-dashboards
+    consumes: *consumes-opensearch-manager
   - name: opensearch_dashboards
-    consumes:
-      opensearch:
-        <<: *consumes-opensearch-manager
-    provides:
-      opensearch_dashboards:
-        as: opensearch_dashboards
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_dashboards:
         config_options:
@@ -331,31 +323,8 @@ instance_groups:
       nats-tls:
         deployment: cf-development
         from: nats-tls
-    properties:
-      nats:
-        tls:
-          client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
-          client_key: ((/bosh/cf-development/nats_client_cert.private_key))
-          enabled: true
-      route_registrar:
-        routes:
-        - name: opensearch-dashboard
-          port: 5601
-          registration_interval: 2s
-          timeout: 1s
-          uris:
-          - logs-beta.dev.us-gov-west-1.aws-us-gov.cloud.gov
     release: routing
   - name: bosh-dns-aliases
-    properties:
-      aliases:
-      - domain: nats.service.cf.internal
-        targets:
-        - deployment: cf-development
-          domain: bosh
-          instance_group: nats
-          network: default
-          query: '*'
     release: bosh-dns-aliases
   persistent_disk: 10240
   stemcell: default

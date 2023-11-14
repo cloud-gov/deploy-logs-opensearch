@@ -19,6 +19,11 @@ instance_groups:
         deployment: cf-development
         from: nats-tls
     properties:
+      nats:
+        tls:
+          client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
+          client_key: ((/bosh/cf-development/nats_client_cert.private_key))
+          enabled: true
       route_registrar:
         routes:
         - name: opensearch-dashboard
@@ -59,10 +64,3 @@ instance_groups:
       cloudfoundry:
         api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
         firehose_client_secret: ((logs_opensearch_firehose_client_secret))
-
-
-
-stemcells:
-- alias: default
-  os: ubuntu-jammy
-  version: latest
