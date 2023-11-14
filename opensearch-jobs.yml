@@ -313,7 +313,6 @@ instance_groups:
         health:
           timeout: 600
         memory_limit: 75
-        opensearch:
     provides:
       opensearch-dashboard:
         as: opensearch_link
