@@ -328,7 +328,6 @@ instance_groups:
   vm_extensions:
   - 50GB_ephemeral_disk
   stemcell: default
-  vm_type: t3.xlarge
   azs:
   - z1
   networks:
