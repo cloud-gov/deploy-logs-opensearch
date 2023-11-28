@@ -325,9 +325,10 @@ instance_groups:
     release: routing
   - name: bosh-dns-aliases
     release: bosh-dns-aliases
-  persistent_disk: 10240
+  vm_extensions:
+  - 50GB_ephemeral_disk
   stemcell: default
-  vm_type: t3.large
+  vm_type: t3.xlarge
   azs:
   - z1
   networks:
