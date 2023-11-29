@@ -50,17 +50,30 @@ instance_groups:
           fd: 131072 # 2 ** 17
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
+  - name: opensearch_config
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch_config:
+        component_templates:
+        - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
+        - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
+        - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
+        - component-index-mappings-base: /var/vcap/jobs/opensearch_config_cf/component-index-mappings.json
+        - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_config_cf/component-index-mappings-app.json
+        index_templates:
+        - index-mappings-app-cf: /var/vcap/jobs/opensearch_config_cf/index-mappings-app.json
   - name: opensearch_config_cf
     properties:
       opensearch_config:
-        app_index_component_name: index-mappings-app-lfc
+        app_index_component_name: component-index-mappings-app-cf
         app_index_settings:
           index.mapping.total_fields.limit: 2000
           index.queries.cache.enabled: "false"
-        base_index_component_name: index-mappings-lfc
+        base_index_component_name: component-index-mappings-base
         index_mappings_component_name: index-mappings
         index_settings_component_name: index-settings
-        platform_index_component_name: index-mappings-platform-lfc
+        platform_index_component_name: index-mappings-platform
         shards_and_replicas_component_name: shards-and-replicas
     release: opensearch
   - name: curator
@@ -108,22 +121,6 @@ instance_groups:
         purge_logs:
           retention_period: 90
     release: opensearch
-  - name: opensearch_config
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch_config:
-        component_templates:
-        - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
-        - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
-        - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
-        - index-mappings-lfc: /var/vcap/jobs/opensearch_config_cf/component-index-mappings.json
-        - index-mappings-app-lfc: /var/vcap/jobs/opensearch_config_cf/component-index-mappings-app.json
-        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch_config_cf/component-index-mappings-platform.json
-        index_templates:
-        - index-mappings-lfc: /var/vcap/jobs/opensearch_config_cf/index-mappings.json
-        - index-mappings-app-lfc: /var/vcap/jobs/opensearch_config_cf/index-mappings-app.json
-        - index-mappings-platform-lfc: /var/vcap/jobs/opensearch_config_cf/index-mappings-platform.json
   stemcell: default
   azs: [z1]
   vm_type: t3.large
@@ -217,9 +214,9 @@ instance_groups:
       logstash_parser:
         deployment_dictionary:
         - /var/vcap/packages/opensearch_config/deployment_lookup.yml
-        - /var/vcap/jobs/parser-config-lfc/config/deployment_lookup.yml
+        - /var/vcap/jobs/parser-config-cf/config/deployment_lookup.yml
         filters:
-        - logsearch-for-cf: /var/vcap/packages/opensearch-config-logstash-filters/logstash-filters-default.conf
+        - logs-for-cf: /var/vcap/packages/cf-logs-logstash-filters/logstash-filters-default.conf
         opensearch:
           data_hosts:
           - localhost
@@ -247,7 +244,7 @@ instance_groups:
         host: 127.0.0.1
         port: 5514
     release: opensearch
-  - name: parser-config-lfc
+  - name: parser-config-cf
     release: opensearch
   persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
@@ -325,9 +322,9 @@ instance_groups:
     release: routing
   - name: bosh-dns-aliases
     release: bosh-dns-aliases
-  persistent_disk: 10240
+  vm_extensions:
+  - 50GB_ephemeral_disk
   stemcell: default
-  vm_type: t3.large
   azs:
   - z1
   networks:
