@@ -213,7 +213,6 @@ instance_groups:
           max_bytes: 30gb
       logstash_parser:
         deployment_dictionary:
-        - /var/vcap/packages/opensearch_config/deployment_lookup.yml
         - /var/vcap/jobs/parser-config-cf/config/deployment_lookup.yml
         filters:
         - logs-for-cf: /var/vcap/packages/cf-logs-logstash-filters/logstash-filters-default.conf
