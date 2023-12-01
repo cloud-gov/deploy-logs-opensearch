@@ -214,7 +214,7 @@ instance_groups:
       logstash_parser:
         deployment_dictionary:
         - /var/vcap/packages/base-logstash-filters/deployment_lookup.yml
-        - /var/vcap/jobs/parser-config-cf/config/deployment_lookup.yml
+        - /var/vcap/jobs/deployment_lookup_config/config/deployment_lookup.yml
         filters:
         - logs-for-cf: /var/vcap/packages/cf-logstash-filters/logstash-filters-default.conf
         opensearch:
@@ -244,7 +244,7 @@ instance_groups:
         host: 127.0.0.1
         port: 5514
     release: opensearch
-  - name: parser-config-cf
+  - name: deployment_lookup_config
     release: opensearch
   persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
