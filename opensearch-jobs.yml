@@ -51,18 +51,22 @@ instance_groups:
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
   - name: upload_opensearch_config
-    release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
     properties:
       opensearch_config:
         component_templates:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
         - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
-        - index-mappings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-mappings.json
-        - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings.json
+        - index-template: /var/vcap/jobs/upload_opensearch_config/index-templates/index-template.json
+        - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings-base.json
         - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
+        - component-index-mappings-platform: /var/vcap/jobs/opensearch_templates/component-index-mappings-platform.json
         index_templates:
-        - index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/index-mappings-app.json
+        - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
+    release: opensearch
   - name: opensearch_templates
     properties:
       opensearch_config:
