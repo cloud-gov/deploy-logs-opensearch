@@ -50,20 +50,24 @@ instance_groups:
           fd: 131072 # 2 ** 17
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
-  - name: opensearch_config
-    release: opensearch
-    consumes: *consumes-opensearch-manager
+  - name: upload_opensearch_config
+    consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
     properties:
       opensearch_config:
         component_templates:
-        - shards-and-replicas: /var/vcap/jobs/opensearch_config/index-templates/shards-and-replicas.json
-        - index-settings: /var/vcap/jobs/opensearch_config/index-templates/index-settings.json
-        - index-mappings: /var/vcap/jobs/opensearch_config/index-templates/index-mappings.json
-        - component-index-mappings-base: /var/vcap/jobs/opensearch_config_cf/component-index-mappings.json
-        - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_config_cf/component-index-mappings-app.json
+        - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
+        - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
+        - index-template: /var/vcap/jobs/upload_opensearch_config/index-templates/index-template.json
+        - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings-base.json
+        - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
+        - component-index-mappings-platform: /var/vcap/jobs/opensearch_templates/component-index-mappings-platform.json
         index_templates:
-        - index-mappings-app-cf: /var/vcap/jobs/opensearch_config_cf/index-mappings-app.json
-  - name: opensearch_config_cf
+        - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
+    release: opensearch
+  - name: opensearch_templates
     properties:
       opensearch_config:
         app_index_component_name: component-index-mappings-app-cf
@@ -214,7 +218,7 @@ instance_groups:
       logstash_parser:
         deployment_dictionary:
         - /var/vcap/packages/base-logstash-filters/deployment_lookup.yml
-        - /var/vcap/jobs/parser-config-cf/config/deployment_lookup.yml
+        - /var/vcap/jobs/deployment_lookup_config/config/deployment_lookup.yml
         filters:
         - logs-for-cf: /var/vcap/packages/cf-logstash-filters/logstash-filters-default.conf
         opensearch:
@@ -244,7 +248,7 @@ instance_groups:
         host: 127.0.0.1
         port: 5514
     release: opensearch
-  - name: parser-config-cf
+  - name: deployment_lookup_config
     release: opensearch
   persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
