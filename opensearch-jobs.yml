@@ -59,11 +59,11 @@ instance_groups:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
         - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
         - index-mappings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-mappings.json
-        - component-index-mappings-base: /var/vcap/jobs/opensearch_config_cf/component-index-mappings.json
-        - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_config_cf/component-index-mappings-app.json
+        - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings.json
+        - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
         index_templates:
-        - index-mappings-app-cf: /var/vcap/jobs/opensearch_config_cf/index-mappings-app.json
-  - name: opensearch_config_cf
+        - index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/index-mappings-app.json
+  - name: opensearch_templates
     properties:
       opensearch_config:
         app_index_component_name: component-index-mappings-app-cf
