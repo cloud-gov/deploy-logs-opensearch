@@ -139,9 +139,9 @@ instance_groups:
         firehose_events:
         - LogMessage
         - ContainerMetric
-        system_domain: (( grab $CF_SYSTEM_DOMAIN ))
-        user: (( grab $CF_USERNAME ))
-        password: (( grab $CF_PASSWORD ))
+        system_domain: ((system_domain))
+        user: ((dashboards_upload_user_name))
+        password: ((dashboards_upload_user_password))
       kibana_objects:
         upload_patterns:
         - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/index-pattern/logs-app.json"}
