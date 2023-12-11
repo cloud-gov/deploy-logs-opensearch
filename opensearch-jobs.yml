@@ -35,7 +35,7 @@ instance_groups:
         - (( concat "suppress gen_id 1, sig_id 343080004, track by_src, ip " link("ip").instance.address ))
     release: snort
     consumes:
-     ip: {from: maintanence_conn}
+      ip: {from: maintanence_conn}
   azs:
   - z1
   persistent_disk: 10240
