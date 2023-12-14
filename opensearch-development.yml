@@ -10,7 +10,7 @@ instance_groups:
   vm_type: t3.large
 
 - name: opensearch_dashboards
-  vm_type: t3.large
+  vm_type: t3.xlarge
   instances: 1
   jobs:
   - name: route_registrar

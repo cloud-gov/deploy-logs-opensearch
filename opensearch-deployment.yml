@@ -15,6 +15,7 @@ name: logs-opensearch
 releases:
 - {name: opensearch, version: latest}
 - {name: routing, version: latest}
+- {name: snort, version: latest}
 - {name: bosh-dns-aliases, version: latest}
 - {name: bpm, version: latest}
 
