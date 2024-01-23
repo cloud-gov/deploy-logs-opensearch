@@ -1,12 +1,12 @@
 ---
 jobs:
 
-- name: set-self
-  plan:
-    - get: deploy-logs-opensearch-config
-      trigger: true
-    - set_pipeline: self
-      file: deploy-logs-opensearch-config/ci/pipeline.yml
+# - name: set-self
+#   plan:
+#     - get: deploy-logs-opensearch-config
+#       trigger: true
+#     - set_pipeline: self
+#       file: deploy-logs-opensearch-config/ci/pipeline.yml
 
 - name: build-opensearch-release
   plan:
@@ -68,7 +68,7 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      passed: [set-self]
+     # passed: [set-self]
     - get: opensearch-release
       trigger: true
     - get: opensearch-stemcell-jammy
@@ -119,7 +119,7 @@ jobs:
       text: |
         :x: FAILED to deploy logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-failure-channel))
+      channel: ((slack-success-channel))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
   on_success:
@@ -131,6 +131,89 @@ jobs:
         :white_check_mark: Successfully deployed logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+- name: smoke-tests-development
+  plan:
+  - in_parallel:
+    - get: tests-timer
+      trigger: true
+    - get: pipeline-tasks
+    - get: opensearch-release
+      trigger: true
+      passed: [deploy-opensearch-development]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      passed: [deploy-opensearch-development]
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-development]
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: smoke-tests
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-params
+      channel: '#cg-platform-news'
+      text: |
+        :x: Smoke tests for opensearch on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-params
+      channel: '#cg-platform-news'
+      text: |
+        :white_check_mark: Smoke tests for opensearch on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: smoke-tests-login-development
+  serial_groups: [bosh-development]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+      trigger: true
+      passed: [deploy-opensearch-development]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      passed: [deploy-opensearch-development]
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-development]
+      trigger: true
+    - get: opensearch-development-deployment
+      trigger: true
+    - get: tests-timer
+      trigger: true
+    - get: general-task
+  - task: smoke-tests-login
+    image: general-task
+    file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+    params:
+      CF_USERNAME: ((cf-username-development))
+      CF_PASSWORD: ((cf-password-development))
+      CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-params
+      text: |
+        :x: Login smoke tests for opensearch on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-params
+      channel: '#cg-platform-news'
+      text: |
+        :white_check_mark: Login smoke tests for opensearch on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 resources:
 - name: opensearch-release-git-repo
@@ -174,7 +257,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
-    branch: main
+    branch: smoketest2
 
 - name: opensearch-stemcell-jammy
   source:
@@ -187,6 +270,11 @@ resources:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-pipeline-tasks.git
     branch: main
+
+- name: tests-timer
+  type: time
+  source:
+    interval: 30m
 
 - name: slack
   type: slack-notification
