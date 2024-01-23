@@ -23,5 +23,6 @@ if __name__ == "__main__":
         },
     )
     print(login.url, login.status_code)
-    assert login.url == 'https://dashboard-proxy.{}/app/home'.format(os.environ['CF_SYSTEM_DOMAIN'])
+    # proves that we're getting to the OAuth page. Need UI testing to click "Authorize" on this page
+    assert login.url.startswith('https://login.{}/oauth/authorize'.format(os.environ['CF_SYSTEM_DOMAIN']))
     assert login.status_code == 200
