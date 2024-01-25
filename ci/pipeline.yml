@@ -153,7 +153,7 @@ jobs:
       BOSH_CLIENT: ((bosh_client))
       BOSH_CLIENT_SECRET: ((bosh_client-secret))
       BOSH_DEPLOYMENT: logs-opensearch
-      BOSH_ERRAND: smoke-tests
+      BOSH_ERRAND: smoke_tests
       BOSH_FLAGS: "--keep-alive"
       BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
   on_failure:

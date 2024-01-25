@@ -343,3 +343,46 @@ instance_groups:
   env:
     bosh:
       swap_size: 0
+
+#########################################################
+#3rd deploy group - smoke_tests
+#########################################################
+
+- name: smoke_tests
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+  - consumes:
+      ingestor_link:
+        from: ingestor_syslog
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: smoke_tests
+    properties:
+      smoke_tests:
+        count_test:
+          index_pattern: logs-app-*
+          minimum: 500
+          run: true
+          time_field: '@timestamp'
+          time_interval: 5m
+        opensearch:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((smoketest.certificate))
+            private_key: ((smoketest.private_key))
+    release: opensearch
+  lifecycle: errand
+  networks:
+  - name: services
+  release: opensearch
+  stemcell: default
+  vm_extensions:
+  - errand-profile
+  azs:
+  - z1
