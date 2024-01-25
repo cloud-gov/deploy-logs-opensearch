@@ -345,17 +345,46 @@ instance_groups:
       swap_size: 0
 
 #########################################################
-#3rd deploy group - smoke_tests
+#3rd deploy group - smoke-tests
 #########################################################
 
-- name: smoke_tests
+- name: smoke-tests
   instances: 1
   jobs:
   - name: bpm
     release: bpm
-  - name: opensearch
+  - consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: opensearch
+    properties:
+      opensearch:
+        admin:
+          certificate: ((opensearch_admin.certificate))
+          dn: CN=admin.opensearch.internal
+          private_key: ((opensearch_admin.private_key))
+        clustername: opensearch
+        enable_proxy_auth: true
+        http:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((opensearch_node.certificate))
+            private_key: ((opensearch_node.private_key))
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        limits:
+          fd: 131072
+        node:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((opensearch_node.certificate))
+            dn:
+            - CN=node.opensearch.internal
+            - CN=smoketest.opensearch.internal
+            private_key: ((opensearch_node.private_key))
     release: opensearch
-    consumes: *consumes-opensearch-manager
   - consumes:
       ingestor_link:
         from: ingestor_syslog

@@ -65,6 +65,6 @@ instance_groups:
         api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
         firehose_client_secret: ((logs_opensearch_firehose_client_secret))
 
-- name: smoke_tests
+- name: smoke-tests
   instances: 1
   vm_type: t3.small
