@@ -125,23 +125,23 @@
 
 # smoke_tests
 - type: replace
-  path: /instance_groups/name=smoke_tests/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 
 - type: replace
-  path: /instance_groups/name=smoke_tests/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 
 - type: replace
-  path: /instance_groups/name=smoke_tests/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 
 - type: replace
-  path: /instance_groups/name=smoke_tests/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
 - type: replace
-  path: /instance_groups/name=smoke_tests/jobs/name=smoke_tests/properties?/smoke_tests?/opensearch?/ssl?
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties?/smoke_tests?/opensearch?/ssl?
   value:
     ca: ((opensearch_node.ca))
     certificate: ((smoketest.certificate))
