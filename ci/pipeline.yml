@@ -210,7 +210,7 @@ jobs:
     put: slack
     params:
       <<: *slack-params
-      channel: '#cg-platform-news'
+      channel: ((slack-channel-success))
       text: |
         :white_check_mark: Login smoke tests for opensearch on development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
