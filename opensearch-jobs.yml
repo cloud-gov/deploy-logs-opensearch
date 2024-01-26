@@ -343,3 +343,72 @@ instance_groups:
   env:
     bosh:
       swap_size: 0
+
+#########################################################
+#3rd deploy group - smoke-tests
+#########################################################
+
+- name: smoke-tests
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - consumes: *consumes-opensearch-manager
+    name: opensearch
+    properties:
+      opensearch:
+        admin:
+          certificate: ((opensearch_admin.certificate))
+          dn: CN=admin.opensearch.internal
+          private_key: ((opensearch_admin.private_key))
+        clustername: opensearch
+        enable_proxy_auth: true
+        http:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((opensearch_node.certificate))
+            private_key: ((opensearch_node.private_key))
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        limits:
+          fd: 131072
+        node:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((opensearch_node.certificate))
+            dn:
+            - CN=node.opensearch.internal
+            - CN=smoketest.opensearch.internal
+            private_key: ((opensearch_node.private_key))
+    release: opensearch
+  - consumes:
+      ingestor_link:
+        from: ingestor_syslog
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: smoke_tests
+    properties:
+      smoke_tests:
+        count_test:
+          index_pattern: logs-app-*
+          minimum: 500
+          run: true
+          time_field: '@timestamp'
+          time_interval: 5m
+        opensearch:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((smoketest.certificate))
+            private_key: ((smoketest.private_key))
+    release: opensearch
+  lifecycle: errand
+  networks:
+  - name: services
+  release: opensearch
+  stemcell: default
+  vm_extensions:
+  - errand-profile
+  azs:
+  - z1

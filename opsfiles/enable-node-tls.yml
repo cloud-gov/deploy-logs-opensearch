@@ -123,6 +123,30 @@
   path: /instance_groups/name=ingestor/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
+# smoke_tests
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties?/smoke_tests?/opensearch?/ssl?
+  value:
+    ca: ((opensearch_node.ca))
+    certificate: ((smoketest.certificate))
+    private_key: ((smoketest.private_key))
+
 # variables
 - type: replace
   path: /variables/name=logstash?
@@ -178,6 +202,20 @@
       - client_auth
 
 - type: replace
+  path: /variables/name=smoketest?
+  value:
+    name: smoketest
+    type: certificate
+    update_mode: converge
+    options:
+      ca: opensearch_ca
+      common_name: smoketest.opensearch.internal
+      alternative_names: ["localhost"]
+      extended_key_usage:
+      - server_auth
+      - client_auth
+
+- type: replace
   path: /variables/name=opensearch_admin?
   value:
     name: opensearch_admin
@@ -187,3 +225,4 @@
       common_name: admin.opensearch.internal
       extended_key_usage:
       - client_auth
+
