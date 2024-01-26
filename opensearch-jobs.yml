@@ -353,10 +353,7 @@ instance_groups:
   jobs:
   - name: bpm
     release: bpm
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+  - consumes: *consumes-opensearch-manager
     name: opensearch
     properties:
       opensearch:
