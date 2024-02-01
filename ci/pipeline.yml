@@ -131,7 +131,33 @@ jobs:
         :white_check_mark: Successfully deployed logs-opensearch on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+- name: upload-dashboards-objects-development
+  serial_groups: [bosh-development]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+      trigger: true
+      passed: [deploy-opensearch-development]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      passed: [deploy-opensearch-development]
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-development]
+      trigger: true
+  - task: upload-dashboards-objects
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+
 - name: smoke-tests-development
+  serial_groups: [bosh-development]
   plan:
   - in_parallel:
     - get: tests-timer
