@@ -132,6 +132,9 @@ instance_groups:
   - name: upload-dashboards-objects
     release: opensearch
     consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
       opensearch_dashboards:
         from: opensearch_dashboards
         ip_addresses: true
