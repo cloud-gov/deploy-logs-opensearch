@@ -58,10 +58,7 @@ instance_groups:
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
   - name: upload_opensearch_config
-    consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_config:
         component_templates:
@@ -132,6 +129,27 @@ instance_groups:
         purge_logs:
           retention_period: 90
     release: opensearch
+  - name: upload-dashboards-objects
+    release: opensearch
+    consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    properties:
+      cloudfoundry:
+        firehose_events:
+        - LogMessage
+        - ContainerMetric
+        system_domain: ((system_domain))
+        user: ((dashboards_upload_user_name))
+        password: ((dashboards_upload_user_password))
+      upload_patterns:
+      - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/index-pattern/logs-app.json"}
+      - {type: search, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/search/app-*.json"}
+      - {type: visualization, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/visualization/App-*.json"}
+      - {type: dashboard, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/dashboard/App-*.json"}
+      opensearch_dashboards:
+        host: opensearch_dashboards.opensearch.internal
   stemcell: default
   azs: [z1]
   vm_type: t3.large
@@ -321,18 +339,7 @@ instance_groups:
         health:
           timeout: 600
         memory_limit: 75
-    provides:
-      opensearch-dashboard:
-        as: opensearch_link
     release: opensearch
-  - name: route_registrar
-    consumes:
-      nats-tls:
-        deployment: cf-development
-        from: nats-tls
-    release: routing
-  - name: bosh-dns-aliases
-    release: bosh-dns-aliases
   vm_extensions:
   - 50GB_ephemeral_disk
   stemcell: default
@@ -412,3 +419,17 @@ instance_groups:
   - errand-profile
   azs:
   - z1
+addons:
+- name: bosh-dns-aliases
+  jobs:
+  - name: bosh-dns-aliases
+    release: bosh-dns-aliases
+    properties:
+      aliases:
+      - domain: opensearch_dashboards.opensearch.internal
+        targets:
+        - query: '*'
+          instance_group: opensearch_dashboards
+          deployment: logs-opensearch
+          network: services
+          domain: bosh
