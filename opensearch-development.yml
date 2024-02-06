@@ -17,25 +17,10 @@ instance_groups:
   instances: 1
   jobs:
   - name: route_registrar
-    consumes:
-      nats-tls:
-        deployment: cf-development
-        from: nats-tls
     properties:
-      nats:
-        tls:
-          client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
-          client_key: ((/bosh/cf-development/nats_client_cert.private_key))
-          enabled: true
       route_registrar:
-        routes:
-        - name: opensearch-dashboard
-          port: 5601
-          registration_interval: 2s
-          timeout: 1s
           uris:
           - logs-beta.dev.us-gov-west-1.aws-us-gov.cloud.gov
-    release: routing
 
 - name: archiver
   instances: 1
