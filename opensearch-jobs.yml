@@ -339,10 +339,6 @@ instance_groups:
         health:
           timeout: 600
         memory_limit: 75
-    provides:
-      opensearch_dashboards:
-        as: opensearch_dashboards
-        ip_addresses: true
     release: opensearch
   vm_extensions:
   - 50GB_ephemeral_disk
