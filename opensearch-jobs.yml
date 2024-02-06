@@ -345,14 +345,6 @@ instance_groups:
         as: opensearch_dashboards
         ip_addresses: true
     release: opensearch
-  - name: route_registrar
-    consumes:
-      nats-tls:
-        deployment: cf-development
-        from: nats-tls
-    release: routing
-  - name: bosh-dns-aliases
-    release: bosh-dns-aliases
   vm_extensions:
   - 50GB_ephemeral_disk
   stemcell: default
