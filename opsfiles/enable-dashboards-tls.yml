@@ -2,6 +2,7 @@
 - type: replace
   path: /instance_groups/name=smoke-tests/jobs/name=opensearch_dashboards/properties?/opensearch_dashboards?/server?/ssl?
   value:
+    enabled: true
     certificate: ((opensearch_dashboard_web.certificate))
     private_key: ((opensearch_dashboard_web.private_key))
 
@@ -14,8 +15,10 @@
     update_mode: converge
     options:
       ca: opensearch_ca
-      common_name: opensearch_dashboards_web
-      alternative_names: ["localhost"]
+      common_name: opensearch_dashboard.web
+      alternative_names:
+      - localhost
+      - opensearch_dashboards.opensearch.internal
       extended_key_usage:
       - server_auth
       - client_auth
