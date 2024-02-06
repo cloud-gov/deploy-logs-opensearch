@@ -15,12 +15,6 @@ instance_groups:
 - name: opensearch_dashboards
   vm_type: t3.xlarge
   instances: 1
-  jobs:
-  - name: route_registrar
-    properties:
-      route_registrar:
-          uris:
-          - logs-beta.dev.us-gov-west-1.aws-us-gov.cloud.gov
 
 - name: archiver
   instances: 1
