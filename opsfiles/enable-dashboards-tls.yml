@@ -1,6 +1,6 @@
 # opensearch_dashboards
 - type: replace
-  path: /instance_groups/name=smoke-tests/jobs/name=opensearch_dashboards/properties?/opensearch_dashboards?/server?/ssl?
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch_dashboards/properties?/opensearch_dashboards?/server?/ssl?
   value:
     enabled: true
     certificate: ((opensearch_dashboard_web.certificate))
