@@ -105,3 +105,11 @@
           server_cert_domain_san: auth-proxy.opensearch.internal
           timeout: 1s
           tls_port: 8000
+    release: routing
+
+# variables
+- type: replace
+  path: /variables/name=auth-proxy-secret-key?
+  value:
+    name: auth-proxy-secret-key
+    type: password
