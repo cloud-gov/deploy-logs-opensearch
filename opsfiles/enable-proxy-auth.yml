@@ -111,5 +111,5 @@
 - type: replace
   path: /variables/name=auth-proxy-secret-key?
   value:
-    name: auth-proxy-secret-keys
+    name: auth-proxy-secret-key
     type: password
