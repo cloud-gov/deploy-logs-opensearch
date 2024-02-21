@@ -340,6 +340,8 @@ instance_groups:
           timeout: 600
         memory_limit: 75
     release: opensearch
+  - name: route_registrar
+    release: routing
   vm_extensions:
   - 50GB_ephemeral_disk
   stemcell: default
