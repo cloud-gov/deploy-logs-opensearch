@@ -60,6 +60,24 @@ jobs:
       tags: [iaas]
       params:
         file: finalized-release/releases-dir-opensearch.tgz
+  on_failure:
+    put: slack
+    params: &slack-failure-params
+      text: |
+        :x: FAILED to build OpenSearch BOSH release
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-failure-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_success:
+    put: slack
+    params: &slack-success-params
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+      channel: ((slack-success-channel))
+      text: |
+        :white_check_mark: Successfully built OpenSearch BOSH release
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-development
   serial_groups: [bosh-development]
@@ -116,20 +134,17 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
   on_failure:
     put: slack
-    params: &slack-params
+    params:
+      <<: *slack-failure-params
       text: |
-        :x: FAILED to deploy logs-opensearch on development
+        :x: FAILED to deploy logs-OpenSearch in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-failure-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
   on_success:
     put: slack
     params:
-      <<: *slack-params
-      channel: ((slack-success-channel))
+      <<: *slack-success-params
       text: |
-        :white_check_mark: Successfully deployed logs-opensearch on development
+        :white_check_mark: Successfully deployed logs-OpenSearch in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: upload-dashboards-objects-development
@@ -156,6 +171,20 @@ jobs:
       BOSH_ERRAND: upload-dashboards-objects
       BOSH_FLAGS: "--keep-alive"
       BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to run upload-dashboards-objects for logs-opensearch in development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Successfully ran upload-dashboards-objects for logs-opensearch in development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-development
   serial_groups: [bosh-development]
@@ -186,18 +215,16 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-params
-      channel: ((slack-channel-failure))
+      <<: *slack-failure-params
       text: |
-        :x: Smoke tests for opensearch on development FAILED
+        :x: Smoke tests for OpenSearch in development FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
   on_success:
     put: slack
     params:
-      <<: *slack-params
-      channel: ((slack-channel-success))
+      <<: *slack-success-params
       text: |
-        :white_check_mark: Smoke tests for opensearch on development PASSED
+        :white_check_mark: Smoke tests for OpenSearch in development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-login-development
@@ -229,17 +256,16 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-params
+      <<: *slack-failure-params
       text: |
-        :x: Login smoke tests for opensearch on development FAILED
+        :x: Login smoke tests for OpenSearch in development FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
   on_success:
     put: slack
     params:
-      <<: *slack-params
-      channel: ((slack-channel-success))
+      <<: *slack-success-params
       text: |
-        :white_check_mark: Login smoke tests for opensearch on development PASSED
+        :white_check_mark: Login smoke tests for OpenSearch in development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 resources:
