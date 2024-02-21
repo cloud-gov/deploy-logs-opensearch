@@ -108,5 +108,7 @@
     release: routing
 
 # variables
-- type: password
+- type: replace
   path: /variables/name=auth-proxy-secret-key?
+  value:
+    type: password
