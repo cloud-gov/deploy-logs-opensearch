@@ -1,14 +1,10 @@
 - type: replace
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties?/aliases?/-
   value:
-    name: bosh-dns-aliases
-    release: bosh-dns-aliases
-    properties:
-      aliases:
-      - domain: opensearch_dashboards.opensearch.internal
-        targets:
-        - query: '*'
-          instance_group: opensearch_dashboards
-          deployment: logs-opensearch
-          network: services
-          domain: bosh
+    - domain: opensearch_dashboards.opensearch.internal
+      targets:
+      - query: '*'
+        instance_group: opensearch_dashboards
+        deployment: logs-opensearch
+        network: services
+        domain: bosh
