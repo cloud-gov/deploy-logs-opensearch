@@ -1,5 +1,5 @@
 - type: replace
-  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases?
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties?/aliases?/-
   value:
     name: bosh-dns-aliases
     release: bosh-dns-aliases
