@@ -129,6 +129,7 @@ jobs:
       - opensearch-stemcell-jammy/*.tgz
       ops_files:
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
