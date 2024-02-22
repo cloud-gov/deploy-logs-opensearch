@@ -419,17 +419,3 @@ instance_groups:
   - errand-profile
   azs:
   - z1
-addons:
-- name: bosh-dns-aliases
-  jobs:
-  - name: bosh-dns-aliases
-    release: bosh-dns-aliases
-    properties:
-      aliases:
-      - domain: opensearch_dashboards.opensearch.internal
-        targets:
-        - query: '*'
-          instance_group: opensearch_dashboards
-          deployment: logs-opensearch
-          network: services
-          domain: bosh
