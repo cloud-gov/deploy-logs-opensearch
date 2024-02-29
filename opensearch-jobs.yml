@@ -69,7 +69,7 @@ instance_groups:
         - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
         - component-index-mappings-platform: /var/vcap/jobs/opensearch_templates/component-index-mappings-platform.json
         index_templates:
-        - index-template: /var/vcap/jobs/opensearch_templates/index-templates/index-template.json
+        - index-template: /var/vcap/jobs/opensearch_templates/index-template.json
         - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
     release: opensearch
   - name: opensearch_templates
