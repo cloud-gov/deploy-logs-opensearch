@@ -271,7 +271,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: logs-app-%{+YYYY.MM.dd}
+          index: logs-app-%{[@cf][org]}-%{+YYYY.MM.dd}
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
