@@ -214,21 +214,10 @@ instance_groups:
             time_file: 5
             validate_credentials_on_root_bucket: false
           plugin: s3
-    release: opensearch
-  - name: ingestor_cloudfoundry-firehose
-    properties:
-      cloudfoundry:
-        api_endpoint: https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov
-        firehose_cc_pull_interval: 300s
-        firehose_client_id: opensearch_firehose_ingestor
-        firehose_events:
-        - LogMessage
-        - ContainerMetric
-        firehose_subscription_id: opensearch-ingestor
-        skip_ssl_validation: false
-      syslog:
-        host: 127.0.0.1
-        port: 5514
+        syslog_tls:
+          port: 7891
+          ssl_cert: ((archiver_syslog_server_tls.certificate))
+          ssl_key: ((archiver_syslog_server_tls.private_key))
     release: opensearch
   azs: [z1]
   networks:
@@ -262,6 +251,11 @@ instance_groups:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
           max_bytes: 30gb
+      logstash_ingestor:
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
       logstash_parser:
         deployment_dictionary:
         - /var/vcap/packages/base-logstash-filters/deployment_lookup.yml
@@ -280,20 +274,6 @@ instance_groups:
     provides:
       ingestor:
         as: ingestor_link
-    release: opensearch
-  - name: ingestor_cloudfoundry-firehose
-    properties:
-      cloudfoundry:
-        firehose_cc_pull_interval: 300s
-        firehose_client_id: opensearch_firehose_ingestor
-        firehose_events:
-        - LogMessage
-        - ContainerMetric
-        firehose_subscription_id: opensearch-ingestor
-        skip_ssl_validation: false
-      syslog:
-        host: 127.0.0.1
-        port: 5514
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
