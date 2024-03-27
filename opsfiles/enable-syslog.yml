@@ -84,49 +84,6 @@
     type: certificate
     update_mode: converge
 
-
-# add in routes
-
-- type: replace
-  path: /instance_groups/name=archiver/jobs/name=route_registrar?
-  value:
-    consumes:
-      nats-tls:
-        deployment: cf-development
-        from: nats-tls
-    name: route_registrar
-    properties:
-      route_registrar:
-        routes:
-        - name: archiver-syslog
-          registration_interval: 2s
-          server_cert_domain_san: logs-opensearch.archiver.service.cf.internal
-          timeout: 1s
-          tls_port: 7891
-          uris:
-          - logs-opensearch.archiver.service.cf.internal
-    release: routing
-
-- type: replace
-  path: /instance_groups/name=ingestor/jobs/name=route_registrar?
-  value:
-    consumes:
-      nats-tls:
-        deployment: cf-development
-        from: nats-tls
-    name: route_registrar
-    properties:
-      route_registrar:
-        routes:
-        - name: ingestor-syslog
-          registration_interval: 2s
-          server_cert_domain_san: logs-opensearch.ingestor.service.cf.internal
-          timeout: 1s
-          tls_port: 6972
-          uris:
-          - logs-opensearch.ingestor.service.cf.internal
-    release: routing
-
 # Bosh DNS
 
 - type: replace
