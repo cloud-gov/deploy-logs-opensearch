@@ -1,0 +1,152 @@
+
+# variables
+- type: replace
+  path: /variables/name=ingestor_syslog_client_tls?
+  value:
+    name: ingestor_syslog_client_tls
+    options:
+      alternative_names:
+      - logs-opensearch.ingestor.service.cf.internal
+      ca: opensearch_ca
+      common_name: logs-opensearch.ingestor.service.cf.internal
+      extended_key_usage:
+      - client_auth
+    type: certificate
+    update_mode: converge
+
+- type: replace
+  path: /variables/name=ingestor_syslog_server_tls?
+  value:
+    name: ingestor_syslog_server_tls
+    options:
+      alternative_names:
+      - logs-opensearch.ingestor.service.cf.internal
+      ca: opensearch_ca
+      common_name: logs-opensearch.ingestor.service.cf.internal
+      extended_key_usage:
+      - server_auth
+    type: certificate
+    update_mode: converge
+
+- type: replace
+  path: /variables/name=archiver_syslog_client_tls?
+  value:
+    name: archiver_syslog_client_tls
+    options:
+      alternative_names:
+      - logs-opensearch.archiver.service.cf.internal
+      ca: opensearch_ca
+      common_name: logs-opensearch.archiver.service.cf.internal
+      extended_key_usage:
+      - client_auth
+    type: certificate
+    update_mode: converge
+
+- type: replace
+  path: /variables/name=archiver_syslog_server_tls?
+  value:
+    name: archiver_syslog_server_tls
+    options:
+      alternative_names:
+      - logs-opensearch.archiver.service.cf.internal
+      ca: opensearch_ca
+      common_name: logs-opensearch.archiver.service.cf.internal
+      extended_key_usage:
+      - server_auth
+    type: certificate
+    update_mode: converge
+
+- type: replace
+  path: /variables/name=archiver_syslog_client_tls?
+  value:
+    name: archiver_syslog_client_tls
+    options:
+      alternative_names:
+      - logs-opensearch.archiver.service.cf.internal
+      ca: opensearch_ca
+      common_name: logs-opensearch.archiver.service.cf.internal
+      extended_key_usage:
+      - client_auth
+    type: certificate
+    update_mode: converge
+
+- type: replace
+  path: /variables/name=archiver_syslog_server_tls?
+  value:
+    name: archiver_syslog_server_tls
+    options:
+      alternative_names:
+      - logs-opensearch.archiver.service.cf.internal
+      ca: opensearch_ca
+      common_name: logs-opensearch.archiver.service.cf.internal
+      extended_key_usage:
+      - server_auth
+    type: certificate
+    update_mode: converge
+
+
+# add in routes
+
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=route_registrar?
+  value:
+    consumes:
+      nats-tls:
+        deployment: cf-development
+        from: nats-tls
+    name: route_registrar
+    properties:
+      route_registrar:
+        routes:
+        - name: archiver-syslog
+          registration_interval: 2s
+          server_cert_domain_san: logs-opensearch.archiver.service.cf.internal
+          timeout: 1s
+          tls_port: 7891
+          uris:
+          - logs-opensearch.archiver.service.cf.internal
+    release: routing
+
+- type: replace
+  path: /instance_groups/name=ingestor/jobs/name=route_registrar?
+  value:
+    consumes:
+      nats-tls:
+        deployment: cf-development
+        from: nats-tls
+    name: route_registrar
+    properties:
+      route_registrar:
+        routes:
+        - name: ingestor-syslog
+          registration_interval: 2s
+          server_cert_domain_san: logs-opensearch.ingestor.service.cf.internal
+          timeout: 1s
+          tls_port: 6972
+          uris:
+          - logs-opensearch.ingestor.service.cf.internal
+    release: routing
+
+# Bosh DNS
+
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties?/aliases?/-
+  value:
+    domain: logs-opensearch.ingestor.service.cf.internal
+    targets:
+    - deployment: logs-opensearch
+      domain: bosh
+      instance_group: ingestor
+      network: services
+      query: '*'
+
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties?/aliases?/-
+  value:
+    domain: logs-opensearch.archiver.service.cf.internal
+    targets:
+    - deployment: logs-opensearch
+      domain: bosh
+      instance_group: archiver
+      network: services
+      query: '*'
