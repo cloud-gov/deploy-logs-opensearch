@@ -133,6 +133,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
   on_failure:
     put: slack
     params:
