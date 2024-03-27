@@ -196,7 +196,11 @@ instance_groups:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
     release: opensearch
-  - name: archiver_syslog
+  - consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: archiver_syslog
     properties:
       logstash:
         queue:
