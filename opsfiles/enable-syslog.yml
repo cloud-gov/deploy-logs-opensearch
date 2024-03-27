@@ -83,27 +83,3 @@
       - server_auth
     type: certificate
     update_mode: converge
-
-# Bosh DNS
-
-- type: replace
-  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties?/aliases?/-
-  value:
-    domain: logs-opensearch.ingestor.service.cf.internal
-    targets:
-    - deployment: logs-opensearch
-      domain: bosh
-      instance_group: ingestor
-      network: services
-      query: '*'
-
-- type: replace
-  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties?/aliases?/-
-  value:
-    domain: logs-opensearch.archiver.service.cf.internal
-    targets:
-    - deployment: logs-opensearch
-      domain: bosh
-      instance_group: archiver
-      network: services
-      query: '*'
