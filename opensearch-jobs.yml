@@ -77,6 +77,10 @@ instance_groups:
             ca: ((opensearch_node.ca))
             certificate: ((smoketest.certificate))
             private_key: ((smoketest.private_key))
+        tls:
+          use_tls: true
+          certificate: ((archiver_syslog_client_tls.certificate))
+          private_key: ((archiver_syslog_client_tls.private_key))
     release: opensearch
   - name: upload_opensearch_config
     consumes: *consumes-opensearch-manager
