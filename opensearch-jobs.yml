@@ -171,10 +171,10 @@ instance_groups:
         password: ((dashboards_upload_user_password))
       dashboards_objects:
         upload_patterns:
-        - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/index-pattern/logs-app.json"}
-        - {type: search, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/search/app-*.json"}
-        - {type: visualization, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/visualization/App-*.json"}
-        - {type: dashboard, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/dashboard/App-*.json"}
+        - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboard-objects/index-pattern/logs-app*.json"}
+        - {type: search, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/search/app-*.json"}
+        - {type: visualization, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/visualization/App-*.json"}
+        - {type: dashboard, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/dashboard/App-*.json"}
       opensearch_dashboards:
         host: opensearch_dashboards.opensearch.internal
   stemcell: default
