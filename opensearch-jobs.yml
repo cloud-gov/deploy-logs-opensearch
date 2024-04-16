@@ -163,7 +163,7 @@ instance_groups:
         ip_addresses: true
     properties:
       cloudfoundry:
-        firehose_events:
+        event_types:
         - LogMessage
         - ContainerMetric
         system_domain: ((system_domain))
