@@ -97,6 +97,15 @@ instance_groups:
         - index-template: /var/vcap/jobs/opensearch_templates/index-template.json
         - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
     release: opensearch
+  - name: upload_tenant
+    consumes: *consumes-opensearch-manager
+    properties:
+      upload_tenant:
+        cf:
+          username: ((cf-username-development))
+          password: ((cf-password-development))
+          domain: ((cf-system-domain-development))
+    release: opensearch
   - name: opensearch_templates
     properties:
       opensearch_config:
