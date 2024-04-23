@@ -296,7 +296,7 @@ jobs:
     params:
       <<: *slack-success-params
       text: |
-        :x: Login smoke tests for OpenSearch in development FAILED
+        :x: Create tenants for OpenSearch in development FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
   on_success:
     put: slack
