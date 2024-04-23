@@ -102,9 +102,9 @@ instance_groups:
     properties:
       upload_tenant:
         cf:
-          username: ((cf-username-development))
-          password: ((cf-password-development))
-          domain: ((cf-system-domain-development))
+          username: ((/concourse/main/deploy-logs-opensearch/cf-username-development))
+          password: ((/concourse/main/deploy-logs-opensearch/cf-password-development))
+          domain: ((/concourse/main/deploy-logs-opensearch/cf-system-domain-development))
     release: opensearch
   - name: opensearch_templates
     properties:
