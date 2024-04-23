@@ -270,6 +270,43 @@ jobs:
         :white_check_mark: Login smoke tests for OpenSearch in development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+- name: tenant-development
+  serial_groups: [bosh-development]
+  plan:
+  - in_parallel:
+    - get: tests-timer
+      trigger: true
+    - get: general-task
+    - get: pipeline-tasks
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-development]
+      trigger: true
+  - task: create-tenants
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload_tenant
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :x: Login smoke tests for OpenSearch in development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Login smoke tests for OpenSearch in development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+
 resources:
 - name: opensearch-release-git-repo
   type: git
