@@ -17,6 +17,7 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        dashboard_username: dashboard.opensearch.internal
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -102,8 +103,8 @@ instance_groups:
     properties:
       upload_tenant:
         cf:
-          username: ((cf-username-development))
-          password: ((cf-password-development))
+          client_id: opensearch_client_id
+          client_password: ((/bosh/cf-development/opensearch_client_secret))
           domain: ((cf-api-development))
     release: opensearch
   - name: opensearch_templates
@@ -175,9 +176,9 @@ instance_groups:
         event_types:
         - LogMessage
         - ContainerMetric
-        system_domain: ((system_domain))
-        user: ((dashboards_upload_user_name))
-        password: ((dashboards_upload_user_password))
+        system_domain: ((cf-api-development))
+        client_id: opensearch_client_id
+        client_password: ((/bosh/cf-development/opensearch_client_secret))
       dashboards_objects:
         upload_patterns:
         - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/index-pattern/logs-app*.json"}
