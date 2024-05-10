@@ -17,7 +17,6 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
-        dashboard_username: dashboard.opensearch.internal
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
