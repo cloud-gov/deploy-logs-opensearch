@@ -155,13 +155,9 @@ jobs:
   - in_parallel:
     - get: pipeline-tasks
     - get: opensearch-release
-      trigger: true
-      passed: [deploy-opensearch-development]
     - get: opensearch-stemcell-jammy
-      trigger: true
-      passed: [deploy-opensearch-development]
     - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-development]
+      passed: [tenant-development]
       trigger: true
   - task: upload-dashboards-objects
     file: pipeline-tasks/bosh-logs-errand.yml
