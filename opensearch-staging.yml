@@ -1,0 +1,40 @@
+instance_groups:
+- name: opensearch_manager
+  vm_type: t3.medium
+  instances: 3
+  networks:
+  - name: services
+
+- name: opensearch_data
+  instances: 3
+  vm_type: t3.large
+  update:
+    max_in_flight: 2
+    canaries: 2
+
+- name: opensearch_dashboards
+  vm_type: t3.xlarge
+  instances: 2
+
+- name: archiver
+  instances: 1
+  vm_type: t3.medium
+
+- name: ingestor
+  instances: 1
+  vm_type: t3.medium
+
+addons:
+- name: bosh-dns-aliases
+  jobs:
+  - name: bosh-dns-aliases
+    release: bosh-dns-aliases
+    properties:
+      aliases:
+      - domain: nats.service.cf.internal
+        targets:
+        - deployment: cf-staging
+          domain: bosh
+          instance_group: nats
+          network: default
+          query: '*'
