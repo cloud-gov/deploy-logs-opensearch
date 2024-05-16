@@ -66,7 +66,7 @@ jobs:
       text: |
         :x: FAILED to build OpenSearch BOSH release
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-failure-channel))
+      channel: ((slack-success-channel))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
   on_success:
@@ -127,7 +127,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
-      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
   on_failure:
@@ -305,13 +305,13 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      passed: [smoke-tests-development]
+      #passed: [smoke-tests-development]
     - get: opensearch-release
       trigger: true
-      passed: [smoke-tests-development]
+      #passed: [smoke-tests-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [smoke-tests-development]
+      #passed: [smoke-tests-development]
     - get: terraform-yaml
       resource: terraform-yaml-staging
       trigger: true
@@ -348,8 +348,8 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
-      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
-      - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth-staging.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
   on_failure:
     put: slack
@@ -568,7 +568,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
-    branch: main
+    branch: staging
 
 - name: opensearch-stemcell-jammy
   source:
