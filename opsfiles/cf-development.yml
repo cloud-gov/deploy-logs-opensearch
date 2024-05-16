@@ -1,15 +1,15 @@
 # replace for client_password
 - type: replace
-  path: /instance_groups/name=maintenance/jobs/name=upload_tenant/properties?/upload_tenant?/cf?/client-password?/-
+  path: /instance_groups/name=maintenance/jobs/name=upload_tenant/properties?/upload_tenant?/cf?/client-password?
   value: ((/bosh/cf-development/opensearch_client_secret))
 - type: replace
-  path: /instance_groups/name=maintenance/jobs/name=upload_tenant/properties?/upload_tenant?/cf?/domain?/-
+  path: /instance_groups/name=maintenance/jobs/name=upload_tenant/properties?/upload_tenant?/cf?/domain?
   value: ((cf-api-development))
 
 - type: replace
-  path: /instance_groups/name=maintenance/jobs/name=upload-dashboards-objects/properties?/cloudfoundry?/client-password?/-
+  path: /instance_groups/name=maintenance/jobs/name=upload-dashboards-objects/properties?/cloudfoundry?/client-password?
   value: ((/bosh/cf-development/opensearch_client_secret))
 - type: replace
-  path: /instance_groups/name=maintenance/jobs/name=upload-dashboards-objects/properties?/cloudfoundry?/system_domain?/-
+  path: /instance_groups/name=maintenance/jobs/name=upload-dashboards-objects/properties?/cloudfoundry?/system_domain?
   value: ((cf-api-development))
 
