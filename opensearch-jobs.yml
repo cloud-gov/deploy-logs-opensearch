@@ -103,7 +103,6 @@ instance_groups:
       upload_tenant:
         cf:
           client_id: opensearch_client_id
-          client_password: ((/bosh/cf-development/opensearch_client_secret))
           domain: ((cf-api-development))
     release: opensearch
   - name: opensearch_templates
@@ -177,7 +176,6 @@ instance_groups:
         - ContainerMetric
         system_domain: ((cf-api-development))
         client_id: opensearch_client_id
-        client_password: ((/bosh/cf-development/opensearch_client_secret))
       dashboards_objects:
         upload_patterns:
         - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/index-pattern/logs-app*.json"}

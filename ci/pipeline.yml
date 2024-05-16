@@ -130,6 +130,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
+      - deploy-logs-opensearch-config/opsfiles/cf-development.yml
   on_failure:
     put: slack
     params:
@@ -351,6 +352,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth-staging.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
+      - deploy-logs-opensearch-config/opsfiles/cf-development.yml
   on_failure:
     put: slack
     params:
