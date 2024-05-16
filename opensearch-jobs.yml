@@ -103,7 +103,6 @@ instance_groups:
       upload_tenant:
         cf:
           client_id: opensearch_client_id
-          domain: ((cf-api-development))
     release: opensearch
   - name: opensearch_templates
     properties:
@@ -174,7 +173,6 @@ instance_groups:
         event_types:
         - LogMessage
         - ContainerMetric
-        system_domain: ((cf-api-development))
         client_id: opensearch_client_id
       dashboards_objects:
         upload_patterns:
