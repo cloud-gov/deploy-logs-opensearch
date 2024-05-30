@@ -113,6 +113,7 @@ instance_groups:
         app_index_settings:
           index.mapping.total_fields.limit: 2000
           index.queries.cache.enabled: "false"
+          index.max_docvalue_fields_search: 200
         base_index_component_name: component-index-mappings-base
         index_mappings_component_name: index-mappings
         index_settings_component_name: index-settings
