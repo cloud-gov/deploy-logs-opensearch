@@ -29,7 +29,7 @@ instance_groups:
   instances: 1
   jobs:
   - name: curator
-    release: logsearch
+    release: opensearch
     properties:
       curator:
         purge_logs:
