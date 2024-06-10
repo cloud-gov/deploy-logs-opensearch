@@ -15,6 +15,12 @@ instance_groups:
 - name: opensearch_dashboards
   vm_type: t3.xlarge
   instances: 1
+  jobs:
+  - name: opensearch-dashboards-cf-auth-proxy
+    release: opensearch
+    properties:
+      uaa:
+        jwks: ((dev-uaa-jwks))
 
 - name: archiver
   instances: 1
