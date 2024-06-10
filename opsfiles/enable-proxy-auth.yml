@@ -86,6 +86,7 @@
           client:
             id: ((uaa-client-id))
             secret: ((uaa-client-secret))
+          jwks: ((dev-uaa-jwks))
     release: opensearch
 
 # add route for auth proxy job
