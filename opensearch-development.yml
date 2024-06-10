@@ -19,8 +19,9 @@ instance_groups:
   - name: opensearch-dashboards-cf-auth-proxy
     release: opensearch
     properties:
-      uaa:
-        jwks: ((dev-uaa-jwks))
+      opensearch-dashboards-cf-auth-proxy:
+        uaa:
+          jwks: ((dev-uaa-jwks))
 
 - name: archiver
   instances: 1
