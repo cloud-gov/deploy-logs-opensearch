@@ -31,9 +31,10 @@ instance_groups:
   - name: upload_opensearch_config
     release: opensearch
     properties:
-      rollover_document_size: 3gb
-      rollover_index_age: 1d
-      shard_count: 3
+      opensearch_config:
+        rollover_document_size: 3gb
+        rollover_index_age: 1d
+        shard_count: 3
   - name: curator
     release: opensearch
     properties:

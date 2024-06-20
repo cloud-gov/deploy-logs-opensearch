@@ -72,6 +72,7 @@ instance_groups:
           run: true
           time_field: '@timestamp'
           time_interval: 5m
+        index: logs-app
         opensearch:
           ssl:
             ca: ((opensearch_node.ca))
