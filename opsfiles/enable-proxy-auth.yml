@@ -1,0 +1,115 @@
+---
+
+# opensearch_manager
+- type: replace
+  path: /instance_groups/name=opensearch_manager/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
+# maintenance
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
+# opensearch_data
+- type: replace
+  path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
+# opensearch_dashboards
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch_dashboards/properties?/opensearch_dashboards?/opensearch?/enable_proxy_auth
+  value: true
+
+# archiver
+- type: replace
+  path: /instance_groups/name=archiver/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
+
+# ingestor
+- type: replace
+  path: /instance_groups/name=ingestor/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
+
+# add variable for auth proxy certs
+- type: replace
+  path: /variables/name=auth_proxy?
+  value:
+    name: auth_proxy
+    options:
+      alternative_names:
+        - localhost
+        - auth-proxy.opensearch.internal
+      ca: opensearch_ca
+      common_name: auth-proxy.opensearch.internal
+      extended_key_usage:
+        - server_auth
+        - client_auth
+    type: certificate
+    update_mode: converge
+
+# add auth proxy job
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch-dashboards-cf-auth-proxy?
+  value:
+    consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: opensearch-dashboards-cf-auth-proxy
+    properties:
+      opensearch-dashboards-cf-auth-proxy:
+        cf:
+          admin_group: ((cf-admin-group))
+          api_url: ((cf-api-url))
+        gunicorn:
+          num_workers: 4
+          timeout: 300
+        ssl:
+          ca: ((opensearch_node.ca))
+          certificate: ((auth_proxy.certificate))
+          key: ((auth_proxy.private_key))
+        opensearch_dashboards:
+          ssl:
+            ca: /var/vcap/jobs/opensearch_dashboards/config/ssl/opensearch.ca
+            certificate: /var/vcap/jobs/opensearch_dashboards/config/ssl/dashboard-web.crt
+            key: /var/vcap/jobs/opensearch_dashboards/config/ssl/dashboard-web.key
+          url: https://localhost:5601
+        port: 8000
+        secret_key: ((auth-proxy-secret-key))
+        uaa:
+          auth_url: ((uaa-auth-url))
+          base_url: ((uaa-base-url))
+          client:
+            id: ((uaa-client-id))
+            secret: ((uaa-client-secret))
+    release: opensearch
+
+# add route for auth proxy job
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=route_registrar?
+  value:
+    consumes:
+      nats-tls:
+        deployment: cf-development
+        from: nats-tls
+    name: route_registrar
+    properties:
+      route_registrar:
+        routes:
+        - name: opensearch-auth-proxy
+          registration_interval: 2s
+          server_cert_domain_san: auth-proxy.opensearch.internal
+          timeout: 1s
+          tls_port: 8000
+    release: routing
+
+# variables
+- type: replace
+  path: /variables/name=auth-proxy-secret-key?
+  value:
+    name: auth-proxy-secret-key
+    type: password
