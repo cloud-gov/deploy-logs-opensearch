@@ -72,6 +72,7 @@ instance_groups:
           run: true
           time_field: '@timestamp'
           time_interval: 5m
+        index: logs-app
         opensearch:
           ssl:
             ca: ((opensearch_node.ca))
@@ -86,6 +87,7 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch_config:
+        alias: ((alias))
         component_templates:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
         - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
@@ -133,7 +135,7 @@ instance_groups:
             filtertype: age
             source: creation_date
             unit: days
-            unit_count: 90
+            unit_count: 30
           - exclude: true
             filtertype: forcemerged
             max_num_segments: 1
@@ -160,7 +162,7 @@ instance_groups:
           daily: true
           hourly: false
         purge_logs:
-          retention_period: 90
+          retention_period: 365
     release: opensearch
   - name: upload-dashboards-objects
     release: opensearch
@@ -279,7 +281,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: logs-app-%{[@cf][org_id]}-%{+YYYY.MM.dd}
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
