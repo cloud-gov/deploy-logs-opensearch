@@ -127,7 +127,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
-      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth-dev.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-development.yml
@@ -349,7 +349,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
-      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth-staging.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
