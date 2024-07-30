@@ -66,7 +66,7 @@ jobs:
       text: |
         :x: FAILED to build OpenSearch BOSH release
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-success-channel))
+      channel: ((slack-failure-channel))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
   on_success:
@@ -159,9 +159,9 @@ jobs:
   - task: upload-dashboards-objects
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
-      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_ENVIRONMENT: ((bosh_development_environment))
       BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
       BOSH_ERRAND: upload-dashboards-objects
       BOSH_FLAGS: "--keep-alive"
@@ -200,9 +200,9 @@ jobs:
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
-      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_ENVIRONMENT: ((bosh_development_environment))
       BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
       BOSH_ERRAND: smoke_tests
       BOSH_FLAGS: "--keep-alive"
@@ -277,9 +277,9 @@ jobs:
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
-      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_ENVIRONMENT: ((bosh_development_environment))
       BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
       BOSH_ERRAND: upload_tenant
       BOSH_FLAGS: "--keep-alive"
@@ -306,13 +306,13 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      #passed: [smoke-tests-development]
+      passed: [smoke-tests-development]
     - get: opensearch-release
       trigger: true
-      #passed: [smoke-tests-development]
+      passed: [smoke-tests-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      #passed: [smoke-tests-development]
+      passed: [smoke-tests-development]
     - get: terraform-yaml
       resource: terraform-yaml-staging
       trigger: true
@@ -381,9 +381,9 @@ jobs:
   - task: upload-dashboards-objects
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
-      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_ENVIRONMENT: ((bosh_staging_environment))
       BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
       BOSH_ERRAND: upload-dashboards-objects
       BOSH_FLAGS: "--keep-alive"
@@ -422,9 +422,9 @@ jobs:
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
-      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_ENVIRONMENT: ((bosh_staging_environment))
       BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
       BOSH_ERRAND: smoke_tests
       BOSH_FLAGS: "--keep-alive"
@@ -499,9 +499,9 @@ jobs:
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
-      BOSH_ENVIRONMENT: ((bosh_environment))
+      BOSH_ENVIRONMENT: ((bosh_staging_environment))
       BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_client-secret))
+      BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
       BOSH_ERRAND: upload_tenant
       BOSH_FLAGS: "--keep-alive"
