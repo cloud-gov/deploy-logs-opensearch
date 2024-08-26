@@ -190,12 +190,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [deploy-opensearch-development]
+      passed: [upload-dashboards-objects-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [deploy-opensearch-development]
+      passed: [upload-dashboards-objects-development]
     - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-development]
+      passed: [upload-dashboards-objects-development]
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -412,12 +412,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [deploy-opensearch-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [deploy-opensearch-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-staging]
+      passed: [upload-dashboards-objects-staging]
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml

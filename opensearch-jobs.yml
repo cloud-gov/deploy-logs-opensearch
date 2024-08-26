@@ -297,6 +297,9 @@ instance_groups:
   stemcell: default
   azs: [z1]
   vm_type: t3.medium
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
   networks:
   - name: services
 
