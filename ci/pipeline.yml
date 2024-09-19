@@ -1,4 +1,36 @@
 ---
+groups:
+  - name: all
+    jobs:
+    - set-self
+    - build-opensearch-release
+    - deploy-opensearch-development
+    - upload-dashboards-objects-development
+    - smoke-tests-development
+    - smoke-tests-login-development
+    - tenant-development
+    - deploy-opensearch-staging
+    - upload-dashboards-objects-staging
+    - smoke-tests-staging
+    - smoke-tests-login-staging
+    - tenant-staging
+  - name: development
+    jobs:
+    - deploy-opensearch-development
+    - upload-dashboards-objects-development
+    - smoke-tests-development
+    - smoke-tests-login-development
+    - tenant-development
+  - name: staging
+    jobs:
+    - deploy-opensearch-staging
+    - upload-dashboards-objects-staging
+    - smoke-tests-staging
+    - smoke-tests-login-staging
+    - tenant-staging
+
+
+
 jobs:
 
 - name: set-self
@@ -39,6 +71,9 @@ jobs:
     file: pipeline-tasks/finalize-bosh-release.yml
     tags: [iaas]
     params:
+      AWS_DEFAULT_REGION: ((aws_default_region))
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
       PRIVATE_YML_CONTENT: |-
         ---
         blobstore:
