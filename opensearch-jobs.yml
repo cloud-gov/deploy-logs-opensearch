@@ -259,6 +259,36 @@ instance_groups:
         http_host: 127.0.0.1
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
+  - consumes: *consumes-opensearch-manager
+    name: ingestor_cloudwatch
+    properties:
+      logstash:
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_ingestor:
+        cloudwatch:
+          region: ((region))
+          prefix: ((cloudwatch_prefix))
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
+      logstash_parser:
+        opensearch:
+          data_hosts:
+          - localhost
+          index: ((alias))
+          index_type: '%{@type}'
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_cloudwtch
+    release: opensearch
   - name: ingestor_syslog
     consumes: *consumes-opensearch-manager
     properties:
@@ -297,6 +327,9 @@ instance_groups:
   stemcell: default
   azs: [z1]
   vm_type: t3.medium
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
   networks:
   - name: services
 
@@ -356,6 +389,7 @@ instance_groups:
         - NODE_ENV: production
         health:
           timeout: 600
+        index: ((dashboard_index))
         memory_limit: 75
     release: opensearch
   vm_extensions:
