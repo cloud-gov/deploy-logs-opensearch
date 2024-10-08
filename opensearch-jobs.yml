@@ -404,7 +404,7 @@ instance_groups:
       swap_size: 0
 
 - name: ingestor_logsearch
-  instances: 3
+  instances: 1
   jobs:
   - name: bpm
     release: bpm
@@ -417,10 +417,7 @@ instance_groups:
         http_host: 127.0.0.1
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+  - consumes: *consumes-opensearch-manager
     name: ingestor_logsearch
     properties:
       logstash:
