@@ -403,70 +403,70 @@ instance_groups:
     bosh:
       swap_size: 0
 
-- name: ingestor_logsearch
-  instances: 3
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    name: ingestor_logsearch
-    properties:
-      logstash:
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 40gb
-      logstash_ingestor:
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        deployment_dictionary:
-        - /var/vcap/jobs/deployment_lookup_config/config/deployment_lookup.yml
-        filters:
-        - logs-for-cf: /var/vcap/packages/logsearch-filters/logstash-filters-default.conf
-        inputs:
-        - plugin: s3
-          options:
-            bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
-            region: (( grab terraform_outputs.vpc_region ))
-            prefix: 2024/09/
-            type: syslog
-        opensearch:
-          data_hosts:
-          - localhost
-          index: "logs-app-%{+YYYY.MM.dd}"
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_logsearch_link
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  vm_type: m6i.large
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  azs:
-  - z1
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
+# - name: ingestor_logsearch
+#   instances: 3
+#   jobs:
+#   - name: bpm
+#     release: bpm
+#   - name: opensearch
+#     release: opensearch
+#     consumes: *consumes-opensearch-manager
+#     properties:
+#       opensearch:
+#         heap_size: 1G
+#         http_host: 127.0.0.1
+#         jvm_options:
+#         - -Dlog4j2.formatMsgNoLookups=true
+#   - consumes:
+#       opensearch:
+#         from: opensearch_manager
+#         ip_addresses: true
+#     name: ingestor_logsearch
+#     properties:
+#       logstash:
+#         jvm_options:
+#         - -Dlog4j2.formatMsgNoLookups=true
+#         queue:
+#           max_bytes: 40gb
+#       logstash_ingestor:
+#         syslog_tls:
+#           port: 6972
+#           ssl_cert: ((ingestor_syslog_server_tls.certificate))
+#           ssl_key: ((ingestor_syslog_server_tls.private_key))
+#       logstash_parser:
+#         deployment_dictionary:
+#         - /var/vcap/jobs/deployment_lookup_config/config/deployment_lookup.yml
+#         filters:
+#         - logs-for-cf: /var/vcap/packages/logsearch-filters/logstash-filters-default.conf
+#         inputs:
+#         - plugin: s3
+#           options:
+#             bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+#             region: (( grab terraform_outputs.vpc_region ))
+#             prefix: 2024/09/
+#             type: syslog
+#         opensearch:
+#           data_hosts:
+#           - localhost
+#           index: "logs-app-%{+YYYY.MM.dd}"
+#           index_type: '%{@type}'
+#           ssl:
+#             ca: ((opensearch_node.ca))
+#             certificate: ((logstash.certificate))
+#             private_key: ((logstash.private_key))
+#     provides:
+#       ingestor:
+#         as: ingestor_logsearch_link
+#     release: opensearch
+#   - name: deployment_lookup_config
+#     release: opensearch
+#   vm_type: m6i.large
+#   networks:
+#   - name: services
+#   persistent_disk_type: logs_opensearch_ingestor
+#   stemcell: default
+#   azs:
+#   - z1
+#   vm_extensions:
+#   - logs-opensearch-ingestor-profile
+#   - 50GB_ephemeral_disk
