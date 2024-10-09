@@ -406,8 +406,8 @@ instance_groups:
     bosh:
       swap_size: 0
 
-- name: ingestor_logsearch
-  instances: 1
+- name: ingestor_logsearch_september
+  instances: 0
   jobs:
   - name: bpm
     release: bpm
