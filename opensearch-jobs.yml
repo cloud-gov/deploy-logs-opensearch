@@ -384,7 +384,7 @@ instance_groups:
         config_options:
           server.maxPayloadBytes: 4194304
         console.enabled: false
-        defaultappid: dashboard/App-Overview
+        defaultAppId: dashboard/App-Overview
         env:
         - NODE_ENV: production
         health:
