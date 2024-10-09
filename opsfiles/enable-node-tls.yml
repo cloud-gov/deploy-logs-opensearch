@@ -125,19 +125,19 @@
 
 # ingestor_logsearch
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_logsearch_september/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_logsearch_september/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_logsearch_september/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_logsearch_september/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
 # smoke_tests
