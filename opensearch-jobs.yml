@@ -391,6 +391,9 @@ instance_groups:
           timeout: 600
         index: ((dashboard_index))
         memory_limit: 75
+        multitenancy:
+          tenants:
+            enable_private: false
     release: opensearch
   vm_extensions:
   - 50GB_ephemeral_disk
