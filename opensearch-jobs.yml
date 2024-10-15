@@ -142,22 +142,22 @@ instance_groups:
           options:
             ignore_empty_list: true
             max_num_segments: 1
-        - action: index_settings
-          description: Sets indices older than 1 day to be read only
-          filters:
-          - filtertype: pattern
-            kind: regex
-            value: logs*
+        # - action: index_settings
+        #   description: Sets indices older than 1 day to be read only
+        #   filters:
+        #   - filtertype: pattern
+        #     kind: regex
+        #     value: logs*
           # - direction: older
           #   filtertype: age
           #   source: creation_date
           #   unit: days
           #   unit_count: 1
-          options:
-            index_settings:
-              index:
-                blocks:
-                  write: true
+          # options:
+          #   index_settings:
+          #     index:
+          #       blocks:
+          #         write: true
         execute:
           daily: true
           hourly: false
