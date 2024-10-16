@@ -103,7 +103,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/09/18
+              prefix: 2024/09/12
               type: syslog
 
 - name: ingestor_logsearch_july_1
