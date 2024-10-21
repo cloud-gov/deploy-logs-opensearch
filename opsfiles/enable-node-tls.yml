@@ -549,12 +549,12 @@
   value: *http-tls-properties
 
 # smoke_tests
-- type: replace
-  path: /instance_groups/name=maintenance/jobs/name=smoke_tests/properties?/smoke_tests?/opensearch?/ssl?
-  value:
-    ca: ((opensearch_node.ca))
-    certificate: ((smoketest.certificate))
-    private_key: ((smoketest.private_key))
+# - type: replace
+#   path: /instance_groups/name=maintenance/jobs/name=smoke_tests/properties?/smoke_tests?/opensearch?/ssl?
+#   value:
+#     ca: ((opensearch_node.ca))
+#     certificate: ((smoketest.certificate))
+#     private_key: ((smoketest.private_key))
 
 # variables
 - type: replace
