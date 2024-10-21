@@ -21,7 +21,7 @@ instance_groups:
   vm_type: r6i.large
 
 - name: ingestor
-  instances: 7
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
 
 - name: maintenance
@@ -296,6 +296,118 @@ instance_groups:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
               prefix: 2024/08/16
+              type: syslog
+
+- name: ingestor_logsearch_1
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/08/06
+              type: syslog
+
+- name: ingestor_logsearch_2
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/08/05
+              type: syslog
+
+- name: ingestor_logsearch_3
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/08/04
+              type: syslog
+
+- name: ingestor_logsearch_4
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/08/03
+              type: syslog
+
+- name: ingestor_logsearch_5
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/08/02
+              type: syslog
+
+- name: ingestor_logsearch_6
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/07/31
+              type: syslog
+
+- name: ingestor_logsearch_7
+  instances: 1
+  vm_type: r6i.xlarge.logsearch.ingestor
+  jobs:
+  - name: ingestor_logsearch
+    release: opensearch
+    properties:
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/07/30
               type: syslog
 
 addons:
