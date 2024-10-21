@@ -73,6 +73,8 @@ instance_groups:
           time_field: '@timestamp'
           time_interval: 5m
         index: logs-app
+        syslog_ingestor:
+          host: "www.testing.com"
         opensearch:
           ssl:
             ca: ((opensearch_node.ca))
