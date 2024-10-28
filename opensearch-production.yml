@@ -311,7 +311,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/18
+              prefix: 2024/05/24
               type: syslog
 
 - name: ingestor_logsearch_2
@@ -327,7 +327,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/17
+              prefix: 2024/05/23
               type: syslog
 
 - name: ingestor_logsearch_3
@@ -343,7 +343,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/16
+              prefix: 2024/05/22
               type: syslog
 
 - name: ingestor_logsearch_4
@@ -359,7 +359,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/14
+              prefix: 2024/05/21
               type: syslog
 
 - name: ingestor_logsearch_5
@@ -375,7 +375,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/13
+              prefix: 2024/05/20
               type: syslog
 
 - name: ingestor_logsearch_6
@@ -391,7 +391,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/12
+              prefix: 2024/05/19
               type: syslog
 
 - name: ingestor_logsearch_7
@@ -407,7 +407,7 @@ instance_groups:
             options:
               bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
               region: (( grab terraform_outputs.vpc_region ))
-              prefix: 2024/06/11
+              prefix: 2024/05/18
               type: syslog
 
 addons:
