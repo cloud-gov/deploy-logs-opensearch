@@ -15,6 +15,9 @@ instance_groups:
 - name: opensearch_dashboards
   vm_type: t3.xlarge
   instances: 2
+  update:
+    max_in_flight: 2
+    canaries: 2
 
 - name: archiver
   instances: 1
@@ -37,7 +40,7 @@ instance_groups:
         shard_count: 4
   # - name: curator
   #   release: opensearch
-  #   properties:
+  #   properties:xf
   #     curator:
   #       purge_logs:
   #         retention_period: 90
