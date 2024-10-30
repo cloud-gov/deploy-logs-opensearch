@@ -4,6 +4,7 @@ instance_groups:
 #######################################################
 - name: opensearch_manager
   instances: 3
+  vm_extensions: [5GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
@@ -43,7 +44,7 @@ instance_groups:
 
 - name: maintenance
   instances: 1
-  vm_extensions: [errand-profile]
+  vm_extensions: [errand-profile,5GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
