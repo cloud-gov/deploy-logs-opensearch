@@ -166,6 +166,8 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-development.yml
+      vars_files:
+      - terraform-secrets/terraform.yml
   on_failure:
     put: slack
     params:
