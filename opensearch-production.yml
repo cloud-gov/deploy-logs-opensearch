@@ -46,7 +46,7 @@ instance_groups:
   #         retention_period: 365
 
 - name: ingestor_logsearch_september_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -62,7 +62,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_september_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -78,7 +78,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_august_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -94,7 +94,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_august_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -110,7 +110,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_july_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -126,7 +126,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_july_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -142,7 +142,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_june_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -158,7 +158,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_june_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -174,7 +174,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_may_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -190,7 +190,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_may_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -206,7 +206,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_april_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -222,7 +222,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_april_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -238,7 +238,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_march_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -254,7 +254,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_march_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -270,7 +270,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_february_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -286,7 +286,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_february_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -302,7 +302,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_1
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -318,7 +318,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_2
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -334,7 +334,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_3
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -350,7 +350,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_4
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -366,7 +366,7 @@ instance_groups:
               type: sysloy
 
 - name: ingestor_logsearch_5
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -382,7 +382,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_6
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
@@ -398,7 +398,7 @@ instance_groups:
               type: syslog
 
 - name: ingestor_logsearch_7
-  instances: 1
+  instances: 0
   vm_type: r6i.xlarge.logsearch.ingestor
   jobs:
   - name: ingestor_logsearch
