@@ -14,6 +14,11 @@ groups:
     - smoke-tests-staging
     - smoke-tests-login-staging
     - tenant-staging
+    - deploy-opensearch-production
+    - upload-dashboards-objects-production
+    - smoke-tests-production
+    - smoke-tests-login-production
+    - tenant-production
   - name: development
     jobs:
     - deploy-opensearch-development
@@ -35,7 +40,6 @@ groups:
     - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
-
 
 
 jobs:
@@ -111,15 +115,6 @@ jobs:
       channel: ((slack-failure-channel))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
-  on_success:
-    put: slack
-    params: &slack-success-params
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-      channel: ((slack-success-channel))
-      text: |
-        :white_check_mark: Successfully built OpenSearch BOSH release
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-development
   serial_groups: [bosh-development]
@@ -128,7 +123,7 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      # passed: [set-self]
+      passed: [set-self]
     - get: opensearch-release
       trigger: true
     - get: opensearch-stemcell-jammy
@@ -158,6 +153,9 @@ jobs:
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
+  - task: terraform-secrets
+    image: general-task
+    file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
   - put: opensearch-development-deployment
     params:
       manifest: opensearch-manifest/manifest.yml
@@ -173,19 +171,14 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-development.yml
+      vars_files:
+      - terraform-secrets/terraform.yml
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to deploy logs-OpenSearch in development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully deployed logs-OpenSearch in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: upload-dashboards-objects-development
@@ -211,16 +204,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to run upload-dashboards-objects for logs-opensearch in development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully ran upload-dashboards-objects for logs-opensearch in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-development
@@ -252,16 +238,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Smoke tests for OpenSearch in development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Smoke tests for OpenSearch in development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-login-development
@@ -293,16 +272,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Login smoke tests for OpenSearch in development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Login smoke tests for OpenSearch in development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: tenant-development
@@ -329,16 +301,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Create tenants for OpenSearch in development PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-staging
@@ -380,6 +345,9 @@ jobs:
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
+  - task: terraform-secrets
+    image: general-task
+    file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
   - put: opensearch-staging-deployment
     params:
       manifest: opensearch-manifest/manifest.yml
@@ -395,19 +363,14 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
+      vars_files:
+      - terraform-secrets/terraform.yml
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to deploy logs-OpenSearch in staging
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully deployed logs-OpenSearch in staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: upload-dashboards-objects-staging
@@ -433,16 +396,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to run upload-dashboards-objects for logs-opensearch in staging
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully ran upload-dashboards-objects for logs-opensearch in staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-staging
@@ -474,16 +430,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Smoke tests for OpenSearch in staging FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Smoke tests for OpenSearch in staging PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-login-staging
@@ -515,16 +464,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Login smoke tests for OpenSearch in staging FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Login smoke tests for OpenSearch in staging PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: tenant-staging
@@ -551,16 +493,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in staging FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Create tenants for OpenSearch in staging PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-production
@@ -570,13 +505,13 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      #passed: [smoke-tests-staging]
+      passed: [smoke-tests-staging]
     - get: opensearch-release
       trigger: true
-      #passed: [smoke-tests-staging]
+      passed: [smoke-tests-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      #passed: [smoke-tests-staging]
+      passed: [smoke-tests-staging]
     - get: terraform-yaml
       resource: terraform-yaml-production
       trigger: true
@@ -602,6 +537,9 @@ jobs:
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
+  - task: terraform-secrets
+    image: general-task
+    file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
   - put: opensearch-production-deployment
     params:
       manifest: opensearch-manifest/manifest.yml
@@ -617,19 +555,14 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-production.yml
+      vars_files:
+      - terraform-secrets/terraform.yml
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to deploy logs-OpenSearch in production
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully deployed logs-OpenSearch in production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: upload-dashboards-objects-production
@@ -658,13 +591,6 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: FAILED to run upload-dashboards-objects for logs-opensearch in production
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully ran upload-dashboards-objects for logs-opensearch in production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-production
@@ -700,13 +626,6 @@ jobs:
       text: |
         :x: Smoke tests for OpenSearch in production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Smoke tests for OpenSearch in production PASSED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-login-production
   serial_groups: [bosh-production]
@@ -741,13 +660,6 @@ jobs:
       text: |
         :x: Login smoke tests for OpenSearch in production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Login smoke tests for OpenSearch in production PASSED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: tenant-production
   serial_groups: [bosh-production]
@@ -773,16 +685,9 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in production FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Create tenants for OpenSearch in production PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 resources:
