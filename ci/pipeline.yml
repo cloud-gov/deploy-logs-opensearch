@@ -14,6 +14,11 @@ groups:
     - smoke-tests-staging
     - smoke-tests-login-staging
     - tenant-staging
+    - deploy-opensearch-production
+    - upload-dashboards-objects-production
+    - smoke-tests-production
+    - smoke-tests-login-production
+    - tenant-production
   - name: development
     jobs:
     - deploy-opensearch-development
@@ -28,7 +33,13 @@ groups:
     - smoke-tests-staging
     - smoke-tests-login-staging
     - tenant-staging
-
+  - name: production
+    jobs:
+    - deploy-opensearch-production
+    - upload-dashboards-objects-production
+    - smoke-tests-production
+    - smoke-tests-login-production
+    - tenant-production
 
 
 jobs:
@@ -560,6 +571,228 @@ jobs:
       <<: *slack-success-params
       text: |
         :white_check_mark: Create tenants for OpenSearch in staging PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: deploy-opensearch-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: deploy-logs-opensearch-config
+      trigger: true
+      #passed: [smoke-tests-staging]
+    - get: opensearch-release
+      trigger: true
+      #passed: [smoke-tests-staging]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      #passed: [smoke-tests-staging]
+    - get: terraform-yaml
+      resource: terraform-yaml-production
+      trigger: true
+    - get: general-task
+  - task: opensearch-manifest
+    image: general-task
+    config:
+      platform: linux
+      inputs:
+      - name: deploy-logs-opensearch-config
+      - name: terraform-yaml
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
+            --prune terraform_outputs \
+            deploy-logs-opensearch-config/opensearch-deployment.yml \
+            deploy-logs-opensearch-config/opensearch-jobs.yml \
+            deploy-logs-opensearch-config/opensearch-production.yml \
+            terraform-yaml/state.yml \
+            > opensearch-manifest/manifest.yml
+      outputs:
+      - name: opensearch-manifest
+  - put: opensearch-production-deployment
+    params:
+      manifest: opensearch-manifest/manifest.yml
+      releases:
+      - opensearch-release/*.tgz
+      stemcells:
+      - opensearch-stemcell-jammy/*.tgz
+      ops_files:
+      - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-proxy-auth.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
+      - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
+      - deploy-logs-opensearch-config/opsfiles/cf-production.yml
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :x: FAILED to deploy logs-OpenSearch in production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Successfully deployed logs-OpenSearch in production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: upload-dashboards-objects-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+    - get: opensearch-stemcell-jammy
+    - get: deploy-logs-opensearch-config
+      passed: [tenant-production]
+      trigger: true
+  - task: upload-dashboards-objects
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_production_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to run upload-dashboards-objects for logs-opensearch in production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Successfully ran upload-dashboards-objects for logs-opensearch in production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: smoke-tests-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: tests-timer
+      trigger: true
+    - get: pipeline-tasks
+    - get: opensearch-release
+      trigger: true
+      passed: [deploy-opensearch-production]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      passed: [deploy-opensearch-production]
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-production]
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_production_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: smoke_tests
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: Smoke tests for OpenSearch in production FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Smoke tests for OpenSearch in production PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: smoke-tests-login-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+      trigger: true
+      passed: [deploy-opensearch-production]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      passed: [deploy-opensearch-production]
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-production]
+      trigger: true
+    - get: opensearch-production-deployment
+      trigger: true
+    - get: tests-timer
+      trigger: true
+    - get: general-task
+  - task: smoke-tests-login
+    image: general-task
+    file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+    params:
+      CF_USERNAME: ((cf-username-production))
+      CF_PASSWORD: ((cf-password-production))
+      CF_SYSTEM_DOMAIN: ((cf-system-domain-production))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: Login smoke tests for OpenSearch in production FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Login smoke tests for OpenSearch in production PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: tenant-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: tests-timer
+      trigger: true
+    - get: general-task
+    - get: pipeline-tasks
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-production]
+      trigger: true
+  - task: create-tenants
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_production_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload_tenant
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :x: Create tenants for OpenSearch in production FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Create tenants for OpenSearch in production PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 resources:
