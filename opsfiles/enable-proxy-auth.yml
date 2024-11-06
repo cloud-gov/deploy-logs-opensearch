@@ -88,8 +88,8 @@
             secret: ((uaa-client-secret))
           jwks: ((uaa-jwks))
         redis:
-          host: (( grab terraform_outputs.opensearch_proxy_redis_cluster.host ))
-          password: (( grab terraform_outputs.opensearch_proxy_redis_cluster.password ))
+          host: (( redis_host ))
+          password: (( redis_password))
     release: opensearch
 
 # add route for auth proxy job
