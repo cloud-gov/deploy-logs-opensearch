@@ -87,6 +87,9 @@
             id: ((uaa-client-id))
             secret: ((uaa-client-secret))
           jwks: ((uaa-jwks))
+        redis:
+          host: ((redis_host))
+          password: ((redis_password))
     release: opensearch
 
 # add route for auth proxy job
