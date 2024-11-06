@@ -301,7 +301,7 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in development FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
@@ -488,7 +488,7 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in staging FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
@@ -550,7 +550,7 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to deploy logs-OpenSearch in production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
@@ -675,7 +675,7 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *slack-success-params
+      <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
