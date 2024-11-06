@@ -155,7 +155,7 @@ jobs:
       - name: opensearch-manifest
   - task: terraform-secrets
     image: general-task
-    file: deploy-logs-opensearch-config/terraform-secrets.yml
+    file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
   - put: opensearch-development-deployment
     params:
       manifest: opensearch-manifest/manifest.yml
