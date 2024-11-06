@@ -130,7 +130,6 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
-    - get: general-task
     - get: deploy-logs-opensearch-config
       trigger: true
       passed: [set-self]
