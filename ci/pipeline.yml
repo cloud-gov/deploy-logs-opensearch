@@ -839,6 +839,13 @@ resources:
     versioned_file: ((tf-state-file-staging))
     region_name: ((aws-region))
 
+- name: terraform-yaml-production
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket-production))
+    versioned_file: ((tf-state-file-production))
+    region_name: ((aws-region))
+
 - name: deploy-logs-opensearch-config
   type: git
   source:
@@ -884,6 +891,15 @@ resources:
     client: ((bosh-director-info.staging.client))
     client_secret: ((bosh-director-info.staging.client_secret))
     ca_cert: ((bosh-director-info.staging.ca_cert))
+    deployment: logs-opensearch
+
+- name: opensearch-production-deployment
+  type: bosh-deployment
+  source: &bosh-params-production
+    target: ((bosh-director-info.production.environment))
+    client: ((bosh-director-info.production.client))
+    client_secret: ((bosh-director-info.production.client-secret))
+    ca_cert: ((bosh-director-info.production.ca_cert))
     deployment: logs-opensearch
 
 - name: general-task
