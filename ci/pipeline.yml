@@ -119,6 +119,7 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
+    - get: general-task
     - get: deploy-logs-opensearch-config
       trigger: true
       passed: [set-self]
@@ -151,6 +152,9 @@ jobs:
             > opensearch-manifest/manifest.yml
       outputs:
       - name: opensearch-manifest
+  - task: terraform-secrets
+    image: general-task
+    file: deploy-logs-opensearch-config/terraform-secrets.yml
   - put: opensearch-development-deployment
     params:
       manifest: opensearch-manifest/manifest.yml
