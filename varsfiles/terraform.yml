@@ -1,2 +1,2 @@
-redis-host: (( terraform_outputs.opensearch_proxy_redis_cluster.host ))
-redis-password: (( terraform_outputs.opensearch_proxy_redis_cluster.password ))
+redis-host: (( grab terraform_outputs.opensearch_proxy_redis_cluster.host ))
+redis-password: (( grab terraform_outputs.opensearch_proxy_redis_cluster.password ))
