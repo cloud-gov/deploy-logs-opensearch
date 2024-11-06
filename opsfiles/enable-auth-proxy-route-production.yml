@@ -1,0 +1,12 @@
+# add nats info for auth proxy route
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=route_registrar/properties?/nats?/tls?
+  value:
+    client_cert: ((/bosh/cf-production/nats_client_cert.certificate))
+    client_key: ((/bosh/cf-production/nats_client_cert.private_key))
+    enabled: true
+
+# add address for auth proxy route
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=route_registrar/properties?/route_registrar?/routes?/name=opensearch-auth-proxy/uris?/-
+  value: logs-beta.fr.cloud.gov
