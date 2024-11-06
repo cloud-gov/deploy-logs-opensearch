@@ -736,7 +736,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
-    branch: main
+    branch: add-proxy-redis-backend-config
 
 - name: opensearch-stemcell-jammy
   source:
