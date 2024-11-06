@@ -1,2 +1,2 @@
-redis_host: (( terraform_outputs.opensearch_proxy_redis_cluster.host ))
+redis_host: test #(( terraform_outputs.opensearch_proxy_redis_cluster.host ))
 redis_password: (( terraform_outputs.opensearch_proxy_redis_cluster.password ))
