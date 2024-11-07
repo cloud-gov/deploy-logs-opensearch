@@ -44,7 +44,7 @@ instance_groups:
 
 - name: maintenance
   instances: 1
-  vm_extensions: [errand-profile,10GB_ephemeral_disk]
+  vm_extensions: [errand-profile,50GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
