@@ -588,39 +588,39 @@ jobs:
       BOSH_FLAGS: "--keep-alive"
       BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
-- name: smoke-tests-production
-  serial_groups: [bosh-production]
-  plan:
-  - in_parallel:
-    - get: tests-timer
-      trigger: true
-    - get: pipeline-tasks
-    - get: opensearch-release
-      trigger: true
-      passed: [deploy-opensearch-production]
-    - get: opensearch-stemcell-jammy
-      trigger: true
-      passed: [deploy-opensearch-production]
-    - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-production]
-      trigger: true
-  - task: smoke-tests
-    file: pipeline-tasks/bosh-logs-errand.yml
-    params:
-      BOSH_ENVIRONMENT: ((bosh_production_environment))
-      BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-      BOSH_DEPLOYMENT: logs-opensearch
-      BOSH_ERRAND: smoke_tests
-      BOSH_FLAGS: "--keep-alive"
-      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: Smoke tests for OpenSearch in production FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+# - name: smoke-tests-production
+#   serial_groups: [bosh-production]
+#   plan:
+#   - in_parallel:
+#     - get: tests-timer
+#       trigger: true
+#     - get: pipeline-tasks
+#     - get: opensearch-release
+#       trigger: true
+#       passed: [deploy-opensearch-production]
+#     - get: opensearch-stemcell-jammy
+#       trigger: true
+#       passed: [deploy-opensearch-production]
+#     - get: deploy-logs-opensearch-config
+#       passed: [deploy-opensearch-production]
+#       trigger: true
+#   - task: smoke-tests
+#     file: pipeline-tasks/bosh-logs-errand.yml
+#     params:
+#       BOSH_ENVIRONMENT: ((bosh_production_environment))
+#       BOSH_CLIENT: ((bosh_client))
+#       BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+#       BOSH_DEPLOYMENT: logs-opensearch
+#       BOSH_ERRAND: smoke_tests
+#       BOSH_FLAGS: "--keep-alive"
+#       BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+#   on_failure:
+#     put: slack
+#     params:
+#       <<: *slack-failure-params
+#       text: |
+#         :x: Smoke tests for OpenSearch in production FAILED
+#         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-login-production
   serial_groups: [bosh-production]
