@@ -505,13 +505,13 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      #passed: [upload-dashboards-objects-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: opensearch-release
       trigger: true
-      #passed: [upload-dashboards-objects-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      #passed: [upload-dashboards-objects-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: terraform-yaml
       resource: terraform-yaml-production
       trigger: true
@@ -739,7 +739,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: https://github.com/cloud-gov/cg-deploy-opensearch.git
-    branch: staging
+    branch: main
 
 - name: opensearch-stemcell-jammy
   source:
