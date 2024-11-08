@@ -1,0 +1,280 @@
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_september_1?
+  value: &logsearch-ingestor-config
+    instances: 1
+    jobs:
+    - name: bpm
+      release: bpm
+    - name: opensearch
+      release: opensearch
+      consumes:
+        opensearch:
+          from: opensearch_manager
+          ip_addresses: true
+      properties:
+        opensearch:
+          heap_size: 1G
+          http_host: 127.0.0.1
+          jvm_options:
+          - -Dlog4j2.formatMsgNoLookups=true
+    - name: ingestor_logsearch
+      consumes:
+        opensearch:
+          from: opensearch_manager
+          ip_addresses: true
+      properties:
+        logstash:
+          jvm_options:
+          - -Dlog4j2.formatMsgNoLookups=true
+          queue:
+            max_bytes: 40gb
+        logstash_ingestor:
+          syslog_tls:
+            port: 6972
+            ssl_cert: ((ingestor_syslog_server_tls.certificate))
+            ssl_key: ((ingestor_syslog_server_tls.private_key))
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: (( grab terraform_outputs.logsearch_archive_bucket_name ))
+              region: (( grab terraform_outputs.vpc_region ))
+              prefix: 2024/03/28
+              type: syslog
+          deployment_dictionary:
+          - /var/vcap/jobs/deployment_lookup_config/config/deployment_lookup.yml
+          filters:
+          - logs-for-cf: /var/vcap/packages/logsearch-filters/logstash-filters-default.conf
+          opensearch:
+            data_hosts:
+            - localhost
+            index: "logs-app-%{+YYYY.MM.dd}"
+            index_type: '%{@type}'
+            ssl:
+              ca: ((opensearch_node.ca))
+              certificate: ((logstash.certificate))
+              private_key: ((logstash.private_key))
+      provides:
+        ingestor:
+          as: ingestor_logsearch_link
+      release: opensearch
+    - name: deployment_lookup_config
+      release: opensearch
+    vm_type: r6i.xlarge.logsearch.ingestor
+    networks:
+    - name: services
+    persistent_disk_type: logs_opensearch_ingestor
+    stemcell: default
+    azs:
+    - z1
+    vm_extensions:
+    - logs-opensearch-ingestor-profile
+    - 50GB_ephemeral_disk
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_september_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_september_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/27
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_august_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_august_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/26
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_august_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_august_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/25
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_july_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_july_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/24
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_july_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_july_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/23
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_june_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_june_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/22
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_june_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_june_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/21
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_may_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_may_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/20
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_may_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_may_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/19
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_april_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_april_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/18
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_april_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_april_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/17
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_march_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_march_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/16
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_march_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_march_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/14
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_february_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_february_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/13
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_february_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_february_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/12
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_january_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_january_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_1?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_1/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/11
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_2?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_2/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/10
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_3?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_3/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/09
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_4?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_4/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/08
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_5?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_5/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/07
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_6?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_6/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/06
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_7?
+  value:
+    <<: *logsearch-ingestor-config
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_7/jobs/name=ingestor_logsearch/properties/logstash_parser/inputs/0/options/prefix
+  value: 2024/03/05

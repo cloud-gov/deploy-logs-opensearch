@@ -556,6 +556,7 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-production.yml
+      - deploy-logs-opensearch-config/opsfiles/add-prod-logsearch-ingestors.yml
       vars_files:
       - terraform-secrets/terraform.yml
   on_failure:
