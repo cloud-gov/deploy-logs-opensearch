@@ -14,9 +14,10 @@ groups:
     - smoke-tests-staging
     - smoke-tests-login-staging
     - tenant-staging
+    - plan-opensearch-production
     - deploy-opensearch-production
     - upload-dashboards-objects-production
-    - smoke-tests-production
+    # - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
   - name: development
@@ -35,9 +36,10 @@ groups:
     - tenant-staging
   - name: production
     jobs:
+    - plan-opensearch-production
     - deploy-opensearch-production
     - upload-dashboards-objects-production
-    - smoke-tests-production
+    # - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
 
@@ -250,12 +252,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [deploy-opensearch-development]
+      passed: [upload-dashboards-objects-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [deploy-opensearch-development]
+      passed: [upload-dashboards-objects-development]
     - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-development]
+      passed: [upload-dashboards-objects-development]
       trigger: true
     - get: opensearch-development-deployment
       trigger: true
@@ -313,13 +315,13 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [smoke-tests-development]
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [smoke-tests-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [smoke-tests-development]
     - get: terraform-yaml
       resource: terraform-yaml-staging
       trigger: true
@@ -442,12 +444,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [deploy-opensearch-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [deploy-opensearch-staging]
+      passed: [upload-dashboards-objects-staging]
     - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-staging]
+      passed: [upload-dashboards-objects-staging]
       trigger: true
     - get: opensearch-staging-deployment
       trigger: true
@@ -505,13 +507,13 @@ jobs:
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [smoke-tests-staging]
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [smoke-tests-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [smoke-tests-staging]
     - get: terraform-yaml
       resource: terraform-yaml-production
       trigger: true
@@ -663,12 +665,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [deploy-opensearch-production]
+      passed: [upload-dashboards-objects-production]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [deploy-opensearch-production]
+      passed: [upload-dashboards-objects-production]
     - get: deploy-logs-opensearch-config
-      passed: [deploy-opensearch-production]
+      passed: [upload-dashboards-objects-production]
       trigger: true
     - get: opensearch-production-deployment
       trigger: true
