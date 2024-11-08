@@ -396,12 +396,6 @@ instance_groups:
           tenants:
             enable_private: false
     release: opensearch
-  - name: opensearch-dashboards-cf-auth-proxy
-    properties:
-      opensearch-dashboards-cf-auth-proxy:
-        redis:
-          host: (( grab terraform_outputs.opensearch_proxy_redis_cluster.host ))
-          password: (( grab terraform_outputs.opensearch_proxy_redis_cluster.password ))
   vm_extensions:
   - 50GB_ephemeral_disk
   stemcell: default
