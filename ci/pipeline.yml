@@ -567,7 +567,7 @@ jobs:
     params:
       <<: *slack-failure-params
       text: |
-        :x: FAILED to deploy logs-OpenSearch in production
+        :x: FAILED to plan deployment of logs-OpenSearch in production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-production
