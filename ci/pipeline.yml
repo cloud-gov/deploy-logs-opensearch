@@ -220,12 +220,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [deploy-opensearch-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [deploy-opensearch-development]
     - get: deploy-logs-opensearch-config
-      passed: [upload-dashboards-objects-development]
+      passed: [deploy-opensearch-development]
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -252,12 +252,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [deploy-opensearch-development]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-development]
+      passed: [deploy-opensearch-development]
     - get: deploy-logs-opensearch-config
-      passed: [upload-dashboards-objects-development]
+      passed: [deploy-opensearch-development]
       trigger: true
     - get: opensearch-development-deployment
       trigger: true
@@ -412,12 +412,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [deploy-opensearch-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [deploy-opensearch-staging]
     - get: deploy-logs-opensearch-config
-      passed: [upload-dashboards-objects-staging]
+      passed: [deploy-opensearch-staging]
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -444,12 +444,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [deploy-opensearch-staging]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-staging]
+      passed: [deploy-opensearch-staging]
     - get: deploy-logs-opensearch-config
-      passed: [upload-dashboards-objects-staging]
+      passed: [deploy-opensearch-staging]
       trigger: true
     - get: opensearch-staging-deployment
       trigger: true
@@ -665,12 +665,12 @@ jobs:
     - get: pipeline-tasks
     - get: opensearch-release
       trigger: true
-      passed: [upload-dashboards-objects-production]
+      passed: [deploy-opensearch-production]
     - get: opensearch-stemcell-jammy
       trigger: true
-      passed: [upload-dashboards-objects-production]
+      passed: [deploy-opensearch-production]
     - get: deploy-logs-opensearch-config
-      passed: [upload-dashboards-objects-production]
+      passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
       trigger: true
