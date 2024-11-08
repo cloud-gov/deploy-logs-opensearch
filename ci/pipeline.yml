@@ -535,6 +535,7 @@ jobs:
             deploy-logs-opensearch-config/opensearch-deployment.yml \
             deploy-logs-opensearch-config/opensearch-jobs.yml \
             deploy-logs-opensearch-config/opensearch-production.yml \
+            deploy-logs-opensearch-config/prod-logsearch-ingestors.yml \
             terraform-yaml/state.yml \
             > opensearch-manifest/manifest.yml
       outputs:
