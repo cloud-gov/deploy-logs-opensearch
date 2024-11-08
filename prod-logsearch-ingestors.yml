@@ -77,16 +77,7 @@ instance_groups:
   name: ingestor_logsearch_august_1
 
 - <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_august_1
-
-- <<: *logsearch-ingestor-config
   name: ingestor_logsearch_august_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_august_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_july_1
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_july_1
