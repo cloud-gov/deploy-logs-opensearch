@@ -549,6 +549,7 @@ jobs:
       - opensearch-stemcell-jammy/*.tgz
       ops_files:
       - deploy-logs-opensearch-config/opsfiles/remove-curator.yml
+      - deploy-logs-opensearch-config/opsfiles/add-prod-logsearch-ingestors.yml
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
@@ -556,7 +557,6 @@ jobs:
       - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
       - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
       - deploy-logs-opensearch-config/opsfiles/cf-production.yml
-      - deploy-logs-opensearch-config/opsfiles/add-prod-logsearch-ingestors.yml
       vars_files:
       - terraform-secrets/terraform.yml
   on_failure:
