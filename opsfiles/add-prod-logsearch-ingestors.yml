@@ -1,5 +1,5 @@
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?
+  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/-
   value:
     options:
       bucket: logsearch-cf-production
