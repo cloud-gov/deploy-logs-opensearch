@@ -1,7 +1,13 @@
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/28
-
+  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?
+  value:
+    options:
+      bucket: logsearch-cf-production
+      region: us-gov-west-1
+      type: syslog
+      prefix: 2024/03/28
+    plugin: s3
+  
 - type: replace
   path: /instance_groups/name=ingestor_logsearch_september_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
   value: 2024/03/27
