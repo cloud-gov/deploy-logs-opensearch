@@ -1,109 +1,247 @@
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/28
+  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/03/04
+    plugin: s3
+  
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/03/03
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/27
+  path: /instance_groups/name=ingestor_logsearch_3?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/03/02
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/26
+  path: /instance_groups/name=ingestor_logsearch_4?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/29
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/25
+  path: /instance_groups/name=ingestor_logsearch_5?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/28
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/24
+  path: /instance_groups/name=ingestor_logsearch_6?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/27
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/23
+  path: /instance_groups/name=ingestor_logsearch_7?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/26
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/22
+  path: /instance_groups/name=ingestor_logsearch_8?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/25
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/21
+  path: /instance_groups/name=ingestor_logsearch_9?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/24
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/20
+  path: /instance_groups/name=ingestor_logsearch_10?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/23
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/19
+  path: /instance_groups/name=ingestor_logsearch_11?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/22
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/18
+  path: /instance_groups/name=ingestor_logsearch_12?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/21
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/17
+  path: /instance_groups/name=ingestor_logsearch_13?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/20
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/16
+  path: /instance_groups/name=ingestor_logsearch_14?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/19
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/14
+  path: /instance_groups/name=ingestor_logsearch_15?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/18
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/13
+  path: /instance_groups/name=ingestor_logsearch_16?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/17
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/12
+  path: /instance_groups/name=ingestor_logsearch_17?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/16
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/11
+  path: /instance_groups/name=ingestor_logsearch_18?/jobs/name=ingestor_logsearch/properties/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/14
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_2?/jobs/name=ingestor_logsearch/properties/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/10
+  path: /instance_groups/name=ingestor_logsearch_19?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/13
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_3?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/09
+  path: /instance_groups/name=ingestor_logsearch_20?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/12
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_4?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/08
+  path: /instance_groups/name=ingestor_logsearch_21?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/11
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_5?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/07
+  path: /instance_groups/name=ingestor_logsearch_22?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/10
+    plugin: s3
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_6?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/06
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_7?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0?/options?/prefix?
-  value: 2024/03/05
+  path: /instance_groups/name=ingestor_logsearch_23?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      bucket: ((logsearch_archive_bucket_name))
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/02/09
+    plugin: s3
 
 # ingestor_logsearch
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties/opensearch?/admin?
   value: &admin-tls-properties
     dn: CN=admin.opensearch.internal
     certificate: ((opensearch_admin.certificate))
     private_key: ((opensearch_admin.private_key))
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: &node-tls-properties
     dn:
       - "CN=node.opensearch.internal"
@@ -113,317 +251,11 @@
     private_key: ((opensearch_node.private_key))
 
 - type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: &http-tls-properties
     ca: ((opensearch_node.ca))
     certificate: ((opensearch_node.certificate))
     private_key: ((opensearch_node.private_key))
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_september_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_august_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_july_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_june_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_may_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_april_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_march_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_february_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_2?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_2?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_2?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_january_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
-
-# ingestor_logsearch
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties?/opensearch?/http_host?
-  value: 127.0.0.1
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties/opensearch?/admin?
-  value: *admin-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
-  value: *node-tls-properties
-
-- type: replace
-  path: /instance_groups/name=ingestor_logsearch_1?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
-  value: *http-tls-properties
 
 # ingestor_logsearch
 - type: replace
@@ -442,7 +274,7 @@
   path: /instance_groups/name=ingestor_logsearch_2?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
-  # ingestor_logsearch
+# ingestor_logsearch
 - type: replace
   path: /instance_groups/name=ingestor_logsearch_3?/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
@@ -525,4 +357,276 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_logsearch_7?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_8?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_8?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_8?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_8?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_9?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_9?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_9?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_9?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_10?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_10?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_10?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_10?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_11?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_11?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_11?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_11?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_12?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_12?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_12?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_12?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_13?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_13?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_13?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_13?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_14?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_14?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_14?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_14?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_15?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_15?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_15?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_15?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_16?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_16?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_16?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_16?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_17?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_17?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_17?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_17?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_18?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_18?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_18?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_18?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_19?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_19?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_19?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_19?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_20?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_20?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_20?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_20?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_21?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_21?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_21?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_21?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_22?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_22?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_22?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_22?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
+# ingestor_logsearch
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_23?/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_23?/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_23?/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_logsearch_23?/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
