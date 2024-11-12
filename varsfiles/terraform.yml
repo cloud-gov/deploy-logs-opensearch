@@ -1,2 +1,4 @@
 redis_host: ((terraform_outputs.opensearch_proxy_redis_cluster.host))
 redis_password: ((terraform_outputs.opensearch_proxy_redis_cluster.password))
+logsearch_archive_bucket_name: ((terraform_outputs.logsearch_archive_bucket_name))
+vpc_region: ((terraform_outputs.vpc_region))

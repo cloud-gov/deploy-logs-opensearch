@@ -1,6 +1,6 @@
 instance_groups:
 - &logsearch-ingestor-config
-  name: ingestor_logsearch_september_1
+  name: ingestor_logsearch_1
   instances: 1
   jobs:
   - name: bpm
@@ -71,60 +71,6 @@ instance_groups:
   - 50GB_ephemeral_disk
 
 - <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_september_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_august_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_august_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_july_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_july_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_june_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_june_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_may_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_may_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_april_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_april_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_march_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_march_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_february_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_february_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_january_1
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_january_2
-
-- <<: *logsearch-ingestor-config
-  name: ingestor_logsearch_1
-
-- <<: *logsearch-ingestor-config
   name: ingestor_logsearch_2
 
 - <<: *logsearch-ingestor-config
@@ -141,3 +87,51 @@ instance_groups:
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_7
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_8
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_9
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_10
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_11
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_12
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_13
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_14
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_15
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_16
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_17
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_18
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_19
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_20
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_21
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_22
+
+- <<: *logsearch-ingestor-config
+  name: ingestor_logsearch_23
