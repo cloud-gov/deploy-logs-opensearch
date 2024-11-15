@@ -68,7 +68,6 @@ instance_groups:
   - z1
   vm_extensions:
   - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_2
