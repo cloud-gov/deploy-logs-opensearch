@@ -4,7 +4,7 @@ instance_groups:
 #######################################################
 - name: opensearch_manager
   instances: 3
-  vm_extensions: [50GB_ephemeral_disk]
+  vm_extensions: [15GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
@@ -44,7 +44,7 @@ instance_groups:
 
 - name: maintenance
   instances: 1
-  vm_extensions: [errand-profile,50GB_ephemeral_disk]
+  vm_extensions: [errand-profile,15GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
@@ -243,7 +243,7 @@ instance_groups:
   stemcell: default
   vm_extensions:
   - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
+  - 15GB_ephemeral_disk
   vm_type: t3.medium
 
 - name: ingestor
@@ -330,7 +330,7 @@ instance_groups:
   vm_type: t3.medium
   vm_extensions:
   - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
+  - 15GB_ephemeral_disk
   networks:
   - name: services
 
@@ -397,7 +397,7 @@ instance_groups:
             enable_private: false
     release: opensearch
   vm_extensions:
-  - 50GB_ephemeral_disk
+  - 15GB_ephemeral_disk
   stemcell: default
   azs:
   - z1
