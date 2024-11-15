@@ -5,9 +5,9 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/03/04
+      prefix: 2024/02/08
     plugin: s3
-  
+
 - type: replace
   path: /instance_groups/name=ingestor_logsearch_2?/jobs/name=ingestor_logsearch/properties?/logstash_parser?/inputs?/0
   value:
@@ -15,7 +15,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/03/03
+      prefix: 2024/02/07
     plugin: s3
 
 - type: replace
@@ -25,7 +25,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/03/02
+      prefix: 2024/02/06
     plugin: s3
 
 - type: replace
@@ -35,7 +35,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/29
+      prefix: 2024/02/05
     plugin: s3
 
 - type: replace
@@ -45,7 +45,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/28
+      prefix: 2024/02/04
     plugin: s3
 
 - type: replace
@@ -55,7 +55,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/27
+      prefix: 2024/02/03
     plugin: s3
 
 - type: replace
@@ -65,7 +65,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/26
+      prefix: 2024/02/02
     plugin: s3
 
 - type: replace
@@ -75,7 +75,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/25
+      prefix: 2024/01/31
     plugin: s3
 
 - type: replace
@@ -85,7 +85,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/24
+      prefix: 2024/01/30
     plugin: s3
 
 - type: replace
@@ -95,7 +95,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/23
+      prefix: 2024/01/29
     plugin: s3
 
 - type: replace
@@ -105,7 +105,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/22
+      prefix: 2024/01/28
     plugin: s3
 
 - type: replace
@@ -115,7 +115,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/21
+      prefix: 2024/01/27
     plugin: s3
 
 - type: replace
@@ -125,7 +125,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/20
+      prefix: 2024/01/26
     plugin: s3
 
 - type: replace
@@ -135,7 +135,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/19
+      prefix: 2024/01/25
     plugin: s3
 
 - type: replace
@@ -145,7 +145,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/18
+      prefix: 2024/01/24
     plugin: s3
 
 - type: replace
@@ -155,7 +155,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/17
+      prefix: 2024/01/23
     plugin: s3
 
 - type: replace
@@ -165,7 +165,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/16
+      prefix: 2024/01/22
     plugin: s3
 
 - type: replace
@@ -175,7 +175,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/14
+      prefix: 2024/01/21
     plugin: s3
 
 - type: replace
@@ -185,7 +185,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/13
+      prefix: 2024/01/20
     plugin: s3
 
 - type: replace
@@ -195,7 +195,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/12
+      prefix: 2024/01/19
     plugin: s3
 
 - type: replace
@@ -205,7 +205,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/11
+      prefix: 2024/01/18
     plugin: s3
 
 - type: replace
@@ -215,7 +215,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/10
+      prefix: 2024/01/17
     plugin: s3
 
 - type: replace
@@ -225,7 +225,7 @@
       bucket: ((logsearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/02/09
+      prefix: 2024/01/16
     plugin: s3
 
 # ingestor_logsearch
