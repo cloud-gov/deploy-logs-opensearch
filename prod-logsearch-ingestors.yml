@@ -110,27 +110,36 @@ instance_groups:
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_15
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_16
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_17
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_18
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_19
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_20
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_21
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_22
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_23
+  instances: 0
