@@ -1,0 +1,71 @@
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_1?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/17
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_2?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/16
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_3?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/15
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_4?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/14
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_5?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/13
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_6?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/12
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_7?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/10
+    plugin: s3
+
+- type: replace
+  path: /instance_groups/name=ingestor_opensearch_s3_8?/jobs/name=ingestor_syslog/properties?/logstash_parser?/inputs?/0
+  value:
+    options:
+      region: ((vpc_region))
+      type: syslog
+      prefix: 2024/11/09
+    plugin: s3
