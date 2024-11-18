@@ -10,3 +10,7 @@
 - type: replace
   path: /instance_groups/name=opensearch_dashboards/jobs/name=route_registrar/properties?/route_registrar?/routes?/name=opensearch-auth-proxy/uris?/-
   value: logs-beta.fr.cloud.gov
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/jobs/name=route_registrar/consumes?/nats-tls?/deployment?
+  value: cf-production
