@@ -98,7 +98,6 @@
   value:
     consumes:
       nats-tls:
-        deployment: ((cf-deployment))
         from: nats-tls
     name: route_registrar
     properties:
