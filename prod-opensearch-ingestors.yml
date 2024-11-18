@@ -29,6 +29,9 @@ instance_groups:
         queue:
           max_bytes: 40gb
       logstash_ingestor:
+        ingest_syslog_enabled: false
+        health:
+          disable_post_start: true
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
