@@ -93,3 +93,24 @@ instance_groups:
 
 - <<: *opensearch-ingestor-config
   name: ingestor_opensearch_s3_8
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_9
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_10
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_11
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_12
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_13
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_14
+
+- <<: *opensearch-ingestor-config
+  name: ingestor_opensearch_s3_15
