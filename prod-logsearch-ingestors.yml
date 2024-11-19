@@ -103,13 +103,13 @@ instance_groups:
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_11
-  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_12
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_13
+  instances: 0
 
 - <<: *logsearch-ingestor-config
   name: ingestor_logsearch_14
