@@ -8,5 +8,7 @@ run:
   args:
   - -exc
   - |
-    pip install requests
-    python deploy-logs-opensearch-config/ci/smoke-tests-login.py
+    pip install deploy-logs-opensearch-config/ci/requirements.txt
+    playwright install firefox
+    python -m pytest deploy-logs-opensearch-config/ci --tracing retain-on-failure
+    
