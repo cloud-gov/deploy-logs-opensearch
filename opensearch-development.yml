@@ -1,4 +1,10 @@
 instance_groups:
+- name: opensearch_manager
+  vm_type: t3.medium
+  instances: 1
+  networks:
+  - name: services
+
 - name: opensearch_data
   instances: 3
   vm_type: m6i.large
@@ -9,12 +15,6 @@ instance_groups:
 - name: opensearch_dashboards
   vm_type: t3.xlarge
   instances: 1
-
-- name: opensearch_manager
-  vm_type: t3.medium
-  instances: 1
-  networks:
-  - name: services
 
 - name: archiver
   instances: 1
