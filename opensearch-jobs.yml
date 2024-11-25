@@ -1,46 +1,80 @@
 instance_groups:
 #######################################################
-#First deploy group - opensearch_manager, maintenance
+#First deploy group - opensearch_data, opensearch_dashboards, maintenance
 #######################################################
-- name: opensearch_manager
-  instances: 3
-  vm_extensions: [15GB_ephemeral_disk]
+- name: opensearch_data
+  instances: 11
   jobs:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    provides:
-      opensearch:
-        as: opensearch_manager
+    release: opensearch
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        clustername: opensearch
+        node:
+          allow_cluster_manager: false
+          allow_data: true
         limits:
-          fd: 131072 # 2 ** 17
+          fd: 131072  # 2 ** 17
+        health:
+          timeout: 900
+          disable_post_start: true
+        recovery:
+          delay_allocation_restart: "15m"
+        config_options:
+          indices.query.bool.max_clause_count: 2048
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
-        node:
-          allow_cluster_manager: true
-          allow_data: false
-    release: opensearch
-  - name: snort-config
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-    release: jammy-snort
-  azs:
-  - z1
-  persistent_disk_type: logs_opensearch_os_master
+  persistent_disk_type: logs_opensearch_os_data
   stemcell: default
+  azs: [z1]
   vm_type: t3.large
   networks:
+  - name: services
+  update:
+    max_in_flight: 1 # Only update 1 data node at a time or risk downtime
+  env:
+    bosh:
+      swap_size: 0
+
+- name: opensearch_dashboards
+  instances: 2
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+  - name: opensearch_dashboards
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch_dashboards:
+        config_options:
+          server.maxPayloadBytes: 4194304
+        console.enabled: false
+        defaultAppId: dashboard/App-Overview
+        env:
+        - NODE_ENV: production
+        health:
+          timeout: 600
+        index: ((dashboard_index))
+        memory_limit: 75
+        multitenancy:
+          tenants:
+            enable_private: false
+    release: opensearch
+  vm_extensions:
+  - 15GB_ephemeral_disk
+  stemcell: default
+  azs:
+  - z1
+  networks:
    - name: services
+  env:
+    bosh:
+      swap_size: 0
+
 
 - name: maintenance
   instances: 1
@@ -194,8 +228,48 @@ instance_groups:
     serial: true # Block on this job to create deploy group 1
 
 #########################################################
-#2nd deploy group - opensearch_data, opensearch_dashboards, ingestors
+#2nd deploy group - opensearch_manager, ingestors
 #########################################################
+- name: opensearch_manager
+  instances: 3
+  vm_extensions: [15GB_ephemeral_disk]
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    provides:
+      opensearch:
+        as: opensearch_manager
+    properties:
+      opensearch:
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_cluster_manager: true
+          allow_data: false
+    release: opensearch
+  - name: snort-config
+    properties:
+      snort:
+        rules:
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
+    release: jammy-snort
+  azs:
+  - z1
+  persistent_disk_type: logs_opensearch_os_master
+  stemcell: default
+  vm_type: t3.large
+  networks:
+   - name: services
+
 - name: archiver
   instances: 1
   jobs:
@@ -225,6 +299,7 @@ instance_groups:
         - options:
             bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
             encoding: gzip
+            codec: 'plain { format => "%{message}" }'
             prefix: '%{+yyyy/MM/dd/HH/mm}'
             region: (( grab terraform_outputs.vpc_region ))
             server_side_encryption: true
@@ -333,76 +408,3 @@ instance_groups:
   - 15GB_ephemeral_disk
   networks:
   - name: services
-
-- name: opensearch_data
-  instances: 11
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        node:
-          allow_cluster_manager: false
-          allow_data: true
-        limits:
-          fd: 131072  # 2 ** 17
-        health:
-          timeout: 900
-          disable_post_start: true
-        recovery:
-          delay_allocation_restart: "15m"
-        config_options:
-          indices.query.bool.max_clause_count: 2048
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-  persistent_disk_type: logs_opensearch_os_data
-  stemcell: default
-  azs: [z1]
-  vm_type: t3.large
-  networks:
-  - name: services
-  update:
-    max_in_flight: 1 # Only update 1 data node at a time or risk downtime
-  env:
-    bosh:
-      swap_size: 0
-
-- name: opensearch_dashboards
-  instances: 2
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-  - name: opensearch_dashboards
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch_dashboards:
-        config_options:
-          server.maxPayloadBytes: 4194304
-        console.enabled: false
-        defaultAppId: dashboard/App-Overview
-        env:
-        - NODE_ENV: production
-        health:
-          timeout: 600
-        index: ((dashboard_index))
-        memory_limit: 75
-        multitenancy:
-          tenants:
-            enable_private: false
-    release: opensearch
-  vm_extensions:
-  - 15GB_ephemeral_disk
-  stemcell: default
-  azs:
-  - z1
-  networks:
-   - name: services
-  env:
-    bosh:
-      swap_size: 0
