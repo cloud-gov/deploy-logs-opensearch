@@ -283,8 +283,6 @@ jobs:
   serial_groups: [bosh-development]
   plan:
   - in_parallel:
-    - get: tests-timer
-      trigger: true
     - get: general-task
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
@@ -475,8 +473,6 @@ jobs:
   serial_groups: [bosh-staging]
   plan:
   - in_parallel:
-    - get: tests-timer
-      trigger: true
     - get: general-task
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
@@ -700,8 +696,6 @@ jobs:
   serial_groups: [bosh-production]
   plan:
   - in_parallel:
-    - get: tests-timer
-      trigger: true
     - get: general-task
     - get: pipeline-tasks
     - get: deploy-logs-opensearch-config
