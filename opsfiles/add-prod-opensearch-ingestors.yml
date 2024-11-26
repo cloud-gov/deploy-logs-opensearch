@@ -35,7 +35,7 @@
       bucket: ((opensearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/11/14
+      prefix: 2024/11/21
     plugin: s3
 
 - type: replace
@@ -45,7 +45,7 @@
       bucket: ((opensearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/11/13
+      prefix: 2024/11/22
     plugin: s3
 
 - type: replace
@@ -65,7 +65,7 @@
       bucket: ((opensearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/11/10
+      prefix: 2024/11/23
     plugin: s3
 
 - type: replace
@@ -75,7 +75,7 @@
       bucket: ((opensearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/11/09
+      prefix: 2024/11/24
     plugin: s3
 
 - type: replace
@@ -136,7 +136,7 @@
       bucket: ((opensearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/11/04
+      prefix: 2024/11/25
     plugin: s3
 
 - type: replace
@@ -166,7 +166,7 @@
       bucket: ((opensearch_archive_bucket_name))
       region: ((vpc_region))
       type: syslog
-      prefix: 2024/11/01
+      prefix: 2024/10/14/14 #10am
     plugin: s3
 
 - type: replace
