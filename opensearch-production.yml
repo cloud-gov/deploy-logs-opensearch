@@ -37,7 +37,7 @@ instance_groups:
       opensearch_config:
         rollover_document_size: 600gb
         rollover_index_age: 1d
-        shard_count: 12
+        shard_count: 24
   - name: curator
     release: opensearch
     properties:
