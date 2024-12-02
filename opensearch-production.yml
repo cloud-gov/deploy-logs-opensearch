@@ -27,6 +27,10 @@ instance_groups:
   instances: 7
   vm_type: r6i.xlarge.logsearch.ingestor
 
+- name: ingestor_cloudwatch
+  instances: 1
+  vm_type: r6i.large.logsearch.ingestor
+
 - name: maintenance
   vm_type: t3.large
   instances: 1
