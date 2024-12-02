@@ -24,7 +24,7 @@ instance_groups:
   vm_type: r6i.large
 
 - name: ingestor
-  instances: 0
+  instances: 7
   vm_type: r6i.xlarge.logsearch.ingestor
 
 - name: maintenance
