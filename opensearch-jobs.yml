@@ -427,7 +427,7 @@ instance_groups:
   persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
   azs: [z1]
-  vm_type: t3.medium
+  vm_type: m6i.large
   vm_extensions:
   - logs-opensearch-ingestor-profile
   - 15GB_ephemeral_disk
