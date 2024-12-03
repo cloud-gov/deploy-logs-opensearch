@@ -374,7 +374,7 @@ instance_groups:
   vm_type: t3.medium
   vm_extensions:
   - logs-opensearch-ingestor-profile
-  - 15GB_ephemeral_disk
+  - 20GB_ephemeral_disk
   networks:
   - name: services
 
