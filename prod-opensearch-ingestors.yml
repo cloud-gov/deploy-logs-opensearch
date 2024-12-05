@@ -1,7 +1,7 @@
 instance_groups:
 - &opensearch-ingestor-config
   name: ingestor_opensearch_s3_1
-  instances: 1
+  instances: 0
   jobs:
   - name: bpm
     release: bpm
@@ -83,6 +83,7 @@ instance_groups:
 
 - <<: *opensearch-ingestor-config
   name: ingestor_opensearch_s3_4
+  instances: 1
 
 - <<: *opensearch-ingestor-config
   name: ingestor_opensearch_s3_5
