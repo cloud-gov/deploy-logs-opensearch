@@ -75,9 +75,11 @@ instance_groups:
 
 - <<: *opensearch-ingestor-config
   name: ingestor_opensearch_s3_2
+  instances: 0
 
 - <<: *opensearch-ingestor-config
   name: ingestor_opensearch_s3_3
+  instances: 0
 
 - <<: *opensearch-ingestor-config
   name: ingestor_opensearch_s3_4
