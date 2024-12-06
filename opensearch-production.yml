@@ -29,6 +29,7 @@ instance_groups:
 
 - name: ingestor_cloudwatch
   instances: 1
+  vm_type: r6i.large
 
 - name: maintenance
   vm_type: t3.large
