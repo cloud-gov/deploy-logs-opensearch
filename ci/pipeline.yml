@@ -531,8 +531,6 @@ jobs:
             deploy-logs-opensearch-config/opensearch-deployment.yml \
             deploy-logs-opensearch-config/opensearch-jobs.yml \
             deploy-logs-opensearch-config/opensearch-production.yml \
-            deploy-logs-opensearch-config/prod-logsearch-ingestors.yml \
-            deploy-logs-opensearch-config/prod-opensearch-ingestors.yml \
             terraform-yaml/state.yml \
             > opensearch-manifest/manifest.yml
       outputs:
@@ -551,8 +549,6 @@ jobs:
       ops_files:
       - deploy-logs-opensearch-config/opsfiles/remove-curator.yml
       - deploy-logs-opensearch-config/opsfiles/remove-smoke-tests.yml
-      - deploy-logs-opensearch-config/opsfiles/add-prod-logsearch-ingestors.yml
-      - deploy-logs-opensearch-config/opsfiles/add-prod-opensearch-ingestors.yml
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
