@@ -24,7 +24,7 @@ instance_groups:
   instances: 1
   vm_type: m6i.large
 
-- name: ingestor_cloudwatch
+- name: ingestor_cloudwatch_rds
   instances: 1
 
 - name: maintenance

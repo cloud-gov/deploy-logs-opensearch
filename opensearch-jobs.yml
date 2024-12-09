@@ -378,7 +378,7 @@ instance_groups:
   networks:
   - name: services
 
-- name: ingestor_cloudwatch
+- name: ingestor_cloudwatch_rds
   instances: 1
   jobs:
   - name: bpm
