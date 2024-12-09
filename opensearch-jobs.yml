@@ -403,7 +403,7 @@ instance_groups:
       logstash_ingestor:
         cloudwatch:
           region: ((region))
-          prefix: ((cloudwatch_prefix))
+          prefix: ((rds_cloudwatch_prefix))
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
