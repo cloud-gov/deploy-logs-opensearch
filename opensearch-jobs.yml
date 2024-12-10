@@ -165,7 +165,7 @@ instance_groups:
           filters:
           - filtertype: pattern
             kind: regex
-            value: logs*
+            value: logs-app*
           - direction: older
             filtertype: age
             source: creation_date
@@ -182,12 +182,12 @@ instance_groups:
           filters:
           - filtertype: pattern
             kind: regex
-            value: logs*
+            value: logs-app*
           - direction: older
             filtertype: age
             source: creation_date
             unit: days
-            unit_count: 1
+            unit_count: 2
           options:
             index_settings:
               index:
