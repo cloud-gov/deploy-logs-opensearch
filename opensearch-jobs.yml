@@ -187,7 +187,7 @@ instance_groups:
             filtertype: age
             source: creation_date
             unit: days
-            unit_count: 2
+            unit_count: 1
           options:
             index_settings:
               index:
