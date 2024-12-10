@@ -547,8 +547,6 @@ jobs:
       stemcells:
       - opensearch-stemcell-jammy/*.tgz
       ops_files:
-      - deploy-logs-opensearch-config/opsfiles/remove-curator.yml
-      - deploy-logs-opensearch-config/opsfiles/remove-smoke-tests.yml
       - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
       - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
