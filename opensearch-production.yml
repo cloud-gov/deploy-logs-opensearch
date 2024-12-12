@@ -24,7 +24,7 @@ instance_groups:
   vm_type: r6i.large
 
 - name: ingestor
-  instances: 7
+  instances: 9
   vm_type: r6i.xlarge.logsearch.ingestor
 
 - name: ingestor_cloudwatch_rds
