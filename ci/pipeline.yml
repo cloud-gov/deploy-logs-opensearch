@@ -17,7 +17,7 @@ groups:
     - plan-opensearch-production
     - deploy-opensearch-production
     - upload-dashboards-objects-production
-    # - smoke-tests-production
+    - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
   - name: development
@@ -39,7 +39,7 @@ groups:
     - plan-opensearch-production
     - deploy-opensearch-production
     - upload-dashboards-objects-production
-    # - smoke-tests-production
+    - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
 
