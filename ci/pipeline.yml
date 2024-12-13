@@ -597,26 +597,6 @@ jobs:
         :x: FAILED to deploy logs-OpenSearch in production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-- name: upload-dashboards-objects-production
-  serial_groups: [bosh-production]
-  plan:
-  - in_parallel:
-    - get: pipeline-tasks
-    - get: opensearch-release
-    - get: opensearch-stemcell-jammy
-    - get: deploy-logs-opensearch-config
-      passed: [tenant-production]
-      trigger: true
-  - task: upload-dashboards-objects
-    file: pipeline-tasks/bosh-logs-errand.yml
-    params:
-      BOSH_ENVIRONMENT: ((bosh_production_environment))
-      BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-      BOSH_DEPLOYMENT: logs-opensearch
-      BOSH_ERRAND: upload-dashboards-objects
-      BOSH_FLAGS: "--keep-alive"
-      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
 - name: smoke-tests-production
   serial_groups: [bosh-production]
@@ -634,6 +614,9 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-production]
       trigger: true
+    - get: opensearch-production-deployment
+      passed: [deploy-opensearch-production]
+      trigger: true          
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -667,7 +650,8 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      trigger: true
+      passed: [deploy-opensearch-production]
+      trigger: true    
     - get: tests-timer
       trigger: true
     - get: general-task
@@ -695,6 +679,9 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-production]
       trigger: true
+    - get: opensearch-production-deployment
+      passed: [deploy-opensearch-production]
+      trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -712,6 +699,30 @@ jobs:
       text: |
         :x: Create tenants for OpenSearch in production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: upload-dashboards-objects-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+    - get: opensearch-stemcell-jammy
+    - get: deploy-logs-opensearch-config
+      passed: [tenant-production]
+      trigger: true
+    - get: opensearch-production-deployment
+      passed: [tenant-production]
+      trigger: true
+  - task: upload-dashboards-objects
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_production_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
 resources:
 - name: opensearch-release-git-repo
