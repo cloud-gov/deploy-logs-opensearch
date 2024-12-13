@@ -17,7 +17,7 @@ groups:
     - plan-opensearch-production
     - deploy-opensearch-production
     - upload-dashboards-objects-production
-    # - smoke-tests-production
+    - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
   - name: development
@@ -39,7 +39,7 @@ groups:
     - plan-opensearch-production
     - deploy-opensearch-production
     - upload-dashboards-objects-production
-    # - smoke-tests-production
+    - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
 
@@ -183,34 +183,6 @@ jobs:
         :x: FAILED to deploy logs-OpenSearch in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-- name: upload-dashboards-objects-development
-  serial_groups: [bosh-development]
-  plan:
-  - in_parallel:
-    - get: pipeline-tasks
-    - get: opensearch-release
-    - get: opensearch-stemcell-jammy
-    - get: deploy-logs-opensearch-config
-      passed: [tenant-development]
-      trigger: true
-  - task: upload-dashboards-objects
-    file: pipeline-tasks/bosh-logs-errand.yml
-    params:
-      BOSH_ENVIRONMENT: ((bosh_development_environment))
-      BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
-      BOSH_DEPLOYMENT: logs-opensearch
-      BOSH_ERRAND: upload-dashboards-objects
-      BOSH_FLAGS: "--keep-alive"
-      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: FAILED to run upload-dashboards-objects for logs-opensearch in development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-
 - name: smoke-tests-development
   serial_groups: [bosh-development]
   plan:
@@ -227,6 +199,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-development]
       trigger: true
+    - get: opensearch-development-deployment
+      trigger: true      
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -288,6 +262,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-development]
       trigger: true
+    - get: opensearch-development-deployment
+      trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -304,6 +280,37 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: upload-dashboards-objects-development
+  serial_groups: [bosh-development]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+    - get: opensearch-stemcell-jammy
+    - get: deploy-logs-opensearch-config
+      passed: [tenant-development]
+      trigger: true
+    - get: opensearch-development-deployment
+      passed: [tenant-development]
+      trigger: true      
+  - task: upload-dashboards-objects
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_development_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to run upload-dashboards-objects for logs-opensearch in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-staging
@@ -373,34 +380,6 @@ jobs:
         :x: FAILED to deploy logs-OpenSearch in staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-- name: upload-dashboards-objects-staging
-  serial_groups: [bosh-staging]
-  plan:
-  - in_parallel:
-    - get: pipeline-tasks
-    - get: opensearch-release
-    - get: opensearch-stemcell-jammy
-    - get: deploy-logs-opensearch-config
-      passed: [tenant-staging]
-      trigger: true
-  - task: upload-dashboards-objects
-    file: pipeline-tasks/bosh-logs-errand.yml
-    params:
-      BOSH_ENVIRONMENT: ((bosh_staging_environment))
-      BOSH_CLIENT: ((bosh_client))
-      BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
-      BOSH_DEPLOYMENT: logs-opensearch
-      BOSH_ERRAND: upload-dashboards-objects
-      BOSH_FLAGS: "--keep-alive"
-      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: FAILED to run upload-dashboards-objects for logs-opensearch in staging
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-
 - name: smoke-tests-staging
   serial_groups: [bosh-staging]
   plan:
@@ -417,6 +396,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-staging]
       trigger: true
+    - get: opensearch-staging-deployment
+      trigger: true      
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -478,6 +459,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-staging]
       trigger: true
+    - get: opensearch-staging-deployment
+      trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -494,6 +477,37 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: Create tenants for OpenSearch in staging FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: upload-dashboards-objects-staging
+  serial_groups: [bosh-staging]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+    - get: opensearch-stemcell-jammy
+    - get: deploy-logs-opensearch-config
+      passed: [tenant-staging]
+      trigger: true
+    - get: opensearch-staging-deployment
+      passed: [tenant-staging]
+      trigger: true
+  - task: upload-dashboards-objects
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_staging_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to run upload-dashboards-objects for logs-opensearch in staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: plan-opensearch-production
@@ -597,60 +611,42 @@ jobs:
         :x: FAILED to deploy logs-OpenSearch in production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-- name: upload-dashboards-objects-production
+
+- name: smoke-tests-production
   serial_groups: [bosh-production]
   plan:
   - in_parallel:
+    - get: tests-timer
+      trigger: true
     - get: pipeline-tasks
     - get: opensearch-release
-    - get: opensearch-stemcell-jammy
-    - get: deploy-logs-opensearch-config
-      passed: [tenant-production]
       trigger: true
-  - task: upload-dashboards-objects
+      passed: [deploy-opensearch-production]
+    - get: opensearch-stemcell-jammy
+      trigger: true
+      passed: [deploy-opensearch-production]
+    - get: deploy-logs-opensearch-config
+      passed: [deploy-opensearch-production]
+      trigger: true
+    - get: opensearch-production-deployment
+      trigger: true          
+  - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
       BOSH_ENVIRONMENT: ((bosh_production_environment))
       BOSH_CLIENT: ((bosh_client))
       BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
       BOSH_DEPLOYMENT: logs-opensearch
-      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_ERRAND: smoke_tests
       BOSH_FLAGS: "--keep-alive"
       BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
-
-# - name: smoke-tests-production
-#   serial_groups: [bosh-production]
-#   plan:
-#   - in_parallel:
-#     - get: tests-timer
-#       trigger: true
-#     - get: pipeline-tasks
-#     - get: opensearch-release
-#       trigger: true
-#       passed: [deploy-opensearch-production]
-#     - get: opensearch-stemcell-jammy
-#       trigger: true
-#       passed: [deploy-opensearch-production]
-#     - get: deploy-logs-opensearch-config
-#       passed: [deploy-opensearch-production]
-#       trigger: true
-#   - task: smoke-tests
-#     file: pipeline-tasks/bosh-logs-errand.yml
-#     params:
-#       BOSH_ENVIRONMENT: ((bosh_production_environment))
-#       BOSH_CLIENT: ((bosh_client))
-#       BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-#       BOSH_DEPLOYMENT: logs-opensearch
-#       BOSH_ERRAND: smoke_tests
-#       BOSH_FLAGS: "--keep-alive"
-#       BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
-#   on_failure:
-#     put: slack
-#     params:
-#       <<: *slack-failure-params
-#       text: |
-#         :x: Smoke tests for OpenSearch in production FAILED
-#         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: Smoke tests for OpenSearch in production FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: smoke-tests-login-production
   serial_groups: [bosh-production]
@@ -667,7 +663,7 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      trigger: true
+      trigger: true    
     - get: tests-timer
       trigger: true
     - get: general-task
@@ -695,6 +691,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-production]
       trigger: true
+    - get: opensearch-production-deployment
+      trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -712,6 +710,30 @@ jobs:
       text: |
         :x: Create tenants for OpenSearch in production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: upload-dashboards-objects-production
+  serial_groups: [bosh-production]
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: opensearch-release
+    - get: opensearch-stemcell-jammy
+    - get: deploy-logs-opensearch-config
+      passed: [tenant-production]
+      trigger: true
+    - get: opensearch-production-deployment
+      passed: [tenant-production]
+      trigger: true
+  - task: upload-dashboards-objects
+    file: pipeline-tasks/bosh-logs-errand.yml
+    params:
+      BOSH_ENVIRONMENT: ((bosh_production_environment))
+      BOSH_CLIENT: ((bosh_client))
+      BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+      BOSH_DEPLOYMENT: logs-opensearch
+      BOSH_ERRAND: upload-dashboards-objects
+      BOSH_FLAGS: "--keep-alive"
+      BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
 resources:
 - name: opensearch-release-git-repo
