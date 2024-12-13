@@ -13,3 +13,9 @@
   path: /instance_groups/name=maintenance/jobs/name=upload-dashboards-objects/properties?/cloudfoundry?/system_domain?
   value: ((cf-api-development))
 
+- type: replace
+  path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties?/opensearch?/cf?/client_password?
+  value: ((/bosh/cf-development/opensearch_client_secret))
+- type: replace
+  path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties?/opensearch?/cf?/domain?
+  value: ((cf-api-development))
