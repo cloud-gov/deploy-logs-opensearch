@@ -193,6 +193,9 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [tenant-development]
       trigger: true
+    - get: opensearch-development-deployment
+      passed: [tenant-development]
+      trigger: true      
   - task: upload-dashboards-objects
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -227,6 +230,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-development]
       trigger: true
+    - get: opensearch-development-deployment
+      trigger: true      
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -288,6 +293,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-development]
       trigger: true
+    - get: opensearch-development-deployment
+      trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -383,6 +390,9 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [tenant-staging]
       trigger: true
+    - get: opensearch-staging-deployment
+      passed: [tenant-staging]
+      trigger: true
   - task: upload-dashboards-objects
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -417,6 +427,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-staging]
       trigger: true
+    - get: opensearch-staging-deployment
+      trigger: true      
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -478,6 +490,8 @@ jobs:
     - get: deploy-logs-opensearch-config
       passed: [deploy-opensearch-staging]
       trigger: true
+    - get: opensearch-staging-deployment
+      trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -615,7 +629,6 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      passed: [deploy-opensearch-production]
       trigger: true          
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -650,7 +663,6 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      passed: [deploy-opensearch-production]
       trigger: true    
     - get: tests-timer
       trigger: true
@@ -680,7 +692,6 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      passed: [deploy-opensearch-production]
       trigger: true      
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
