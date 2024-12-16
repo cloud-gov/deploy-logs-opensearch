@@ -21,7 +21,7 @@ instance_groups:
 
 - name: archiver
   instances: 3
-  vm_type: r6i.large
+  vm_type: r6i.xlarge
 
 - name: ingestor
   instances: 9
