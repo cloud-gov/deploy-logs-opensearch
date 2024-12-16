@@ -42,12 +42,6 @@ instance_groups:
         rollover_document_size: 600gb
         rollover_index_age: 1d
         shard_count: 24
-  - name: curator
-    release: opensearch
-    properties:
-      curator:
-        purge_logs:
-          retention_period: 365
 
 addons:
 - name: bosh-dns-aliases
