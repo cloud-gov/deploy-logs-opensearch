@@ -8,7 +8,7 @@ run:
   args:
   - -exc
   - |
-    pip install deploy-logs-opensearch-config/ci/requirements.txt
+    python -m venv venv
+    pip install -r deploy-logs-opensearch-config/ci/requirements.txt
     playwright install firefox
-    python -m pytest deploy-logs-opensearch-config/ci --tracing retain-on-failure
-    
+    ./deploy-logs-opensearch-config/scripts/e2e.sh
