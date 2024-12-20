@@ -23,5 +23,6 @@ properties:
 This code includes e2e tests for logging into OpenSearch that use Python Playwright. To run these tests:
 
 ```shell
+cp .env-sample .env # Update values in .env afterwards
 ./scripts/e2e-local.sh
 ```
