@@ -237,9 +237,9 @@ jobs:
       trigger: true
     - get: tests-timer
       trigger: true
-    - get: general-task
+    - get: playwright-python
   - task: smoke-tests-login
-    image: general-task
+    image: playwright-python
     file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
     params:
       CF_USERNAME: ((cf-test-username-development))
@@ -435,9 +435,9 @@ jobs:
       trigger: true
     - get: tests-timer
       trigger: true
-    - get: general-task
+    - get: playwright-python
   - task: smoke-tests-login
-    image: general-task
+    image: playwright-python
     file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
     params:
       CF_USERNAME: ((cf-test-username-staging))
@@ -668,9 +668,9 @@ jobs:
       trigger: true    
     - get: tests-timer
       trigger: true
-    - get: general-task
+    - get: playwright-python
   - task: smoke-tests-login
-    image: general-task
+    image: playwright-python
     file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
     params:
       CF_USERNAME: ((cf-test-username-production))
@@ -853,6 +853,15 @@ resources:
     repository: general-task
     aws_region: us-gov-west-1
     tag: latest
+
+- name: playwright-python
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: playwright-python
+    aws_region: us-gov-west-1
+    tag: latest    
 
 resource_types:
 - name: registry-image
