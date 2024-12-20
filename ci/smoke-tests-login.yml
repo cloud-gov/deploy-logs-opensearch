@@ -8,7 +8,5 @@ run:
   args:
   - -exc
   - |
-    python -m venv venv
-    pip install -r deploy-logs-opensearch-config/ci/requirements.txt
-    playwright install firefox
-    ./deploy-logs-opensearch-config/scripts/e2e.sh
+    cd deploy-logs-opensearch-config
+    ./scripts/e2e.sh
