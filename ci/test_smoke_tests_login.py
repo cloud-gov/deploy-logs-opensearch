@@ -7,13 +7,11 @@ import pyotp
 
 logging.basicConfig(level=logging.DEBUG)
 
-AUTH_PROXY_URL = "https://logs-beta.{}".format(os.environ["CF_SYSTEM_DOMAIN"])
+AUTH_PROXY_URL = "https://logs.{}".format(os.environ["CF_SYSTEM_DOMAIN"])
 UAA_BASE_URL = "https://login.{}".format(os.environ["CF_SYSTEM_DOMAIN"])
 
 
 def log_in(user, page, start_at):
-    page.set_default_timeout(60000)
-
     # go to auth proxy
     page.goto(start_at)
 
