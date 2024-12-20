@@ -242,9 +242,10 @@ jobs:
     image: general-task
     file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
     params:
-      CF_USERNAME: ((cf-username-development))
-      CF_PASSWORD: ((cf-password-development))
+      CF_USERNAME: ((cf-test-username-development))
+      CF_PASSWORD: ((cf-test-user-password-development))
       CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
+      TOTP_SEED: ((cf-test-user-totp-seed-development))
   on_failure:
     put: slack
     params:
@@ -439,9 +440,10 @@ jobs:
     image: general-task
     file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
     params:
-      CF_USERNAME: ((cf-username-staging))
-      CF_PASSWORD: ((cf-password-staging))
+      CF_USERNAME: ((cf-test-username-staging))
+      CF_PASSWORD: ((cf-test-user-password-staging))
       CF_SYSTEM_DOMAIN: ((cf-system-domain-staging))
+      TOTP_SEED: ((cf-test-user-totp-seed-staging))
   on_failure:
     put: slack
     params:
@@ -671,9 +673,10 @@ jobs:
     image: general-task
     file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
     params:
-      CF_USERNAME: ((cf-username-production))
-      CF_PASSWORD: ((cf-password-production))
+      CF_USERNAME: ((cf-test-username-production))
+      CF_PASSWORD: ((cf-test-user-password-production))
       CF_SYSTEM_DOMAIN: ((cf-system-domain-production))
+      TOTP_SEED: ((cf-test-user-totp-seed-production))
   on_failure:
     put: slack
     params:
