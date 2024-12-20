@@ -26,6 +26,8 @@ instance_groups:
           indices.query.bool.max_clause_count: 2048
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
+        cf:
+          client_id: opensearch_client_id
   persistent_disk_type: logs_opensearch_os_data
   stemcell: default
   azs: [z1]
@@ -154,51 +156,6 @@ instance_groups:
         platform_index_component_name: index-mappings-platform
         shards_and_replicas_component_name: shards-and-replicas
     release: opensearch
-  - name: curator
-    consumes: *consumes-opensearch-manager
-    properties:
-      curator:
-        actions:
-        - action: forcemerge
-          description: Force merging of older indices to make their shards more compact
-            and search-optimized
-          filters:
-          - filtertype: pattern
-            kind: regex
-            value: logs*
-          - direction: older
-            filtertype: age
-            source: creation_date
-            unit: days
-            unit_count: 30
-          - exclude: true
-            filtertype: forcemerged
-            max_num_segments: 1
-          options:
-            ignore_empty_list: true
-            max_num_segments: 1
-        - action: index_settings
-          description: Sets indices older than 1 day to be read only
-          filters:
-          - filtertype: pattern
-            kind: regex
-            value: logs*
-          - direction: older
-            filtertype: age
-            source: creation_date
-            unit: days
-            unit_count: 1
-          options:
-            index_settings:
-              index:
-                blocks:
-                  write: true
-        execute:
-          daily: true
-          hourly: false
-        purge_logs:
-          retention_period: 365
-    release: opensearch
   - name: upload-dashboards-objects
     release: opensearch
     consumes:
@@ -317,7 +274,7 @@ instance_groups:
   stemcell: default
   vm_extensions:
   - logs-opensearch-ingestor-profile
-  - 15GB_ephemeral_disk
+  - 50GB_ephemeral_disk
   vm_type: t3.medium
 
 - name: ingestor
@@ -378,7 +335,7 @@ instance_groups:
   networks:
   - name: services
 
-- name: ingestor_cloudwatch
+- name: ingestor_cloudwatch_rds
   instances: 1
   jobs:
   - name: bpm
@@ -403,7 +360,7 @@ instance_groups:
       logstash_ingestor:
         cloudwatch:
           region: ((region))
-          prefix: ((cloudwatch_prefix))
+          prefix: ((rds_cloudwatch_prefix))
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
@@ -427,9 +384,9 @@ instance_groups:
   persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
   azs: [z1]
-  vm_type: m6i.large
+  vm_type: t3.large
   vm_extensions:
   - logs-opensearch-ingestor-profile
-  - 15GB_ephemeral_disk
+  - 50GB_ephemeral_disk
   networks:
   - name: services

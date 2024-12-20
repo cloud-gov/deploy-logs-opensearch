@@ -6,7 +6,7 @@ instance_groups:
   - name: services
 
 - name: opensearch_data
-  instances: 24
+  instances: 25
   vm_type: r6i.2xlarge
   update:
     max_in_flight: 3
@@ -21,14 +21,15 @@ instance_groups:
 
 - name: archiver
   instances: 3
-  vm_type: r6i.large
+  vm_type: r6i.xlarge
 
 - name: ingestor
-  instances: 7
+  instances: 9
   vm_type: r6i.xlarge.logsearch.ingestor
 
-- name: ingestor_cloudwatch
+- name: ingestor_cloudwatch_rds
   instances: 1
+  vm_type: r6i.large
 
 - name: maintenance
   vm_type: t3.large
@@ -41,12 +42,6 @@ instance_groups:
         rollover_document_size: 600gb
         rollover_index_age: 1d
         shard_count: 24
-  - name: curator
-    release: opensearch
-    properties:
-      curator:
-        purge_logs:
-          retention_period: 365
 
 addons:
 - name: bosh-dns-aliases
