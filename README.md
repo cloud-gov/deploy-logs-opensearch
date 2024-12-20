@@ -17,3 +17,11 @@ properties:
         redirect-uri: https://CHANGEME/login
         autoapprove: true
 ```
+
+## e2e tests with Playwright
+
+This code includes e2e tests for logging into OpenSearch that use Python Playwright. To run these tests:
+
+```shell
+./scripts/e2e-local.sh
+```
