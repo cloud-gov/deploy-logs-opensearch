@@ -57,6 +57,17 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
   - name: opensearch_dashboards
     consumes: *consumes-opensearch-manager
     properties:
