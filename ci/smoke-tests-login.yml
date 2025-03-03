@@ -8,5 +8,5 @@ run:
   args:
   - -exc
   - |
-    pip install requests
-    python deploy-logs-opensearch-config/ci/smoke-tests-login.py
+    cd deploy-logs-opensearch-config
+    ./scripts/e2e.sh
