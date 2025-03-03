@@ -1,6 +1,6 @@
 instance_groups:
 #######################################################
-#First deploy group - opensearch_data, opensearch_dashboards, maintenance
+#First deploy group - opensearch_data, opensearch_manager, maintenance
 #######################################################
 - name: opensearch_data
   instances: 11
@@ -40,43 +40,45 @@ instance_groups:
     bosh:
       swap_size: 0
 
-- name: opensearch_dashboards
-  instances: 2
+- name: opensearch_manager
+  instances: 3
+  vm_extensions: [15GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
   - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-  - name: opensearch_dashboards
-    consumes: *consumes-opensearch-manager
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    provides:
+      opensearch:
+        as: opensearch_manager
     properties:
-      opensearch_dashboards:
-        config_options:
-          server.maxPayloadBytes: 4194304
-        console.enabled: false
-        defaultAppId: dashboard/App-Overview
-        env:
-        - NODE_ENV: production
-        health:
-          timeout: 600
-        index: ((dashboard_index))
-        memory_limit: 75
-        multitenancy:
-          tenants:
-            enable_private: false
+      opensearch:
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_cluster_manager: true
+          allow_data: false
     release: opensearch
-  vm_extensions:
-  - 15GB_ephemeral_disk
-  stemcell: default
+  - name: snort-config
+    properties:
+      snort:
+        rules:
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
+    release: jammy-snort
   azs:
   - z1
+  persistent_disk_type: logs_opensearch_os_master
+  stemcell: default
+  vm_type: t3.large
   networks:
    - name: services
-  env:
-    bosh:
-      swap_size: 0
-
 
 - name: maintenance
   instances: 1
@@ -185,48 +187,8 @@ instance_groups:
     serial: true # Block on this job to create deploy group 1
 
 #########################################################
-#2nd deploy group - opensearch_manager, ingestors
+#2nd deploy group - archiver, ingestors
 #########################################################
-- name: opensearch_manager
-  instances: 3
-  vm_extensions: [15GB_ephemeral_disk]
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    provides:
-      opensearch:
-        as: opensearch_manager
-    properties:
-      opensearch:
-        clustername: opensearch
-        limits:
-          fd: 131072 # 2 ** 17
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        node:
-          allow_cluster_manager: true
-          allow_data: false
-    release: opensearch
-  - name: snort-config
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-    release: jammy-snort
-  azs:
-  - z1
-  persistent_disk_type: logs_opensearch_os_master
-  stemcell: default
-  vm_type: t3.large
-  networks:
-   - name: services
-
 - name: archiver
   instances: 1
   jobs:
@@ -390,3 +352,45 @@ instance_groups:
   - 50GB_ephemeral_disk
   networks:
   - name: services
+  update:
+    serial: true # Block on this job to create deploy group 1
+
+#########################################################
+#3rd deploy group - dashboards
+#########################################################
+- name: opensearch_dashboards
+  instances: 2
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+  - name: opensearch_dashboards
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch_dashboards:
+        config_options:
+          server.maxPayloadBytes: 4194304
+        console.enabled: false
+        defaultAppId: dashboard/App-Overview
+        env:
+        - NODE_ENV: production
+        health:
+          timeout: 600
+        index: ((dashboard_index))
+        memory_limit: 75
+        multitenancy:
+          tenants:
+            enable_private: false
+    release: opensearch
+  vm_extensions:
+  - 15GB_ephemeral_disk
+  stemcell: default
+  azs:
+  - z1
+  networks:
+   - name: services
+  env:
+    bosh:
+      swap_size: 0
