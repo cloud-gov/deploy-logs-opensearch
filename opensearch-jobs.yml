@@ -98,55 +98,7 @@ instance_groups:
   networks:
    - name: services
   update:
-   serial: true
-
-- name: opensearch_dashboards
-  instances: 2
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-  - name: opensearch_dashboards
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch_dashboards:
-        config_options:
-          server.maxPayloadBytes: 4194304
-        console.enabled: false
-        defaultAppId: dashboard/App-Overview
-        env:
-        - NODE_ENV: production
-        health:
-          timeout: 600
-        index: ((dashboard_index))
-        memory_limit: 75
-        multitenancy:
-          tenants:
-            enable_private: false
-    release: opensearch
-  vm_extensions:
-  - 15GB_ephemeral_disk
-  stemcell: default
-  azs:
-  - z1
-  networks:
-   - name: services
-  env:
-    bosh:
-      swap_size: 0
+    serial: true
 
 
 - name: maintenance
@@ -459,3 +411,53 @@ instance_groups:
   - 50GB_ephemeral_disk
   networks:
   - name: services
+
+- name: opensearch_dashboards
+  instances: 2
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
+  - name: opensearch_dashboards
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch_dashboards:
+        config_options:
+          server.maxPayloadBytes: 4194304
+        console.enabled: false
+        defaultAppId: dashboard/App-Overview
+        env:
+        - NODE_ENV: production
+        health:
+          timeout: 600
+        index: ((dashboard_index))
+        memory_limit: 75
+        multitenancy:
+          tenants:
+            enable_private: false
+    release: opensearch
+  vm_extensions:
+  - 15GB_ephemeral_disk
+  stemcell: default
+  azs:
+  - z1
+  networks:
+   - name: services
+  env:
+    bosh:
+      swap_size: 0
+  update:
+    serial: true # Block on this job to create last deploy
