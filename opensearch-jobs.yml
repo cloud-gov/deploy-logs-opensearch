@@ -49,6 +49,55 @@ instance_groups:
     bosh:
       swap_size: 0
 
+- name: opensearch_manager
+  instances: 3
+  vm_extensions: [15GB_ephemeral_disk]
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    provides:
+      opensearch:
+        as: opensearch_manager
+    properties:
+      opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_cluster_manager: true
+          allow_data: false
+    release: opensearch
+  - name: snort-config
+    properties:
+      snort:
+        rules:
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
+    release: jammy-snort
+  azs:
+  - z1
+  persistent_disk_type: logs_opensearch_os_master
+  stemcell: default
+  vm_type: t3.large
+  networks:
+   - name: services
+
 - name: opensearch_dashboards
   instances: 2
   jobs:
@@ -216,54 +265,7 @@ instance_groups:
 #########################################################
 #2nd deploy group - opensearch_manager, ingestors
 #########################################################
-- name: opensearch_manager
-  instances: 3
-  vm_extensions: [15GB_ephemeral_disk]
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    provides:
-      opensearch:
-        as: opensearch_manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        clustername: opensearch
-        limits:
-          fd: 131072 # 2 ** 17
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        node:
-          allow_cluster_manager: true
-          allow_data: false
-    release: opensearch
-  - name: snort-config
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-    release: jammy-snort
-  azs:
-  - z1
-  persistent_disk_type: logs_opensearch_os_master
-  stemcell: default
-  vm_type: t3.large
-  networks:
-   - name: services
+
 
 - name: archiver
   instances: 1
