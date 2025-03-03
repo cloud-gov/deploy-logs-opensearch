@@ -97,6 +97,8 @@ instance_groups:
   vm_type: t3.large
   networks:
    - name: services
+  update:
+   serial: true
 
 - name: opensearch_dashboards
   instances: 2
