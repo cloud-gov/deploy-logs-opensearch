@@ -1,6 +1,6 @@
 instance_groups:
 #######################################################
-#First deploy group - opensearch_data, opensearch_dashboards, maintenance
+#First deploy group - opensearch_data, opensearch_manager, maintenance
 #######################################################
 - name: opensearch_data
   instances: 11
@@ -15,15 +15,6 @@ instance_groups:
         node:
           allow_cluster_manager: false
           allow_data: true
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         limits:
           fd: 131072  # 2 ** 17
         health:
@@ -65,15 +56,6 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -97,9 +79,6 @@ instance_groups:
   vm_type: t3.large
   networks:
    - name: services
-  update:
-    serial: true
-
 
 - name: maintenance
   instances: 1
@@ -112,15 +91,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -217,10 +187,8 @@ instance_groups:
     serial: true # Block on this job to create deploy group 1
 
 #########################################################
-#2nd deploy group - opensearch_manager, ingestors
+#2nd deploy group - archiver, ingestors
 #########################################################
-
-
 - name: archiver
   instances: 1
   jobs:
@@ -230,15 +198,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
@@ -290,15 +249,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -357,15 +307,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -411,7 +352,12 @@ instance_groups:
   - 50GB_ephemeral_disk
   networks:
   - name: services
+  update:
+    serial: true # Block on this job to create deploy group 1
 
+#########################################################
+#3rd deploy group - dashboards
+#########################################################
 - name: opensearch_dashboards
   instances: 2
   jobs:
@@ -420,17 +366,6 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
   - name: opensearch_dashboards
     consumes: *consumes-opensearch-manager
     properties:
@@ -459,5 +394,3 @@ instance_groups:
   env:
     bosh:
       swap_size: 0
-  update:
-    serial: true # Block on this job to create last deploy
