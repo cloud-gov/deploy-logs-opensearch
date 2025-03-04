@@ -65,6 +65,15 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
