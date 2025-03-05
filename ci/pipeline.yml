@@ -984,7 +984,7 @@ resources:
     start: 12:00 AM
     stop: 1:00 AM
     location: America/New_York
-    days: [Wednesday]
+    days: [Thursday]
 
 resource_types:
 - name: registry-image
