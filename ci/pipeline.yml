@@ -20,6 +20,11 @@ groups:
     - smoke-tests-production
     - smoke-tests-login-production
     - tenant-production
+  - name: update-test-users
+    jobs:
+    - update-test-users-dev
+    - update-test-users-staging
+    - update-test-users-production
   - name: development
     jobs:
     - deploy-opensearch-development
@@ -118,41 +123,107 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
-# - name: update-test-users-dev
-#   serial: true
-#   plan:
-#   - get: deploy-logs-opensearch-config
-#     params: {depth: 1}
-#   - get: master-bosh-root-cert
-#   - get: general-task
-#   - get: weekly
-#     trigger: true
-#   - task: update-test-user-credentials
-#     image: general-task
-#     config:
-#       inputs:
-#         - name: deploy-logs-opensearch-config
-#         - name: master-bosh-root-cert
-#       platform: linux
-#       run:
-#         path: deploy-logs-opensearch-config/ci/update-test-user-passwords.sh
-#       params:
-#         BOSH_DIRECTOR_NAME: development
-#         UAA_API_URL: ((uaa-url-development))
-#         UAA_CLIENT_ID: ((uaa-client-id-development))
-#         UAA_CLIENT_SECRET: ((uaa-client-secret-development))
-#         TEST_USERS_CREDENTIAL_USERNAME_MAP: ((dev-test-users-credential-username-map))
-#         CREDHUB_CA_CERT: master-bosh-root-cert/((master-bosh-cert-file))
-#         CREDHUB_CLIENT: ((opensearch-ci-credhub-client-id))
-#         CREDHUB_SECRET: ((opensearch-ci-credhub-client-secret))
-#         CREDHUB_SERVER: ((credhub-api-server))
-#   on_failure:
-#     put: slack
-#     params: 
-#       <<: *slack-failure-params
-#       text: |
-#         :x: Failed to update test users
-#         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+- name: update-test-users-dev
+  serial: true
+  plan:
+  - get: deploy-logs-opensearch-config
+    params: {depth: 1}
+  - get: general-task
+  - get: weekly
+    trigger: true
+  - task: update-test-user-credentials
+    image: general-task
+    config:
+      inputs:
+        - name: deploy-logs-opensearch-config
+      platform: linux
+      run:
+        path: deploy-logs-opensearch-config/ci/update-test-user-passwords.sh
+      params:
+        BOSH_DIRECTOR_NAME: development
+        UAA_API_URL: ((uaa-url-development))
+        UAA_CLIENT_ID: ((uaa-client-id-development))
+        UAA_CLIENT_SECRET: ((uaa-client-secret-development))
+        TEST_USERS_CREDENTIAL_USERNAME_MAP: ((dev-test-users-credential-username-map))
+        CREDHUB_CA_CERT: ((master-bosh-ca.certificate))
+        CREDHUB_CLIENT: ((opensearch-ci-credhub-client-id))
+        CREDHUB_SECRET: ((opensearch-ci-credhub-client-secret))
+        CREDHUB_SERVER: ((credhub-api-server))
+  on_failure:
+    put: slack
+    params: 
+      <<: *slack-failure-params
+      text: |
+        :x: Failed to update test users
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: update-test-users-staging
+  serial: true
+  plan:
+  - get: deploy-logs-opensearch-config
+    params: {depth: 1}
+  - get: general-task
+  - get: weekly
+    trigger: true
+  - task: update-test-user-credentials
+    image: general-task
+    config:
+      inputs:
+        - name: deploy-logs-opensearch-config
+      platform: linux
+      run:
+        path: deploy-logs-opensearch-config/ci/update-test-user-passwords.sh
+      params:
+        BOSH_DIRECTOR_NAME: staging
+        UAA_API_URL: ((uaa-url-staging))
+        UAA_CLIENT_ID: ((uaa-client-id-staging))
+        UAA_CLIENT_SECRET: ((uaa-client-secret-staging))
+        TEST_USERS_CREDENTIAL_USERNAME_MAP: ((staging-test-users-credential-username-map))
+        CREDHUB_CA_CERT: ((master-bosh-ca.certificate))
+        CREDHUB_CLIENT: ((opensearch-ci-credhub-client-id))
+        CREDHUB_SECRET: ((opensearch-ci-credhub-client-secret))
+        CREDHUB_SERVER: ((credhub-api-server))
+  on_failure:
+    put: slack
+    params: 
+      <<: *slack-failure-params
+      text: |
+        :x: Failed to update test users
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+- name: update-test-users-production
+  serial: true
+  plan:
+  - get: deploy-logs-opensearch-config
+    params: {depth: 1}
+  - get: general-task
+  - get: weekly
+    trigger: true
+  - task: update-test-user-credentials
+    image: general-task
+    config:
+      inputs:
+        - name: deploy-logs-opensearch-config
+      platform: linux
+      run:
+        path: deploy-logs-opensearch-config/ci/update-test-user-passwords.sh
+      params:
+        BOSH_DIRECTOR_NAME: production
+        UAA_API_URL: ((uaa-url-production))
+        UAA_CLIENT_ID: ((uaa-client-id-production))
+        UAA_CLIENT_SECRET: ((uaa-client-secret-production))
+        TEST_USERS_CREDENTIAL_USERNAME_MAP: ((production-test-users-credential-username-map))
+        CREDHUB_CA_CERT: ((master-bosh-ca.certificate))
+        CREDHUB_CLIENT: ((opensearch-ci-credhub-client-id))
+        CREDHUB_SECRET: ((opensearch-ci-credhub-client-secret))
+        CREDHUB_SERVER: ((credhub-api-server))
+  on_failure:
+    put: slack
+    params: 
+      <<: *slack-failure-params
+      text: |
+        :x: Failed to update test users
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-opensearch-development
   serial_groups: [bosh-development]
@@ -907,20 +978,13 @@ resources:
     aws_region: us-gov-west-1
     tag: latest    
 
-# - name: master-bosh-root-cert
-#   type: s3-iam
-#   source:
-#     bucket: ((production-bucket-name))
-#     region_name: ((aws-region))
-#     versioned_file: ((master-bosh-cert-file))
-
-# - name: weekly
-#   type: time
-#   source:
-#     start: 12:00 AM
-#     stop: 1:00 AM
-#     location: America/New_York
-#     days: [Wednesday]
+- name: weekly
+  type: time
+  source:
+    start: 12:00 AM
+    stop: 1:00 AM
+    location: America/New_York
+    days: [Wednesday]
 
 resource_types:
 - name: registry-image
