@@ -151,7 +151,7 @@ jobs:
         CREDHUB_SERVER: ((credhub-api-server))
   on_failure:
     put: slack
-    params: 
+    params:
       <<: *slack-failure-params
       text: |
         :x: Failed to update test users
@@ -185,7 +185,7 @@ jobs:
         CREDHUB_SERVER: ((credhub-api-server))
   on_failure:
     put: slack
-    params: 
+    params:
       <<: *slack-failure-params
       text: |
         :x: Failed to update test users
@@ -219,7 +219,7 @@ jobs:
         CREDHUB_SERVER: ((credhub-api-server))
   on_failure:
     put: slack
-    params: 
+    params:
       <<: *slack-failure-params
       text: |
         :x: Failed to update test users
@@ -307,7 +307,7 @@ jobs:
       passed: [deploy-opensearch-development]
       trigger: true
     - get: opensearch-development-deployment
-      trigger: true      
+      trigger: true
       passed: [deploy-opensearch-development]
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -373,7 +373,7 @@ jobs:
       passed: [deploy-opensearch-development]
       trigger: true
     - get: opensearch-development-deployment
-      trigger: true      
+      trigger: true
       passed: [deploy-opensearch-development]
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -405,7 +405,7 @@ jobs:
       trigger: true
     - get: opensearch-development-deployment
       passed: [tenant-development]
-      trigger: true      
+      trigger: true
   - task: upload-dashboards-objects
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -509,7 +509,7 @@ jobs:
       trigger: true
     - get: opensearch-staging-deployment
       passed: [deploy-opensearch-staging]
-      trigger: true      
+      trigger: true
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -574,7 +574,7 @@ jobs:
       passed: [deploy-opensearch-staging]
       trigger: true
     - get: opensearch-staging-deployment
-      trigger: true      
+      trigger: true
       passed: [deploy-opensearch-staging]
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -743,7 +743,7 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      trigger: true          
+      trigger: true
       passed: [deploy-opensearch-production]
   - task: smoke-tests
     file: pipeline-tasks/bosh-logs-errand.yml
@@ -778,7 +778,7 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      trigger: true    
+      trigger: true
       passed: [deploy-opensearch-production]
     - get: tests-timer
       trigger: true
@@ -809,8 +809,8 @@ jobs:
       passed: [deploy-opensearch-production]
       trigger: true
     - get: opensearch-production-deployment
-      trigger: true     
-      passed: [deploy-opensearch-production] 
+      trigger: true
+      passed: [deploy-opensearch-production]
   - task: create-tenants
     file: pipeline-tasks/bosh-logs-errand.yml
     params:
@@ -976,7 +976,7 @@ resources:
     aws_secret_access_key: ((ecr_aws_secret))
     repository: playwright-python
     aws_region: us-gov-west-1
-    tag: latest    
+    tag: latest
 
 - name: weekly
   type: time

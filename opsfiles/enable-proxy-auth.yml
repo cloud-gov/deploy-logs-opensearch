@@ -68,6 +68,7 @@
         cf:
           admin_group: ((cf-admin-group))
           api_url: ((cf-api-url))
+          auditor_group: ((cf-auditor-group))
         gunicorn:
           num_workers: 4
           timeout: 300

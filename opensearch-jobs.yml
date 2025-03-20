@@ -12,6 +12,17 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         node:
           allow_cluster_manager: false
           allow_data: true
@@ -56,6 +67,17 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -91,6 +113,17 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -198,6 +231,17 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
@@ -249,6 +293,17 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -307,6 +362,17 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -366,6 +432,19 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
   - name: opensearch_dashboards
     consumes: *consumes-opensearch-manager
     properties:
