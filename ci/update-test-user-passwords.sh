@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Login to UAA
 uaac target "$UAA_API_URL"
 uaac token client get "$UAA_CLIENT_ID" -s "$UAA_CLIENT_SECRET"
