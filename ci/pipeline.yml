@@ -349,10 +349,14 @@ jobs:
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
         params:
-          CF_USERNAME: ((cf-test-username-development))
-          CF_PASSWORD: ((cf-test-user-password-development))
+          # CF_USERNAME: ((cf-test-username-development))
+          # CF_PASSWORD: ((cf-test-user-password-development))
           CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
-          TOTP_SEED: ((cf-test-user-totp-seed-development))
+          # TOTP_SEED: ((cf-test-user-totp-seed-development))
+
+          TEST_USER_1_USERNAME: ((dev-test-user-1-username))
+          TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
+          TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
     on_failure:
       put: slack
       params:
