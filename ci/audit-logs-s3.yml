@@ -9,6 +9,5 @@ run:
   - -c
   - |
    cd deploy-logs-opensearch-config/ci/
-   ls
    python -m pip install -r requirements.txt
-   python audit-to-s3.py
+   python audit-logs-s3.py
