@@ -3,6 +3,7 @@ groups:
   - name: all
     jobs:
       - set-self
+      - audit-to-s3
       - build-opensearch-release
       - deploy-opensearch-development
       - upload-dashboards-objects-development
@@ -160,6 +161,7 @@ jobs:
     plan:
     - get: fifteen-timer
       trigger: true
+    - get: deploy-logs-opensearch-config
     - task: transfer-audit-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
@@ -921,7 +923,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: audit-s3
 
   - name: opensearch-stemcell-jammy
     source:
