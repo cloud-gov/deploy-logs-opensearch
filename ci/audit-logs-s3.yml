@@ -1,5 +1,8 @@
 platform: linux
 
+inputs:
+- name: deploy-logs-opensearch-config
+
 run:
   path: sh
   args:
