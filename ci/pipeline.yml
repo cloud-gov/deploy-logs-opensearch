@@ -159,17 +159,20 @@ jobs:
   - name: audit-to-s3
     serial: true
     plan:
+    - get: general-task
     - get: fifteen-timer
       trigger: true
     - get: deploy-logs-opensearch-config
+    - get: pipeline-tasks
+    - get: opensearch-production-deployment
     - task: transfer-audit-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
       params:
-        CF_USERNAME: ((cf-test-username-delopment))
-        CF_PASSWORD: ((cf-test-user-password-development))
-        CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
-        TOTP_SEED: ((cf-test-user-totp-seed-development))
+        CF_USERNAME: ((cf-test-username-production))
+        CF_PASSWORD: ((cf-test-user-password-production))
+        CF_SYSTEM_DOMAIN: ((cf-system-domain-production))
+        TOTP_SEED: ((cf-test-user-totp-seed-production))
 
   - name: update-test-users-staging
     serial: true
