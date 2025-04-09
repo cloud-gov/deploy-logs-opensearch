@@ -1,0 +1,10 @@
+platform: linux
+
+run:
+  path: sh
+  args:
+  - -c
+  - |
+   cd deploy-logs-opensearch-config/ci/
+   python -m pip install -r requirements.txt
+   python audit-to-s3.py

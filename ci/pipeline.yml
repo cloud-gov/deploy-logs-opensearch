@@ -155,6 +155,20 @@ jobs:
           :x: Failed to update test users
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+  - name: audit-to-s3
+    serial: true
+    plan:
+    - get: fifteen-timer
+      trigger: true
+    - task: transfer-audit-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
+      params:
+        CF_USERNAME: ((cf-test-username-delopment))
+        CF_PASSWORD: ((cf-test-user-password-development))
+        CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
+        TOTP_SEED: ((cf-test-user-totp-seed-development))
+
   - name: update-test-users-staging
     serial: true
     plan:
@@ -925,6 +939,11 @@ resources:
     type: time
     source:
       interval: 30m
+
+  - name: fifteen-timer
+    type: time
+    source:
+      interval: 15m
 
   - name: slack
     type: slack-notification
