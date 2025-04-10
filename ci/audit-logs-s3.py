@@ -17,18 +17,29 @@ start_time = fifteen_minutes_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
 end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 def get_audit_logs(start,end):
+    audit_logs=[]
     cf_json = subprocess.check_output(
         "cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at",
         universal_newlines=True,
         shell=True,
     )
-
-    return cf_json
+    pages=json.loads(cf_json)
+    total_pages= pages['pagination']["total_pages"]
+    for page in range(total_pages):
+        result= subprocess.check_output(
+        "cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at&page=" + str(page),
+        universal_newlines=True,
+        shell=True,
+        )
+        data= json.loads(result)
+        result_data=data.get("resources",{})
+        audit_logs.extend(result_data)
+    return audit_logs
 
 def main():
     audit_logs = get_audit_logs(start_time,end_time)
     try:
-        s3_client.put_object(Bucket=bucket_name,Key=object_key,Body=audit_logs,ContentType='application/json')
+        s3_client.put_object(Bucket=bucket_name,Key=object_key,Body=json.dumps(audit_logs,indent=2),ContentType='application/json')
         print("success for time "+ str(start_time))
     except Exception as e:
         print(e)
