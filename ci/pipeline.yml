@@ -7,7 +7,7 @@ groups:
       - deploy-opensearch-development
       - upload-dashboards-objects-development
       - smoke-tests-development
-      - smoke-tests-login-development
+      - e2e-tests-development
       - tenant-development
       - deploy-opensearch-staging
       - upload-dashboards-objects-staging
