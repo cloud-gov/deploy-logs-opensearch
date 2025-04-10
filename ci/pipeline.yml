@@ -349,10 +349,7 @@ jobs:
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
-          # CF_USERNAME: ((cf-test-username-development))
-          # CF_PASSWORD: ((cf-test-user-password-development))
           CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
-          # TOTP_SEED: ((cf-test-user-totp-seed-development))
 
           TEST_USER_1_USERNAME: ((development-test-user-1-username))
           TEST_USER_1_PASSWORD: ((development-test-user-1-password))
