@@ -15,7 +15,7 @@ for credential_name in $TEST_USER_CREDENTIAL_NAMES; do
 
   # Generate a new password for the credential
   PASSWORD_CREDENTIAL="/concourse/main/deploy-logs-opensearch/$credential_name"
-  if ! credhub get -n "$PASSWORD_CREDENTIAL"; then
+  if ! credhub get -n "$PASSWORD_CREDENTIAL" > /dev/null; then
     credhub generate -n "$PASSWORD_CREDENTIAL" --type password
   else 
     credhub regenerate -n "$PASSWORD_CREDENTIAL"
@@ -27,7 +27,7 @@ for credential_name in $TEST_USER_CREDENTIAL_NAMES; do
   # Get the new password from Credhub
   PASSWORD=$(credhub get -n "$PASSWORD_CREDENTIAL" --output-json | jq -r '.value')
 
-  if ! uaac user get "$USERNAME"; then
+  if ! uaac user get "$USERNAME" > /dev/null; then
     printf "Creating UAA user %s\n\n" "$USERNAME"
     uaac user add "$USERNAME" --password "$PASSWORD" --origin cloud.gov --emails "$USERNAME"
   else
