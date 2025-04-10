@@ -345,6 +345,7 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
+          - get: general-task
       - task: provision-test-user-cf-access
         image: general-task
         config:
