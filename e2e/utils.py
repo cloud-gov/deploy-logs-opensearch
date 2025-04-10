@@ -1,4 +1,6 @@
 import re
+from playwright.sync_api import expect
+from urllib.parse import urljoin
 
 from . import AUTH_PROXY_URL, UAA_BASE_URL
 
@@ -58,7 +60,6 @@ def switch_tenants(page, tenant="Global"):
 
     # submit
     submit_button = page.get_by_text("Confirm")
-
     submit_button.wait_for()
     submit_button.click()
 
