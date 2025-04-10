@@ -345,6 +345,22 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
+      - task: provision-test-user-cf-access
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: deploy-logs-opensearch-config
+          run:
+            path: deploy-logs-opensearch-config/ci/provision-test-user-cf-access.sh
+        params:
+          TEST_USER_1_USERNAME: ((development-test-user-1-username))
+          TEST_USER_2_USERNAME: ((development-test-user-2-username))
+          TEST_USER_3_USERNAME: ((development-test-user-3-username))
+          TEST_USER_4_USERNAME: ((development-test-user-4-username))
+          CF_ORG_1_NAME: ((development-test-org-1))
+          CF_ORG_2_NAME: ((development-test-org-2))
+          CF_ORG_3_NAME: ((development-test-org-3))
       - task: e2e-tests
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/e2e-tests.yml
