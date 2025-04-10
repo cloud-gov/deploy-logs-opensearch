@@ -356,8 +356,8 @@ jobs:
             path: deploy-logs-opensearch-config/ci/provision-test-user-cf-access.sh
         params:
           CF_API_URL: ((dev-cf-api-url))
-          CF_USERNAME: ((dev-cf-username))
-          CF_PASSWORD: ((dev-cf-password))
+          CF_USERNAME: ((development-cf-username))
+          CF_PASSWORD: ((development-cf-password))
           TEST_USER_1_USERNAME: ((development-test-user-1-username))
           TEST_USER_2_USERNAME: ((development-test-user-2-username))
           TEST_USER_3_USERNAME: ((development-test-user-3-username))
