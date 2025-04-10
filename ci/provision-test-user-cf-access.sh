@@ -27,10 +27,9 @@ function set_org_user() {
   USERNAME_ESCAPED=$(echo "$1" | jq -Rr @uri)
   USER_GUID=$(cf curl "/v3/users?partial_usernames=$USERNAME_ESCAPED" | jq -er '.resources[0].guid')
   ORG_GUID=$(cf org "$2" --guid)
+  TMP_FILE=$(mktemp)
 
-  cf curl "/v3/roles" \
-    -X POST \
-    -d @- << EOF
+  cat > "${TMP_FILE}" << EOF
 {
   "type": "organization_user",
   "relationships": {
@@ -47,6 +46,12 @@ function set_org_user() {
   }
 }
 EOF
+
+  cf curl "/v3/roles" \
+    -X POST \
+    -d "@$TMP_FILE"
+  
+  rm "$TMP_FILE"
 }
 
 # Expected results:
