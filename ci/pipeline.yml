@@ -30,7 +30,7 @@ groups:
       - deploy-opensearch-development
       - upload-dashboards-objects-development
       - smoke-tests-development
-      - smoke-tests-login-development
+      - e2e-tests-development
       - tenant-development
   - name: staging
     jobs:
@@ -325,7 +325,7 @@ jobs:
           :x: Smoke tests for OpenSearch in development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: smoke-tests-login-development
+  - name: e2e-tests-development
     serial_groups: [bosh-development]
     plan:
       - in_parallel:
@@ -374,7 +374,7 @@ jobs:
       params:
         <<: *slack-failure-params
         text: |
-          :x: Login smoke tests for OpenSearch in development FAILED
+          :x: E2E tests for OpenSearch in development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: tenant-development
