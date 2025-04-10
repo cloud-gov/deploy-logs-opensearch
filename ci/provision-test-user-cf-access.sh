@@ -72,11 +72,15 @@ set_org_user "$TEST_USER_1_USERNAME" "$CF_ORG_3_NAME"
 
 # User 2 is an org manager in org 2
 cf set-org-role "$TEST_USER_2_USERNAME" "$CF_ORG_2_NAME" OrgManager
+set_org_user "$TEST_USER_2_USERNAME" "$CF_ORG_2_NAME"
 
 # User 3 is an org manager in org 1
 cf set-org-role "$TEST_USER_3_USERNAME" "$CF_ORG_1_NAME" OrgManager
+set_org_user "$TEST_USER_3_USERNAME" "$CF_ORG_1_NAME"
 
 # User 4 is an org manager in org 1 and org 3
 cf set-org-role "$TEST_USER_4_USERNAME" "$CF_ORG_1_NAME" OrgManager
+set_org_user "$TEST_USER_4_USERNAME" "$CF_ORG_1_NAME"
 cf set-org-role "$TEST_USER_4_USERNAME" "$CF_ORG_3_NAME" OrgManager
+set_org_user "$TEST_USER_4_USERNAME" "$CF_ORG_3_NAME"
 
