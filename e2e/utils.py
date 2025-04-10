@@ -45,3 +45,27 @@ def log_in(user, page, start_at):
         authorize_button = page.get_by_text("Authorize")
         authorize_button.wait_for()
         authorize_button.click()
+
+
+def switch_tenants(page, tenant="Global"):
+    """
+    switch to the specified tenant.
+    """
+
+    tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
+    tenant_option.wait_for()
+    tenant_option.click()
+
+    # submit
+    submit_button = page.get_by_text("Confirm")
+
+    submit_button.wait_for()
+    submit_button.click()
+
+    # wait for loading screen
+    loading_text = page.get_by_text("Loading OpenSearch Dashboards")
+    loading_text.wait_for()
+
+    # wait for dashboard to finish loading
+    home_title = page.get_by_role("heading", name="Home")
+    home_title.wait_for()
