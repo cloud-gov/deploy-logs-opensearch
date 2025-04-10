@@ -12,13 +12,13 @@ groups:
       - deploy-opensearch-staging
       - upload-dashboards-objects-staging
       - smoke-tests-staging
-      - smoke-tests-login-staging
+      - e2e-tests-staging
       - tenant-staging
       - plan-opensearch-production
       - deploy-opensearch-production
       - upload-dashboards-objects-production
       - smoke-tests-production
-      - smoke-tests-login-production
+      - e2e-tests-production
       - tenant-production
   - name: update-test-users
     jobs:
@@ -37,7 +37,7 @@ groups:
       - deploy-opensearch-staging
       - upload-dashboards-objects-staging
       - smoke-tests-staging
-      - smoke-tests-login-staging
+      - e2e-tests-staging
       - tenant-staging
   - name: production
     jobs:
@@ -45,7 +45,7 @@ groups:
       - deploy-opensearch-production
       - upload-dashboards-objects-production
       - smoke-tests-production
-      - smoke-tests-login-production
+      - e2e-tests-production
       - tenant-production
 
 jobs:
@@ -347,7 +347,7 @@ jobs:
           - get: playwright-python
       - task: e2e-tests
         image: playwright-python
-        file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+        file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
           # CF_USERNAME: ((cf-test-username-development))
           # CF_PASSWORD: ((cf-test-user-password-development))
@@ -542,7 +542,7 @@ jobs:
           :x: Smoke tests for OpenSearch in staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: smoke-tests-login-staging
+  - name: e2e-tests-staging
     serial_groups: [bosh-staging]
     plan:
       - in_parallel:
@@ -562,9 +562,9 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
-      - task: smoke-tests-login
+      - task: e2e-tests
         image: playwright-python
-        file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+        file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
           CF_USERNAME: ((cf-test-username-staging))
           CF_PASSWORD: ((cf-test-user-password-staging))
@@ -777,7 +777,7 @@ jobs:
           :x: Smoke tests for OpenSearch in production FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: smoke-tests-login-production
+  - name: e2e-tests-production
     serial_groups: [bosh-production]
     plan:
       - in_parallel:
@@ -797,9 +797,9 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
-      - task: smoke-tests-login
+      - task: e2e-tests
         image: playwright-python
-        file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+        file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
           CF_USERNAME: ((cf-test-username-production))
           CF_PASSWORD: ((cf-test-user-password-production))
