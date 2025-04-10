@@ -357,6 +357,18 @@ jobs:
           TEST_USER_1_USERNAME: ((development-test-user-1-username))
           TEST_USER_1_PASSWORD: ((development-test-user-1-password))
           TEST_USER_1_TOTP_SEED: ((development-test-user-1-totp-seed))
+
+          TEST_USER_2_USERNAME: ((development-test-user-2-username))
+          TEST_USER_2_PASSWORD: ((development-test-user-2-password))
+          TEST_USER_2_TOTP_SEED: ((development-test-user-2-totp-seed))
+
+          TEST_USER_3_USERNAME: ((development-test-user-3-username))
+          TEST_USER_3_PASSWORD: ((development-test-user-3-password))
+          TEST_USER_3_TOTP_SEED: ((development-test-user-3-totp-seed))
+
+          TEST_USER_4_USERNAME: ((development-test-user-4-username))
+          TEST_USER_4_PASSWORD: ((development-test-user-4-password))
+          TEST_USER_4_TOTP_SEED: ((development-test-user-4-totp-seed))
     on_failure:
       put: slack
       params:
