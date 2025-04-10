@@ -21,6 +21,32 @@ for var in "${required_env_vars[@]}"; do
   fi
 done
 
+function set_org_user() {
+  USERNAME_ESCAPED=$(echo "$1" | jq -Rr @uri)
+  USER_GUID=$(cf curl "/v3/users?partial_usernames=$USERNAME_ESCAPED" | jq -er '.resources[0].guid')
+  ORG_GUID=$(cf org "$2" --guid)
+
+  cf curl "/v3/roles" \
+    -X POST \
+    -d @- << EOF
+{
+  "type": "organization_user",
+  "relationships": {
+    "user": {
+      "data": {
+        "guid": "$USER_GUID"
+      }
+    },
+    "organization": {
+      "data": {
+        "guid": "$ORG_GUID"
+      }
+    }
+  }
+}
+EOF
+}
+
 # Expected results:
 #  - User 1 is in org 1 and org 3
 #  - User 2 is in org 2. User 2 shares no orgs with User 1.
@@ -33,7 +59,9 @@ cf create-org "$CF_ORG_3_NAME"
 
 # User 1 is an org manager in org 1 and org 3
 cf set-org-role "$TEST_USER_1_USERNAME" "$CF_ORG_1_NAME" OrgManager
+set_org_user "$TEST_USER_1_USERNAME" "$CF_ORG_1_NAME"
 cf set-org-role "$TEST_USER_1_USERNAME" "$CF_ORG_3_NAME" OrgManager
+set_org_user "$TEST_USER_1_USERNAME" "$CF_ORG_3_NAME"
 
 # User 2 is an org manager in org 2
 cf set-org-role "$TEST_USER_2_USERNAME" "$CF_ORG_2_NAME" OrgManager
