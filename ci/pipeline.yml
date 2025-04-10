@@ -386,13 +386,13 @@ jobs:
           TEST_USER_4_USERNAME: ((development-test-user-4-username))
           TEST_USER_4_PASSWORD: ((development-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((development-test-user-4-totp-seed))
-    on_failure:
-      put: slack
-      params:
-        <<: *slack-failure-params
-        text: |
-          :x: E2E tests for OpenSearch in development FAILED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    # on_failure:
+    #   put: slack
+    #   params:
+    #     <<: *slack-failure-params
+    #     text: |
+    #       :x: E2E tests for OpenSearch in development FAILED
+    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: tenant-development
     serial_groups: [bosh-development]
