@@ -345,7 +345,7 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
-      - task: smoke-tests-login
+      - task: e2e-tests
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
         params:
