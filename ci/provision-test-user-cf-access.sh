@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 if ! cf target > /dev/null; then
   cf api "${CF_API_URL}"
   cf auth
