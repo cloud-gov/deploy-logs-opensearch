@@ -923,7 +923,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: alerting-e2e-tests
 
   - name: opensearch-stemcell-jammy
     source:
