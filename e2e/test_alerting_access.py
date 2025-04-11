@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import time
-from .notifications import create_email_recipient_group
+from .notifications import create_email_recipient_group, create_notifications_channel
 from .utils import (
     log_in,
     switch_tenants,
@@ -25,3 +25,9 @@ def test_user_can_create_alerts(user_1, page):
     click_contextual_menu_link(page, "Email recipient groups")
 
     create_email_recipient_group(page, user_1, test_email_recipient_group_name)
+
+    click_contextual_menu_link(page, "Channels")
+
+    create_notifications_channel(
+        page, test_email_recipient_group_name, test_channel_name
+    )

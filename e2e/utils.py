@@ -88,6 +88,6 @@ def open_primary_menu_link(page, menu_link_name):
 
 
 def click_contextual_menu_link(page, link_name):
-    link = page.get_by_text(link_name)
+    link = page.get_by_role("link", name=link_name, exact=True)
     link.wait_for()
     link.click()
