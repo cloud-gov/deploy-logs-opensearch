@@ -54,6 +54,10 @@ def switch_tenants(page, tenant="Global"):
     switch to the specified tenant.
     """
 
+    open_tenant_options_btn = page.get_by_label("Open list of options")
+    open_tenant_options_btn.wait_for()
+    open_tenant_options_btn.click()
+
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
     tenant_option.click()
@@ -64,9 +68,9 @@ def switch_tenants(page, tenant="Global"):
     submit_button.click()
 
     # wait for loading screen
-    loading_text = page.get_by_text("Loading OpenSearch Dashboards")
+    loading_text = page.get_by_text("Loading Cloud.gov Logs")
     loading_text.wait_for()
 
     # wait for dashboard to finish loading
-    home_title = page.get_by_role("heading", name="Home")
-    home_title.wait_for()
+    dashboards_title = page.get_by_role("heading", name="Dashboards")
+    dashboards_title.wait_for()
