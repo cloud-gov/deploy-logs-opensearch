@@ -74,3 +74,20 @@ def switch_tenants(page, tenant="Global"):
     # wait for dashboard to finish loading
     dashboards_title = page.get_by_role("heading", name="Dashboards")
     dashboards_title.wait_for()
+
+
+def open_primary_menu_link(page, menu_link_name):
+    # open the hamburger menu
+    hamburger_button = page.get_by_label("Toggle primary navigation")
+    hamburger_button.wait_for()
+    hamburger_button.click()
+
+    menu_link = page.get_by_text(menu_link_name)
+    menu_link.wait_for()
+    menu_link.click()
+
+
+def click_contextual_menu_link(page, link_name):
+    link = page.get_by_text(link_name)
+    link.wait_for()
+    link.click()
