@@ -63,11 +63,6 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
     choose_sender_placeholder.wait_for()
     choose_sender_placeholder.click()
 
-    # smtp_sender_input = page.get_by_role("textbox", name="SMTP sender")
-    # smtp_sender_input.wait_for()
-    # smtp_sender_input.fill("cloudgovemail")
-    # page.keyboard.press("Enter")
-
     cloud_smtp_sender = page.get_by_role("option", name="cloudgovemail")
     cloud_smtp_sender.wait_for()
     cloud_smtp_sender.click()
