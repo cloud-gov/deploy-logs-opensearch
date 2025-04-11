@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 import time
-from .notifications import create_email_recipient_group, create_notifications_channel
+from .notifications import (
+    create_email_recipient_group,
+    create_notifications_channel,
+    delete_notifications_channel,
+)
 from .utils import (
     log_in,
     switch_tenants,
@@ -31,3 +35,15 @@ def test_user_can_create_alerts(user_1, page):
     create_notifications_channel(
         page, test_email_recipient_group_name, test_channel_name
     )
+
+
+def test_user_can_delete_alerts(user_1, page):
+    log_in(user_1, page, AUTH_PROXY_URL)
+
+    switch_tenants(page, CF_ORG_1_NAME)
+
+    open_primary_menu_link(page, "Notifications")
+
+    click_contextual_menu_link(page, "Channels")
+
+    delete_notifications_channel(page, test_channel_name)

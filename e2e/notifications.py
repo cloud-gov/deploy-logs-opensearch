@@ -90,3 +90,27 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
 
     created_channel = page.get_by_text(channel_name)
     created_channel.wait_for()
+
+
+def delete_notifications_channel(page, channel_name):
+    channel_checkbox = (
+        page.locator("tr").filter(has_text=channel_name).get_by_role("checkbox")
+    )
+    channel_checkbox.wait_for()
+    channel_checkbox.click()
+
+    actions_button = page.get_by_role("button", name="Actions")
+    actions_button.wait_for()
+    actions_button.click()
+
+    delete_channel_button = page.get_by_role("button", name="Delete", exact=True)
+    delete_channel_button.wait_for()
+    delete_channel_button.click()
+
+    delete_confirm_input = page.get_by_placeholder("delete")
+    delete_confirm_input.wait_for()
+    delete_confirm_input.fill("delete")
+
+    delete_confirm_button = page.get_by_role("button", name="Delete", exact=True)
+    delete_confirm_button.wait_for()
+    delete_confirm_button.click()
