@@ -5,6 +5,7 @@ from .notifications import (
     create_email_recipient_group,
     create_notifications_channel,
     delete_notifications_channel,
+    delete_email_recipient_group,
 )
 from .utils import (
     log_in,
@@ -47,3 +48,7 @@ def test_user_can_delete_alerts(user_1, page):
     click_contextual_menu_link(page, "Channels")
 
     delete_notifications_channel(page, test_channel_name)
+
+    click_contextual_menu_link(page, "Email recipient groups")
+
+    delete_email_recipient_group(page, test_email_recipient_group_name)

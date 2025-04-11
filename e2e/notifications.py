@@ -2,6 +2,20 @@ from playwright.sync_api import expect
 import re
 
 
+def wait_for_channels_header(page):
+    channels_header = page.get_by_role(
+        "heading", name=re.compile(r"^Channels\s\([0-9]+\)$")
+    )
+    channels_header.wait_for()
+
+
+def wait_for_email_recipient_groups_header(page):
+    recipient_groups_header = page.get_by_role(
+        "heading", name=re.compile(r"^Email recipient groups$")
+    )
+    recipient_groups_header.wait_for()
+
+
 def create_email_recipient_group(page, user, email_recipient_group_name):
     create_group_button = (
         page.locator("div")
@@ -84,10 +98,7 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
     create_channel_button.wait_for()
     create_channel_button.click()
 
-    channels_header = page.get_by_role(
-        "heading", name=re.compile(r"^Channels\s\([0-9]+\)$")
-    )
-    channels_header.wait_for()
+    wait_for_channels_header(page)
 
     created_channel = page.get_by_role("link", name=channel_name, exact=True)
     created_channel.wait_for()
@@ -116,9 +127,32 @@ def delete_notifications_channel(page, channel_name):
     delete_confirm_button.wait_for()
     delete_confirm_button.click()
 
-    channels_header = page.get_by_role(
-        "heading", name=re.compile(r"^Channels\s\([0-9]+\)$")
-    )
-    channels_header.wait_for()
+    wait_for_channels_header(page)
 
     expect(page.get_by_role("heading", name="No channels to display")).to_be_visible()
+
+
+def delete_email_recipient_group(page, recipient_group_name):
+    recipient_group_checkbox = (
+        page.locator("tr").filter(has_text=recipient_group_name).get_by_role("checkbox")
+    )
+    recipient_group_checkbox.wait_for()
+    recipient_group_checkbox.click()
+
+    delete_channel_button = page.get_by_role("button", name="Delete", exact=True)
+    delete_channel_button.wait_for()
+    delete_channel_button.click()
+
+    delete_confirm_input = page.get_by_placeholder("delete")
+    delete_confirm_input.wait_for()
+    delete_confirm_input.fill("delete")
+
+    delete_confirm_button = page.get_by_role("button", name="Delete", exact=True)
+    delete_confirm_button.wait_for()
+    delete_confirm_button.click()
+
+    wait_for_email_recipient_groups_header(page)
+
+    expect(
+        page.get_by_role("heading", name="No recipient groups to display")
+    ).to_be_visible()
