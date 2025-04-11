@@ -104,6 +104,51 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
     created_channel.wait_for()
 
 
+def create_alert_monitor(page, monitor_name, trigger_name, action_name):
+    monitor_link = page.get_by_role("tab", name="Monitors")
+    monitor_link.wait_for()
+    monitor_link.click()
+
+    create_monitor_button = page.get_by_role("link", name="Create monitor")
+    create_monitor_button.wait_for()
+    create_monitor_button.click()
+
+    monitor_name_input = page.get_by_role("input", name="name")
+    monitor_name_input.wait_for()
+    monitor_name_input.fill(monitor_name)
+
+    index_input = page.get_by_label("Index")
+    index_input.wait_for()
+    index_input.fill("logs-app*")
+    page.keyboard.press("Enter")
+
+    time_input_placeholder = (
+        page.locator("div").filter(has_text=re.compile(r"^Select a time field$")).first
+    )
+    time_input_placeholder.wait_for()
+    time_input_placeholder.click()
+
+    timestamp_option = page.get_by_role("option", name="@timestamp")
+    timestamp_option.wait_for()
+    timestamp_option.click()
+
+    add_trigger_button = page.get_by_role("button", "Add trigger")
+    add_trigger_button.wait_for()
+    add_trigger_button.click()
+
+    trigger_name_input = page.get_by_label("Trigger name")
+    trigger_name_input.wait_for()
+    trigger_name_input.fill(trigger_name)
+
+    add_action_button = page.get_by_role("button", "Add action")
+    add_action_button.wait_for()
+    add_action_button.click()
+
+    action_name_input = page.get_by_label("Action name")
+    action_name_input.wait_for()
+    action_name_input.fill(action_name)
+
+
 def delete_notifications_channel(page, channel_name):
     channel_checkbox = (
         page.locator("tr").filter(has_text=channel_name).get_by_role("checkbox")
