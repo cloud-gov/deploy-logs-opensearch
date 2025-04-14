@@ -1,4 +1,5 @@
 import re
+from playwright.sync_api import expect
 
 from . import AUTH_PROXY_URL, UAA_BASE_URL
 
@@ -128,3 +129,7 @@ def click_tab_link(page, link_text):
     link = page.get_by_role("tab", name=link_text)
     link.wait_for()
     link.click()
+
+
+def wait_for_loading_finished(page):
+    expect(page.get_by_label("Loading content")).not_to_be_visible()

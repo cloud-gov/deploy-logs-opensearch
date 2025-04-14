@@ -17,6 +17,7 @@ from .utils import (
     open_primary_menu_link,
     click_contextual_menu_link,
     click_tab_link,
+    wait_for_loading_finished,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME
 
@@ -66,21 +67,21 @@ def test_user_cannot_see_alert_objects(user_2, page):
 
     click_contextual_menu_link(page, "Email recipient groups")
 
-    expect(page.get_by_label("Loading content")).not_to_be_visible()
+    wait_for_loading_finished(page)
     expect(
         page.get_by_text(test_email_recipient_group_name, exact=True)
     ).not_to_be_visible()
 
     click_contextual_menu_link(page, "Channels")
 
-    expect(page.locator(".euiBasicTable")).to_have_class(re.compile(r"^euiBasicTable$"))
+    wait_for_loading_finished(page)
     expect(page.get_by_text(test_channel_name, exact=True)).not_to_be_visible()
 
     open_primary_menu_link(page, "Alerting")
 
     click_tab_link(page, "Monitors")
 
-    expect(page.get_by_text(re.compile(r"^Loading monitors\.+$"))).not_to_be_visible()
+    wait_for_loading_finished(page)
     expect(page.get_by_text(test_monitor_name, exact=True)).not_to_be_visible()
 
 
