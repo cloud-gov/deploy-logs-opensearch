@@ -175,8 +175,8 @@ jobs:
         CF_PASSWORD: ((cf-password-production))
         TOTP_SEED: ((cf-test-user-totp-seed-production))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((ecr_aws_key))
-        AWS_SECRET_ACCESS_KEY: ((ecr_aws_secret))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
 
   - name: update-test-users-staging
     serial: true
