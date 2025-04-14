@@ -89,3 +89,20 @@ def click_contextual_menu_link(page, link_name):
     link = page.locator("#app-wrapper").get_by_role("link", name=link_name, exact=True)
     link.wait_for()
     link.click()
+
+
+def wait_for_header(page, header_name):
+    channels_header = page.get_by_role("heading", name=header_name)
+    channels_header.wait_for()
+
+
+def fill_delete_confirm_placeholder(page):
+    delete_confirm_input = page.get_by_placeholder("delete")
+    delete_confirm_input.wait_for()
+    delete_confirm_input.fill("delete")
+
+
+def click_delete_confirm_button(page):
+    delete_confirm_button = page.get_by_role("button", name="Delete", exact=True)
+    delete_confirm_button.wait_for()
+    delete_confirm_button.click()

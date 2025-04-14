@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import time
+from playwright.sync_api import expect
 from .notifications import (
     create_email_recipient_group,
     create_notifications_channel,
@@ -14,7 +15,7 @@ from .utils import (
     open_primary_menu_link,
     click_contextual_menu_link,
 )
-from . import AUTH_PROXY_URL, CF_ORG_1_NAME
+from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME
 
 test_run_timestamp = int(time.time())
 test_email_recipient_group_name = f"TestEmailRecipientGroup-{test_run_timestamp}"
@@ -46,6 +47,21 @@ def test_user_can_create_alerts(user_1, page):
     create_alert_monitor(
         page, test_monitor_name, test_trigger_name, test_action_name, test_channel_name
     )
+
+
+def test_user_cannot_see_alert_objects(user_2, page):
+    log_in(user_2, page, AUTH_PROXY_URL)
+
+    switch_tenants(page, CF_ORG_2_NAME)
+
+    open_primary_menu_link(page, "Notifications")
+
+    click_contextual_menu_link(page, "Email recipient groups")
+
+    page.wait_for_load_state("domcontentloaded")
+    expect(
+        page.get_by_text(test_email_recipient_group_name, exact=True)
+    ).not_to_be_visible()
 
 
 def test_user_can_delete_alerts(user_1, page):
