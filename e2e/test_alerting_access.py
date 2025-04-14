@@ -43,7 +43,7 @@ def test_user_can_create_alerts(user_1, page):
 
     open_primary_menu_link(page, "Alerting")
 
-    create_alert_monitor(page, test_monitor_name, test_trigger_name)
+    create_alert_monitor(page, test_monitor_name, test_trigger_name, test_action_name)
 
 
 def test_user_can_delete_alerts(user_1, page):

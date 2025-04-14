@@ -113,11 +113,11 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name):
     create_monitor_button.wait_for()
     create_monitor_button.click()
 
-    monitor_name_input = page.get_by_role("input", name="name")
+    monitor_name_input = page.locator('input[name="name"]')
     monitor_name_input.wait_for()
     monitor_name_input.fill(monitor_name)
 
-    index_input = page.get_by_label("Index")
+    index_input = page.locator("#index")
     index_input.wait_for()
     index_input.fill("logs-app*")
     page.keyboard.press("Enter")
@@ -132,19 +132,19 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name):
     timestamp_option.wait_for()
     timestamp_option.click()
 
-    add_trigger_button = page.get_by_role("button", "Add trigger")
+    add_trigger_button = page.get_by_role("button", name="Add trigger", exact=True)
     add_trigger_button.wait_for()
     add_trigger_button.click()
 
-    trigger_name_input = page.get_by_label("Trigger name")
+    trigger_name_input = page.locator('input[name="triggerDefinitions[0].name"]')
     trigger_name_input.wait_for()
     trigger_name_input.fill(trigger_name)
 
-    add_action_button = page.get_by_role("button", "Add action")
+    add_action_button = page.get_by_role("button", name="Add action", exact=True)
     add_action_button.wait_for()
     add_action_button.click()
 
-    action_name_input = page.get_by_label("Action name")
+    action_name_input = page.get_by_placeholder("Enter action name")
     action_name_input.wait_for()
     action_name_input.fill(action_name)
 
