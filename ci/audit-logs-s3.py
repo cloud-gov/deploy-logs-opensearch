@@ -16,7 +16,9 @@ fifteen_minutes_ago= now - timedelta(minutes=15)
 
 start_time = fifteen_minutes_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
 end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-
+cf_api="{}".format(os.environ["CF_SYSTEM_DOMAIN"])
+subprocess.run(["cf","api",cf_api])
+subprocess.run(["cf","login"])
 def get_audit_logs(start,end):
     audit_logs=[]
     cf_json = subprocess.check_output(
