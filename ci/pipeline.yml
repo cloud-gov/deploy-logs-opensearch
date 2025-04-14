@@ -330,18 +330,18 @@ jobs:
     plan:
       - in_parallel:
           - get: pipeline-tasks
-          # - get: opensearch-release
-          #   trigger: true
-          #   passed: [deploy-opensearch-development]
-          # - get: opensearch-stemcell-jammy
-          #   trigger: true
-          #   passed: [deploy-opensearch-development]
-          - get: deploy-logs-opensearch-config
-            # passed: [deploy-opensearch-development]
+          - get: opensearch-release
             trigger: true
-          # - get: opensearch-development-deployment
-          #   trigger: true
-          #   passed: [deploy-opensearch-development]
+            passed: [deploy-opensearch-development]
+          - get: opensearch-stemcell-jammy
+            trigger: true
+            passed: [deploy-opensearch-development]
+          - get: deploy-logs-opensearch-config
+            passed: [deploy-opensearch-development]
+            trigger: true
+          - get: opensearch-development-deployment
+            trigger: true
+            passed: [deploy-opensearch-development]
           - get: tests-timer
             trigger: true
           - get: playwright-python
