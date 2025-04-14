@@ -10,7 +10,6 @@ run:
   - |
    cd deploy-logs-opensearch-config/ci/
    python -m pip install -r requirements.txt
-   cf api {$CF_SYSTEM_DOMAIN}
    python audit-logs-s3.py
 params:
   AWS_DEFAULT_REGION:

@@ -12,11 +12,21 @@ s3_client = boto3.client("s3")
 bucket_name= "{}".format(os.environ["BUCKET"])
 
 now = datetime.now(timezone.utc)
-object_key=f"{now.year}/{now.month:02d}/{now.day:02d}/{now.minute:02d}/audit.json"
 fifteen_minutes_ago= now - timedelta(minutes=15)
 
 start_time = fifteen_minutes_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
 end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+api = subprocess.check_output(
+        "cf api {}".format(os.environ["CF_SYSTEM_DOMAIN"]),
+        universal_newlines=True,
+        shell=True,
+    )
+login = subprocess.check_output(
+        "cf login",
+        universal_newlines=True,
+        shell=True,
+    )
 
 def get_audit_logs(start,end):
     audit_logs=[]
