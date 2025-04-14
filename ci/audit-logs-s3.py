@@ -4,6 +4,7 @@ import subprocess
 import json
 import boto3
 import os
+import functools
 from datetime import datetime,timedelta,timezone
 
 
