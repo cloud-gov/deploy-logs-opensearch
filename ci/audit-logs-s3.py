@@ -25,8 +25,10 @@ try:
     print("logged in")
 except subprocess.CalledProcessError as e:
     print(f"error during login: {e}")
+
 def get_audit_logs(start,end):
     audit_logs=[]
+    print("cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at")
     cf_json = subprocess.check_output(
         "cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at",
         universal_newlines=True,
