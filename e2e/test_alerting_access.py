@@ -90,6 +90,43 @@ def test_user_cannot_see_alert_objects(user_2, page):
     expect(page.get_by_text(test_monitor_name, exact=True)).not_to_be_visible()
 
 
+def test_user_can_see_but_not_edit_alert_objects(user_3, page):
+    log_in(user_3, page, AUTH_PROXY_URL)
+
+    switch_tenants(page, CF_ORG_1_NAME)
+
+    open_primary_menu_link(page, "Notifications")
+
+    click_contextual_menu_link(page, "Email recipient groups")
+
+    expect(
+        page.get_by_text(test_email_recipient_group_name, exact=True)
+    ).to_be_visible()
+
+    click_contextual_menu_link(page, "Channels")
+
+    channel_link = page.get_by_role("link", name=test_channel_name, exact=True)
+    expect(channel_link).to_be_visible()
+    channel_link.click()
+
+    expect(page.get_by_role("heading", name="-")).to_be_visible()
+
+    open_primary_menu_link(page, "Alerting")
+
+    click_tab_link(page, "Monitors")
+
+    monitor_link = page.get_by_text(test_monitor_name, exact=True)
+    expect(monitor_link).to_be_visible()
+    monitor_link_href = monitor_link.get_attribute("href")
+    monitor_link.click()
+
+    page.wait_for_url(f"**/app/alerting{monitor_link_href}*")
+    page.wait_for_url(re.compile(r".*/app/alerting#/monitors\?.*"))
+
+    # should redirect back to main monitors page
+    expect(page).to_have_url(re.compile(r"app/alerting#/monitors\?.*"))
+
+
 def test_user_can_delete_alerts(user_1, page):
     log_in(user_1, page, AUTH_PROXY_URL)
 
