@@ -170,9 +170,9 @@ jobs:
       file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
       params:
         BUCKET: ((opensearch-audit-bucket))
-        CF_API_URL: ((cf-api-url-development))
-        CF_USERNAME: ((cf-username-development))
-        CF_PASSWORD: ((cf-password-development))
+        CF_API_URL: ((cf-api-url-production))
+        CF_USERNAME: ((cf-username-production))
+        CF_PASSWORD: ((cf-password-production))
         TOTP_SEED: ((cf-test-user-totp-seed-production))
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((ecr_aws_key))
