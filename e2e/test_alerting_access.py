@@ -66,13 +66,7 @@ def test_user_cannot_see_alert_objects(user_2, page):
 
     click_contextual_menu_link(page, "Email recipient groups")
 
-    # Playwright discourages waiting for "networkidle". However, there is no other UI element
-    # we can test to be sure that the page is finished loading. And if the page has not finished
-    # loading, the assertion below checking for an element on the page may fail because the item
-    # has not been loaded yet, not because it is correctly hidden from the current user.
-    #
-    # See https://playwright.dev/python/docs/api/class-page#page-wait-for-load-state
-    page.wait_for_load_state("networkidle")
+    expect(page.get_by_label("Loading content")).not_to_be_visible()
     expect(
         page.get_by_text(test_email_recipient_group_name, exact=True)
     ).not_to_be_visible()
