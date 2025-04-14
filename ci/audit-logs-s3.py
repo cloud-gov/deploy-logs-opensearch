@@ -16,7 +16,15 @@ fifteen_minutes_ago= now - timedelta(minutes=15)
 
 start_time = fifteen_minutes_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
 end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-
+cf_api = os.environ.get('CF_API_URL')
+cf_user = os.environ.get('CF_USERNAME')
+cf_pass = os.environ.get('CF_PASSWORD')
+try:
+    subprocess.run(['cf', 'api', cf_api],check=True)
+    subprocess.run(['cf', 'auth',cf_user,cf_pass], check=True)
+    print("logged in")
+except subprocess.CalledProcessError as e:
+    print(f"error during login: {e}")
 def get_audit_logs(start,end):
     audit_logs=[]
     cf_json = subprocess.check_output(
