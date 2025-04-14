@@ -3,10 +3,11 @@ import re
 
 from .utils import (
     wait_for_header,
-    click_delete_confirm_button,
+    click_delete_button,
     fill_delete_confirm_placeholder,
-    delete_via_actions_menu,
+    click_delete_button,
     select_table_item_checkbox,
+    open_actions_menu,
 )
 
 
@@ -166,11 +167,13 @@ def delete_notifications_channel(page, channel_name):
 
     select_table_item_checkbox(page, channel_name)
 
-    delete_via_actions_menu(page)
+    open_actions_menu(page)
+
+    click_delete_button(page)
 
     fill_delete_confirm_placeholder(page)
 
-    click_delete_confirm_button(page)
+    click_delete_button(page)
 
     wait_for_channels_header(page)
 
@@ -190,7 +193,7 @@ def delete_email_recipient_group(page, recipient_group_name):
 
     fill_delete_confirm_placeholder(page)
 
-    click_delete_confirm_button(page)
+    click_delete_button(page)
 
     wait_for_header(page, re.compile(r"^Email recipient groups$"))
 
@@ -202,9 +205,11 @@ def delete_alert_monitor(page, monitor_name):
 
     select_table_item_checkbox(page, monitor_name)
 
-    delete_via_actions_menu(page)
+    open_actions_menu(page)
 
-    click_delete_confirm_button(page)
+    click_delete_button(page)
+
+    click_delete_button(page)
 
     wait_for_header(page, "Monitors")
 

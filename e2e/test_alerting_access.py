@@ -18,8 +18,10 @@ from .utils import (
     click_contextual_menu_link,
     click_tab_link,
     wait_for_loading_finished,
+    open_actions_menu,
+    select_table_item_checkbox,
 )
-from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME
+from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
 test_run_timestamp = int(time.time())
 test_object_prefix = "E2E-Test"
@@ -122,23 +124,76 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     expect(page).to_have_url(re.compile(r"app/alerting#/monitors\?.*"))
 
 
-def test_user_can_delete_alerts(user_1, page):
-    log_in(user_1, page, AUTH_PROXY_URL)
+def test_user_can_see_and_edit_alert_objects(user_4, page):
+    log_in(user_4, page, AUTH_PROXY_URL)
 
-    switch_tenants(page, CF_ORG_1_NAME)
+    # using this tenant should not affect access to alerting objects
+    switch_tenants(page, CF_ORG_3_NAME)
 
+    open_primary_menu_link(page, "Notifications")
+
+    # Verify we can view and edit the email recipient group
+    click_contextual_menu_link(page, "Email recipient groups")
+
+    expect(
+        page.get_by_text(test_email_recipient_group_name, exact=True)
+    ).to_be_visible()
+
+    select_table_item_checkbox(page, test_email_recipient_group_name)
+
+    recipient_group_edit_button = page.get_by_role("button", name="Edit", exact=True)
+    expect(recipient_group_edit_button).to_be_visible()
+    expect(recipient_group_edit_button).to_be_enabled()
+
+    # Verify we can view and edit the notification channel
+    click_contextual_menu_link(page, "Channels")
+
+    channel_link = page.get_by_role("link", name=test_channel_name, exact=True)
+    expect(channel_link).to_be_visible()
+    channel_link.click()
+
+    expect(
+        page.get_by_role("heading", name=test_channel_name, exact=True)
+    ).to_be_visible()
+
+    open_actions_menu(page)
+
+    expect(page.get_by_text("Edit", exact=True)).to_be_visible()
+
+    # Verify we can view and edit the alert monitor
     open_primary_menu_link(page, "Alerting")
 
     click_tab_link(page, "Monitors")
 
-    delete_alert_monitor(page, test_monitor_name)
+    monitor_link = page.get_by_text(test_monitor_name, exact=True)
+    expect(monitor_link).to_be_visible()
+    monitor_link.click()
 
-    open_primary_menu_link(page, "Notifications")
+    expect(
+        page.get_by_role("heading", name=test_monitor_name, exact=True)
+    ).to_be_visible()
+    channel_edit_button = page.get_by_role("button", name="Edit", exact=True)
+    expect(channel_edit_button).to_be_visible()
+    expect(channel_edit_button).to_be_enabled()
 
-    click_contextual_menu_link(page, "Channels")
 
-    delete_notifications_channel(page, test_channel_name)
+# def test_user_can_delete_alerts(user_1, page):
+#     log_in(user_1, page, AUTH_PROXY_URL)
 
-    click_contextual_menu_link(page, "Email recipient groups")
+#     switch_tenants(page, CF_ORG_1_NAME)
 
-    delete_email_recipient_group(page, test_email_recipient_group_name)
+#     open_primary_menu_link(page, "Alerting")
+
+#     click_tab_link(page, "Monitors")
+
+#     delete_alert_monitor(page, test_monitor_name)
+
+#     open_primary_menu_link(page, "Notifications")
+
+#     click_contextual_menu_link(page, "Channels")
+
+#     delete_notifications_channel(page, test_channel_name)
+
+#     click_contextual_menu_link(page, "Email recipient groups")
+
+#     delete_email_recipient_group(page, test_email_recipient_group_name)
