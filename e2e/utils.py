@@ -109,7 +109,7 @@ def click_delete_confirm_button(page):
 
 
 def delete_via_actions_menu(page):
-    actions_button = page.get_by_role("button", name="Actions")
+    actions_button = page.get_by_role("button", name="Actions", exact=True)
     actions_button.wait_for()
     actions_button.click()
 

@@ -9,6 +9,7 @@ from .notifications import (
     delete_notifications_channel,
     delete_email_recipient_group,
     create_alert_monitor,
+    delete_alert_monitor,
 )
 from .utils import (
     log_in,
@@ -93,6 +94,12 @@ def test_user_can_delete_alerts(user_1, page):
     log_in(user_1, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
+
+    open_primary_menu_link(page, "Alerting")
+
+    click_tab_link(page, "Monitors")
+
+    delete_alert_monitor(page, test_monitor_name)
 
     open_primary_menu_link(page, "Notifications")
 
