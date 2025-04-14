@@ -41,8 +41,10 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
     group_name_input.wait_for()
     group_name_input.fill(email_recipient_group_name)
 
-    email_address_input = page.locator(
-        'css=input[data-test-subj="comboBoxSearchInput"]'
+    email_address_input = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Email addresses$"))
+        .get_by_role("textbox")
     )
     email_address_input.fill(user.username)
     page.keyboard.press("Enter")
@@ -53,8 +55,7 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
 
     wait_for_header(page, "Email recipient groups")
 
-    created_recipient_group = page.get_by_text(email_recipient_group_name, exact=True)
-    created_recipient_group.wait_for()
+    expect(page.get_by_text(email_recipient_group_name, exact=True)).to_be_visible()
 
 
 def create_notifications_channel(page, email_recipient_group_name, channel_name):
@@ -109,8 +110,7 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
 
     wait_for_channels_header(page)
 
-    created_channel = page.get_by_role("link", name=channel_name, exact=True)
-    created_channel.wait_for()
+    expect(page.get_by_role("link", name=channel_name, exact=True)).to_be_visible()
 
 
 def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_name):
@@ -175,11 +175,8 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
     create_monitor_button.wait_for()
     create_monitor_button.click()
 
-    monitor_name_heading = page.get_by_role("heading", name=monitor_name, exact=True)
-    monitor_name_heading.wait_for()
-
-    monitor_enabled_text = page.get_by_text("Enabled")
-    monitor_enabled_text.wait_for()
+    expect(page.get_by_role("heading", name=monitor_name, exact=True)).to_be_visible()
+    expect(page.get_by_text("Enabled")).to_be_visible()
 
 
 def delete_notifications_channel(page, channel_name):
