@@ -53,13 +53,25 @@ def switch_tenants(page, tenant="Global"):
     switch to the specified tenant.
     """
 
-    open_tenant_options_btn = page.get_by_label("Open list of options")
-    open_tenant_options_btn.wait_for()
-    open_tenant_options_btn.click()
+    select_tenant_header = page.get_by_role(
+        "heading", name="Select your tenant", exact=True
+    )
+    select_tenant_header.wait_for()
 
-    tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
-    tenant_option.wait_for()
-    tenant_option.click()
+    custom_tenant_checkbox = page.get_by_label("Choose from custom")
+    expect(custom_tenant_checkbox).to_be_visible()
+    expect(custom_tenant_checkbox).to_be_enabled()
+
+    selected_tenant = page.get_by_role("combobox").get_by_text(tenant, exact=True)
+
+    if not selected_tenant.is_visible():
+        open_tenant_options_btn = page.get_by_label("Open list of options")
+        open_tenant_options_btn.wait_for()
+        open_tenant_options_btn.click()
+
+        tenant_option = page.get_by_role("option", name=tenant)
+        tenant_option.wait_for()
+        tenant_option.click()
 
     # submit
     submit_button = page.get_by_text("Confirm")
@@ -103,20 +115,16 @@ def fill_delete_confirm_placeholder(page):
     delete_confirm_input.fill("delete")
 
 
-def click_delete_confirm_button(page):
-    delete_confirm_button = page.get_by_role("button", name="Delete", exact=True)
-    delete_confirm_button.wait_for()
-    delete_confirm_button.click()
-
-
-def delete_via_actions_menu(page):
+def open_actions_menu(page):
     actions_button = page.get_by_role("button", name="Actions", exact=True)
     actions_button.wait_for()
     actions_button.click()
 
-    delete_channel_button = page.get_by_role("button", name="Delete", exact=True)
-    delete_channel_button.wait_for()
-    delete_channel_button.click()
+
+def click_delete_button(page):
+    delete_button = page.get_by_role("button", name="Delete", exact=True)
+    delete_button.wait_for()
+    delete_button.click()
 
 
 def select_table_item_checkbox(page, item_text):
