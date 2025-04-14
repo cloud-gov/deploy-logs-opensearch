@@ -44,7 +44,7 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
     )
     email_recipient_groups_header.wait_for()
 
-    created_recipient_group = page.get_by_text(email_recipient_group_name)
+    created_recipient_group = page.get_by_text(email_recipient_group_name, exact=True)
     created_recipient_group.wait_for()
 
 
@@ -104,7 +104,7 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
     created_channel.wait_for()
 
 
-def create_alert_monitor(page, monitor_name, trigger_name, action_name):
+def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_name):
     monitor_link = page.get_by_role("tab", name="Monitors")
     monitor_link.wait_for()
     monitor_link.click()
@@ -140,13 +140,37 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name):
     trigger_name_input.wait_for()
     trigger_name_input.fill(trigger_name)
 
-    add_action_button = page.get_by_role("button", name="Add action", exact=True)
-    add_action_button.wait_for()
-    add_action_button.click()
-
     action_name_input = page.get_by_placeholder("Enter action name")
     action_name_input.wait_for()
     action_name_input.fill(action_name)
+
+    select_channel_placeholder = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Select channel to notify$"))
+        .first
+    )
+    select_channel_placeholder.wait_for()
+    select_channel_placeholder.click()
+
+    action_channel_input = page.locator(
+        '[id="triggerDefinitions\\[0\\]\\.actions\\.0\\.destination_id"]'
+    )
+    action_channel_input.wait_for()
+    action_channel_input.fill(channel_name)
+
+    action_channel_option = page.get_by_text(f"[Channel] {channel_name}").first
+    action_channel_option.wait_for()
+    action_channel_option.click()
+
+    create_monitor_button = page.get_by_role("button", name="Create", exact=True)
+    create_monitor_button.wait_for()
+    create_monitor_button.click()
+
+    monitor_name_heading = page.get_by_role("heading", name=monitor_name, exact=True)
+    monitor_name_heading.wait_for()
+
+    monitor_enabled_text = page.get_by_text("Enabled")
+    monitor_enabled_text.wait_for()
 
 
 def delete_notifications_channel(page, channel_name):

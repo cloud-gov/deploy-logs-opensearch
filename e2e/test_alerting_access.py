@@ -29,21 +29,23 @@ def test_user_can_create_alerts(user_1, page):
 
     switch_tenants(page, CF_ORG_1_NAME)
 
-    # open_primary_menu_link(page, "Notifications")
+    open_primary_menu_link(page, "Notifications")
 
-    # click_contextual_menu_link(page, "Email recipient groups")
+    click_contextual_menu_link(page, "Email recipient groups")
 
-    # create_email_recipient_group(page, user_1, test_email_recipient_group_name)
+    create_email_recipient_group(page, user_1, test_email_recipient_group_name)
 
-    # click_contextual_menu_link(page, "Channels")
+    click_contextual_menu_link(page, "Channels")
 
-    # create_notifications_channel(
-    #     page, test_email_recipient_group_name, test_channel_name
-    # )
+    create_notifications_channel(
+        page, test_email_recipient_group_name, test_channel_name
+    )
 
     open_primary_menu_link(page, "Alerting")
 
-    create_alert_monitor(page, test_monitor_name, test_trigger_name, test_action_name)
+    create_alert_monitor(
+        page, test_monitor_name, test_trigger_name, test_action_name, test_channel_name
+    )
 
 
 def test_user_can_delete_alerts(user_1, page):
