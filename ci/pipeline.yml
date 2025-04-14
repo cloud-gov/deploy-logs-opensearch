@@ -172,7 +172,7 @@ jobs:
         BUCKET: ((opensearch-audit-bucket))
         CF_USERNAME: ((cf-test-username-production))
         CF_PASSWORD: ((cf-test-user-password-production))
-        CF_SYSTEM_DOMAIN: ((cf-system-domain-production))
+        CF_API_URL: ((cf-system-domain-production))
         TOTP_SEED: ((cf-test-user-totp-seed-production))
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((ecr_aws_key))
