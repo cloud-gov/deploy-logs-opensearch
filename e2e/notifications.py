@@ -100,10 +100,6 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
 
 
 def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_name):
-    monitor_link = page.get_by_role("tab", name="Monitors")
-    monitor_link.wait_for()
-    monitor_link.click()
-
     create_monitor_button = page.get_by_role("link", name="Create monitor")
     create_monitor_button.wait_for()
     create_monitor_button.click()

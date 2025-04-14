@@ -122,3 +122,9 @@ def select_table_item_checkbox(page, item_text):
     checkbox = page.locator("tr").filter(has_text=item_text).get_by_role("checkbox")
     checkbox.wait_for()
     checkbox.click()
+
+
+def click_tab_link(page, link_text):
+    link = page.get_by_role("tab", name=link_text)
+    link.wait_for()
+    link.click()
