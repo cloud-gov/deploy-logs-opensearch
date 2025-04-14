@@ -195,7 +195,6 @@ def delete_notifications_channel(page, channel_name):
 
     wait_for_channels_header(page)
 
-    # expect(page.get_by_role("heading", name="No channels to display")).to_be_visible()
     expect(page.get_by_text(channel_name, exact=True)).not_to_be_visible()
 
 
@@ -216,9 +215,6 @@ def delete_email_recipient_group(page, recipient_group_name):
 
     wait_for_header(page, re.compile(r"^Email recipient groups$"))
 
-    # expect(
-    #     page.get_by_role("heading", name="No recipient groups to display")
-    # ).to_be_visible()
     expect(page.get_by_text(recipient_group_name, exact=True)).not_to_be_visible()
 
 
