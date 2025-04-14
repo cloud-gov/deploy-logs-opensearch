@@ -5,27 +5,13 @@ from .utils import (
     wait_for_header,
     click_delete_confirm_button,
     fill_delete_confirm_placeholder,
+    delete_via_actions_menu,
+    select_table_item_checkbox,
 )
 
 
 def wait_for_channels_header(page):
     wait_for_header(page, re.compile(r"^Channels\s\([0-9]+\)$"))
-
-
-def delete_via_actions_menu(page):
-    actions_button = page.get_by_role("button", name="Actions")
-    actions_button.wait_for()
-    actions_button.click()
-
-    delete_channel_button = page.get_by_role("button", name="Delete", exact=True)
-    delete_channel_button.wait_for()
-    delete_channel_button.click()
-
-
-def select_table_item_checkbox(page, item_text):
-    checkbox = page.locator("tr").filter(has_text=item_text).get_by_role("checkbox")
-    checkbox.wait_for()
-    checkbox.click()
 
 
 def create_email_recipient_group(page, user, email_recipient_group_name):
