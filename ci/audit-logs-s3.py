@@ -86,8 +86,7 @@ def upload_to_s3(bucket_name, object_name, data):
 
 def main():
     audit_logs = get_audit_logs(start_time,end_time)
-    # for i, item in enumerate(audit_logs):
-    object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.minute:02d}/{now.second:02d}"
+    object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
     upload_to_s3(bucket_name, object_name,audit_logs)
 
 if __name__ == "__main__":
