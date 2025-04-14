@@ -36,14 +36,48 @@ def get_audit_logs(start,end):
         audit_logs.extend(result_data)
     return audit_logs
 
-def main():
-    audit_logs = get_audit_logs(start_time,end_time)
+@functools.cache
+def get_cf_entity_name(entity, guid):
+    """
+    Retrieves the name of a CF entity from a GUID.
+    """
+    if not guid:
+        return
+    cf_json = subprocess.check_output(
+        "cf curl /v3/" + entity + "/" + guid,
+        universal_newlines=True,
+        shell=True,
+    )
+    cf_data = json.loads(cf_json)
+    return cf_data.get("name", "N/A")
+
+def upload_to_s3(bucket_name, object_name, data):
     try:
-        s3_client.put_object(Bucket=bucket_name,Key=object_key,Body=json.dumps(audit_logs,indent=2),ContentType='application/json')
+        body = '\n'.join([
+                    json.dumps({
+                           **{k: v for k,v in item.items() if k not in ["links"]},
+                           "organization_name": get_cf_entity_name("organizations", f"{item['organization']['guid']}") if f"{item['organization']['guid']}" else "",
+                           "space_name": get_cf_entity_name("spaces", f"{item['space']['guid']}") if  f"{item['space']['guid']}" else ""
+                           })
+                          for item in data
+                          ])
+        s3_client.put_object(
+            Bucket=bucket_name,
+            Key=object_name,
+            Body=body,
+            ContentType='application/json'
+            )
         print("success for time "+ str(start_time))
     except Exception as e:
         print(e)
         print(f'Error upload file to S3 for time starting' + str(start_time))
+
+
+def main():
+    audit_logs = get_audit_logs(start_time,end_time)
+    # for i, item in enumerate(audit_logs):
+    object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.minute:02d}/{now.second:02d}"
+    upload_to_s3(bucket_name, object_name,audit_logs)
 
 if __name__ == "__main__":
     main()
