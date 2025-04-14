@@ -3,11 +3,12 @@
 import subprocess
 import json
 import boto3
+import os
 from datetime import datetime,timedelta,timezone
 
 
 s3_client = boto3.client("s3")
-bucket_name="cf-audit-s3-for-opensearch"
+bucket_name= "{}".format(os.environ["BUCKET"]}
 
 now = datetime.now(timezone.utc)
 object_key=f"{now.year}/{now.month:02d}/{now.day:02d}/{now.minute:02d}/audit.json"
