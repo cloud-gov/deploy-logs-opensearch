@@ -38,7 +38,7 @@ def get_audit_logs(start,end):
     print(pages['pagination']['total_results'])
     for page in range(total_pages):
         result= subprocess.check_output(
-        "cf curl '/v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at&page=" + str(page) +"'",
+        "cf curl '/v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at&page=" + str(page+1) +"'",
         universal_newlines=True,
         shell=True,
         )
