@@ -8,6 +8,7 @@ from .utils import (
     click_delete_button,
     select_table_item_checkbox,
     open_actions_menu,
+    wait_for_loading_finished,
 )
 
 
@@ -119,6 +120,8 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
     )
     time_input_placeholder.wait_for()
     time_input_placeholder.click()
+
+    wait_for_loading_finished(page)
 
     timestamp_option = page.get_by_role("option", name="@timestamp")
     timestamp_option.wait_for()
