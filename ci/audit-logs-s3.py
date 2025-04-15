@@ -28,7 +28,6 @@ except subprocess.CalledProcessError as e:
 
 def get_audit_logs(start,end):
     audit_logs=[]
-    print("cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at")
     cf_json = subprocess.check_output(
         "cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at",
         universal_newlines=True,
@@ -36,6 +35,7 @@ def get_audit_logs(start,end):
     )
     pages=json.loads(cf_json)
     total_pages= pages['pagination']["total_pages"]
+    print(pages['pagination']['total_results'])
     for page in range(total_pages):
         result= subprocess.check_output(
         "cf curl /v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at&page=" + str(page),
