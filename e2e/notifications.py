@@ -115,21 +115,32 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
     index_input.fill("logs-app*")
     page.keyboard.press("Enter")
 
-    time_input_placeholder = (
-        page.locator("div").filter(has_text=re.compile(r"^Select a time field$")).first
-    )
-    time_input_placeholder.wait_for()
-    time_input_placeholder.click()
-
     wait_for_loading_finished(page)
 
-    timestamp_option = page.get_by_role("option", name="@timestamp")
-    timestamp_option.wait_for()
-    timestamp_option.click()
+    # time_input_placeholder = (
+    #     page.locator("div").filter(has_text=re.compile(r"^Select a time field$")).first
+    # )
+    # time_input_placeholder.wait_for()
+    # time_input_placeholder.click()
+
+    # wait_for_loading_finished(page)
+
+    # timestamp_option = page.get_by_role("option", name="@timestamp")
+    # timestamp_option.wait_for()
+    # timestamp_option.click()
+
+    time_field_input = page.locator("#timeField")
+    time_field_input.wait_for()
+    time_field_input.fill("@timestamp")
+    page.keyboard.press("Enter")
+
+    wait_for_loading_finished(page)
 
     add_trigger_button = page.get_by_role("button", name="Add trigger", exact=True)
     add_trigger_button.wait_for()
     add_trigger_button.click()
+
+    wait_for_loading_finished(page)
 
     trigger_name_input = page.locator('input[name="triggerDefinitions[0].name"]')
     trigger_name_input.wait_for()
@@ -146,6 +157,8 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
     )
     select_channel_placeholder.wait_for()
     select_channel_placeholder.click()
+
+    wait_for_loading_finished(page)
 
     action_channel_input = page.locator(
         '[id="triggerDefinitions\\[0\\]\\.actions\\.0\\.destination_id"]'
