@@ -117,18 +117,6 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
 
     wait_for_loading_finished(page)
 
-    # time_input_placeholder = (
-    #     page.locator("div").filter(has_text=re.compile(r"^Select a time field$")).first
-    # )
-    # time_input_placeholder.wait_for()
-    # time_input_placeholder.click()
-
-    # wait_for_loading_finished(page)
-
-    # timestamp_option = page.get_by_role("option", name="@timestamp")
-    # timestamp_option.wait_for()
-    # timestamp_option.click()
-
     time_field_input = page.locator("#timeField")
     time_field_input.wait_for()
     time_field_input.fill("@timestamp")
