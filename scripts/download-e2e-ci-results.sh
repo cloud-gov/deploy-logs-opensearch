@@ -9,7 +9,7 @@ fi
 
 ENVIRONMENT=${2:-production}
 
-CI_TASK_TARGET="fly -t ${FLY_TARGET:=ci} intercept -j deploy-logs-opensearch/smoke-tests-login-$ENVIRONMENT -s smoke-tests-login -b $BUILD_NUMBER"
+CI_TASK_TARGET="fly -t ${FLY_TARGET:=ci} intercept -j deploy-logs-opensearch/e2e-tests-$ENVIRONMENT -s e2e-tests -b $BUILD_NUMBER"
 TEST_RESULTS_DIR="deploy-logs-opensearch-config/test-results"
 LOCAL_TARGET_DIR="ci-test-results"
 
