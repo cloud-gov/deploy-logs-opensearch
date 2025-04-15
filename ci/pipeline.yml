@@ -342,8 +342,8 @@ jobs:
           - get: opensearch-development-deployment
             trigger: true
             passed: [deploy-opensearch-development]
-          # - get: tests-timer
-          #   trigger: true
+          - get: tests-timer
+            trigger: true
           - get: playwright-python
           - get: general-task
       - task: provision-test-user-cf-access
