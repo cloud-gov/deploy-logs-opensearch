@@ -7,18 +7,18 @@ groups:
       - deploy-opensearch-development
       - upload-dashboards-objects-development
       - smoke-tests-development
-      - smoke-tests-login-development
+      - e2e-tests-development
       - tenant-development
       - deploy-opensearch-staging
       - upload-dashboards-objects-staging
       - smoke-tests-staging
-      - smoke-tests-login-staging
+      - e2e-tests-staging
       - tenant-staging
       - plan-opensearch-production
       - deploy-opensearch-production
       - upload-dashboards-objects-production
       - smoke-tests-production
-      - smoke-tests-login-production
+      - e2e-tests-production
       - tenant-production
   - name: update-test-users
     jobs:
@@ -30,14 +30,14 @@ groups:
       - deploy-opensearch-development
       - upload-dashboards-objects-development
       - smoke-tests-development
-      - smoke-tests-login-development
+      - e2e-tests-development
       - tenant-development
   - name: staging
     jobs:
       - deploy-opensearch-staging
       - upload-dashboards-objects-staging
       - smoke-tests-staging
-      - smoke-tests-login-staging
+      - e2e-tests-staging
       - tenant-staging
   - name: production
     jobs:
@@ -45,7 +45,7 @@ groups:
       - deploy-opensearch-production
       - upload-dashboards-objects-production
       - smoke-tests-production
-      - smoke-tests-login-production
+      - e2e-tests-production
       - tenant-production
 
 jobs:
@@ -325,7 +325,7 @@ jobs:
           :x: Smoke tests for OpenSearch in development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: smoke-tests-login-development
+  - name: e2e-tests-development
     serial_groups: [bosh-development]
     plan:
       - in_parallel:
@@ -345,20 +345,56 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
-      - task: smoke-tests-login
-        image: playwright-python
-        file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+          - get: general-task
+      - task: provision-test-user-cf-access
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: deploy-logs-opensearch-config
+          run:
+            path: deploy-logs-opensearch-config/ci/provision-test-user-cf-access.sh
         params:
-          CF_USERNAME: ((cf-test-username-development))
-          CF_PASSWORD: ((cf-test-user-password-development))
+          CF_API_URL: ((dev-cf-api-url))
+          CF_USERNAME: ((development-cf-username))
+          CF_PASSWORD: ((development-cf-password))
+          TEST_USER_1_USERNAME: ((development-test-user-1-username))
+          TEST_USER_2_USERNAME: ((development-test-user-2-username))
+          TEST_USER_3_USERNAME: ((development-test-user-3-username))
+          TEST_USER_4_USERNAME: ((development-test-user-4-username))
+          CF_ORG_1_NAME: ((test-org-1))
+          CF_ORG_2_NAME: ((test-org-2))
+          CF_ORG_3_NAME: ((test-org-3))
+      - task: e2e-tests
+        image: playwright-python
+        file: deploy-logs-opensearch-config/ci/e2e-tests.yml
+        params:
           CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
-          TOTP_SEED: ((cf-test-user-totp-seed-development))
+          CF_ORG_1_NAME: ((test-org-1))
+          CF_ORG_2_NAME: ((test-org-2))
+          CF_ORG_3_NAME: ((test-org-3))
+
+          TEST_USER_1_USERNAME: ((development-test-user-1-username))
+          TEST_USER_1_PASSWORD: ((development-test-user-1-password))
+          TEST_USER_1_TOTP_SEED: ((development-test-user-1-totp-seed))
+
+          TEST_USER_2_USERNAME: ((development-test-user-2-username))
+          TEST_USER_2_PASSWORD: ((development-test-user-2-password))
+          TEST_USER_2_TOTP_SEED: ((development-test-user-2-totp-seed))
+
+          TEST_USER_3_USERNAME: ((development-test-user-3-username))
+          TEST_USER_3_PASSWORD: ((development-test-user-3-password))
+          TEST_USER_3_TOTP_SEED: ((development-test-user-3-totp-seed))
+
+          TEST_USER_4_USERNAME: ((development-test-user-4-username))
+          TEST_USER_4_PASSWORD: ((development-test-user-4-password))
+          TEST_USER_4_TOTP_SEED: ((development-test-user-4-totp-seed))
     on_failure:
       put: slack
       params:
         <<: *slack-failure-params
         text: |
-          :x: Login smoke tests for OpenSearch in development FAILED
+          :x: E2E tests for OpenSearch in development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: tenant-development
@@ -526,7 +562,7 @@ jobs:
           :x: Smoke tests for OpenSearch in staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: smoke-tests-login-staging
+  - name: e2e-tests-staging
     serial_groups: [bosh-staging]
     plan:
       - in_parallel:
@@ -546,20 +582,57 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
-      - task: smoke-tests-login
-        image: playwright-python
-        file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+          - get: general-task
+      - task: provision-test-user-cf-access
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: deploy-logs-opensearch-config
+          run:
+            path: deploy-logs-opensearch-config/ci/provision-test-user-cf-access.sh
         params:
-          CF_USERNAME: ((cf-test-username-staging))
-          CF_PASSWORD: ((cf-test-user-password-staging))
+          CF_API_URL: ((staging-cf-api-url))
+          CF_USERNAME: ((staging-cf-username))
+          CF_PASSWORD: ((staging-cf-password))
+          TEST_USER_1_USERNAME: ((staging-test-user-1-username))
+          TEST_USER_2_USERNAME: ((staging-test-user-2-username))
+          TEST_USER_3_USERNAME: ((staging-test-user-3-username))
+          TEST_USER_4_USERNAME: ((staging-test-user-4-username))
+          CF_ORG_1_NAME: ((test-org-1))
+          CF_ORG_2_NAME: ((test-org-2))
+          CF_ORG_3_NAME: ((test-org-3))
+      - task: e2e-tests
+        image: playwright-python
+        file: deploy-logs-opensearch-config/ci/e2e-tests.yml
+        params:
           CF_SYSTEM_DOMAIN: ((cf-system-domain-staging))
-          TOTP_SEED: ((cf-test-user-totp-seed-staging))
+
+          CF_ORG_1_NAME: ((test-org-1))
+          CF_ORG_2_NAME: ((test-org-2))
+          CF_ORG_3_NAME: ((test-org-3))
+
+          TEST_USER_1_USERNAME: ((staging-test-user-1-username))
+          TEST_USER_1_PASSWORD: ((staging-test-user-1-password))
+          TEST_USER_1_TOTP_SEED: ((staging-test-user-1-totp-seed))
+
+          TEST_USER_2_USERNAME: ((staging-test-user-2-username))
+          TEST_USER_2_PASSWORD: ((staging-test-user-2-password))
+          TEST_USER_2_TOTP_SEED: ((staging-test-user-2-totp-seed))
+
+          TEST_USER_3_USERNAME: ((staging-test-user-3-username))
+          TEST_USER_3_PASSWORD: ((staging-test-user-3-password))
+          TEST_USER_3_TOTP_SEED: ((staging-test-user-3-totp-seed))
+
+          TEST_USER_4_USERNAME: ((staging-test-user-4-username))
+          TEST_USER_4_PASSWORD: ((staging-test-user-4-password))
+          TEST_USER_4_TOTP_SEED: ((staging-test-user-4-totp-seed))
     on_failure:
       put: slack
       params:
         <<: *slack-failure-params
         text: |
-          :x: Login smoke tests for OpenSearch in staging FAILED
+          :x: E2E tests for OpenSearch in staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: tenant-staging
@@ -761,7 +834,7 @@ jobs:
           :x: Smoke tests for OpenSearch in production FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: smoke-tests-login-production
+  - name: e2e-tests-production
     serial_groups: [bosh-production]
     plan:
       - in_parallel:
@@ -781,20 +854,57 @@ jobs:
           - get: tests-timer
             trigger: true
           - get: playwright-python
-      - task: smoke-tests-login
-        image: playwright-python
-        file: deploy-logs-opensearch-config/ci/smoke-tests-login.yml
+          - get: general-task
+      - task: provision-test-user-cf-access
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: deploy-logs-opensearch-config
+          run:
+            path: deploy-logs-opensearch-config/ci/provision-test-user-cf-access.sh
         params:
-          CF_USERNAME: ((cf-test-username-production))
-          CF_PASSWORD: ((cf-test-user-password-production))
+          CF_API_URL: ((prod-cf-api-url))
+          CF_USERNAME: ((production-cf-username))
+          CF_PASSWORD: ((production-cf-password))
+          TEST_USER_1_USERNAME: ((production-test-user-1-username))
+          TEST_USER_2_USERNAME: ((production-test-user-2-username))
+          TEST_USER_3_USERNAME: ((production-test-user-3-username))
+          TEST_USER_4_USERNAME: ((production-test-user-4-username))
+          CF_ORG_1_NAME: ((test-org-1))
+          CF_ORG_2_NAME: ((test-org-2))
+          CF_ORG_3_NAME: ((test-org-3))
+      - task: e2e-tests
+        image: playwright-python
+        file: deploy-logs-opensearch-config/ci/e2e-tests.yml
+        params:
           CF_SYSTEM_DOMAIN: ((cf-system-domain-production))
-          TOTP_SEED: ((cf-test-user-totp-seed-production))
+
+          CF_ORG_1_NAME: ((test-org-1))
+          CF_ORG_2_NAME: ((test-org-2))
+          CF_ORG_3_NAME: ((test-org-3))
+
+          TEST_USER_1_USERNAME: ((production-test-user-1-username))
+          TEST_USER_1_PASSWORD: ((production-test-user-1-password))
+          TEST_USER_1_TOTP_SEED: ((production-test-user-1-totp-seed))
+
+          TEST_USER_2_USERNAME: ((production-test-user-2-username))
+          TEST_USER_2_PASSWORD: ((production-test-user-2-password))
+          TEST_USER_2_TOTP_SEED: ((production-test-user-2-totp-seed))
+
+          TEST_USER_3_USERNAME: ((production-test-user-3-username))
+          TEST_USER_3_PASSWORD: ((production-test-user-3-password))
+          TEST_USER_3_TOTP_SEED: ((production-test-user-3-totp-seed))
+
+          TEST_USER_4_USERNAME: ((production-test-user-4-username))
+          TEST_USER_4_PASSWORD: ((production-test-user-4-password))
+          TEST_USER_4_TOTP_SEED: ((production-test-user-4-totp-seed))
     on_failure:
       put: slack
       params:
         <<: *slack-failure-params
         text: |
-          :x: Login smoke tests for OpenSearch in production FAILED
+          :x: E2E tests for OpenSearch in production FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: tenant-production
@@ -907,7 +1017,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: alerting-e2e-tests
 
   - name: opensearch-stemcell-jammy
     source:
