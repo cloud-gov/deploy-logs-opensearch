@@ -66,6 +66,10 @@ EOF
 
 function delete_sandbox_org_roles() {
   SANDBOX_ORG="sandbox-$(echo "$1" | cut -d '@' -f2 | cut -d '.' -f1)"
+  if ! cf org "$SANDBOX_ORG" > /dev/null; then
+    return
+  fi
+
   SANDBOX_SPACE=$(echo "$1" | cut -d '@' -f1)
   SANDBOX_ORG_GUID=$(cf org "$SANDBOX_ORG" --guid)
   USER_GUID=$(get_user_guid "$1")
