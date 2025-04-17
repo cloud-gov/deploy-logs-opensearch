@@ -43,6 +43,18 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
 
     wait_for_header(page, "Email recipient groups")
 
+    rows_per_page_button = page.get_by_role(
+        "button", name=re.compile(r"^Rows per page: [0-9]+$")
+    )
+    rows_per_page_button.wait_for()
+    rows_per_page_button.click()
+
+    fifty_rows_button = page.get_by_role("button", name="50 rows", exact=True)
+    fifty_rows_button.wait_for()
+    fifty_rows_button.click()
+
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(email_recipient_group_name, exact=True)).to_be_visible()
 
 
