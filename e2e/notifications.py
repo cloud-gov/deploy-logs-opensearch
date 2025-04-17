@@ -142,9 +142,25 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
 
     wait_for_loading_finished(page)
 
+    query_time_interval = page.locator('input[name="bucketValue"]')
+    query_time_interval.wait_for()
+    query_time_interval.fill("15")
+
+    query_time_interval_unit_select = page.locator("#bucketUnitOfTime")
+    query_time_interval_unit_select.wait_for()
+    query_time_interval_unit_select.select_option(label="minute(s)")
+
     trigger_name_input = page.locator('input[name="triggerDefinitions[0].name"]')
     trigger_name_input.wait_for()
     trigger_name_input.fill(trigger_name)
+
+    trigger_threshold_input = page.locator(
+        'input[name="triggerDefinitions[0].thresholdValue"]'
+    )
+    trigger_threshold_input.wait_for()
+    # set threshold to 1 billion records for alert to trigger so that e2e tests for
+    # access do not actually trigger alerts
+    trigger_threshold_input.fill("1000000000")
 
     action_name_input = page.get_by_placeholder("Enter action name")
     action_name_input.wait_for()
