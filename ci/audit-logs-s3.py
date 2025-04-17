@@ -13,9 +13,12 @@ bucket_name= "{}".format(os.environ["BUCKET"])
 
 now = datetime.now(timezone.utc)
 fifteen_minutes_ago= now - timedelta(minutes=15)
-
 start_time = fifteen_minutes_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
 end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+timestamp_key = "timestamp"
+current_stamp_response=s3_client.get_object(Bucket=bucket_name, Key=timestamp_key)
+start_time = current_stamp_response['Body'].read().strip().decode('utf-8')
 cf_api = os.environ.get('CF_API_URL')
 cf_user = os.environ.get('CF_USERNAME')
 cf_pass = os.environ.get('CF_PASSWORD')
@@ -35,7 +38,6 @@ def get_audit_logs(start,end):
     )
     pages=json.loads(cf_json)
     total_pages= pages['pagination']["total_pages"]
-    print(pages['pagination']['total_results'])
     for page in range(total_pages):
         result= subprocess.check_output(
         "cf curl '/v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at&page=" + str(page+1) +"'",
@@ -62,6 +64,7 @@ def get_cf_entity_name(entity, guid):
     cf_data = json.loads(cf_json)
     return cf_data.get("name", "N/A")
 
+
 def upload_to_s3(bucket_name, object_name, data):
     try:
         body = '\n'.join([
@@ -83,11 +86,25 @@ def upload_to_s3(bucket_name, object_name, data):
         print(e)
         print(f'Error upload file to S3 for time starting' + str(start_time))
 
+def update_latest_stamp_in_s3(latest_timestamp):
+    data = latest_timestamp
+    s3_client.put_object(
+            Bucket=bucket_name,
+            Key=timestamp_key,
+            Body=data,
+            )
 
 def main():
-    audit_logs = get_audit_logs(start_time,end_time)
-    object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
-    upload_to_s3(bucket_name, object_name,audit_logs)
+    try:
+        audit_logs = get_audit_logs(start_time,end_time)
+        timestamp=audit_logs[-1]['created_at']
+        object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
+        upload_to_s3(bucket_name, object_name,audit_logs)
+        # update latest timestamp on success
+        update_latest_stamp_in_s3(timestamp)
+    except Exception as e:
+        print("error " + str(e))
+        exit(1)
 
 if __name__ == "__main__":
     main()
