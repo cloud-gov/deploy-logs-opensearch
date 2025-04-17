@@ -1041,6 +1041,7 @@ resources:
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
       branch: audit-s3
 
+
   - name: opensearch-stemcell-jammy
     source:
       name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent

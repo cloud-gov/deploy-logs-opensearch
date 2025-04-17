@@ -23,9 +23,19 @@ for var in "${required_env_vars[@]}"; do
   fi
 done
 
-function set_org_user() {
+function escape_username() {
   USERNAME_ESCAPED=$(echo "$1" | jq -Rr @uri)
+  echo "$USERNAME_ESCAPED"
+}
+
+function get_user_guid() {
+  USERNAME_ESCAPED=$(escape_username "$1")
   USER_GUID=$(cf curl "/v3/users?partial_usernames=$USERNAME_ESCAPED" | jq -er '.resources[0].guid')
+  echo "$USER_GUID"
+}
+
+function set_org_user() {
+  USER_GUID=$(get_user_guid "$1")
   ORG_GUID=$(cf org "$2" --guid)
   TMP_FILE=$(mktemp)
 
@@ -54,6 +64,25 @@ EOF
   rm "$TMP_FILE"
 }
 
+function delete_sandbox_org_roles() {
+  SANDBOX_ORG="sandbox-$(echo "$1" | cut -d '@' -f2 | cut -d '.' -f1)"
+  if ! cf org "$SANDBOX_ORG" > /dev/null; then
+    return
+  fi
+
+  SANDBOX_SPACE=$(echo "$1" | cut -d '@' -f1)
+  SANDBOX_ORG_GUID=$(cf org "$SANDBOX_ORG" --guid)
+  USER_GUID=$(get_user_guid "$1")
+
+  for space_role in SpaceManager SpaceDeveloper SpaceAuditor; do
+    cf unset-space-role "$1" "$SANDBOX_ORG" "$SANDBOX_SPACE" "$space_role"
+  done
+
+  for role_guid in $(cf curl "/v3/roles?organization_guids=$SANDBOX_ORG_GUID&user_guids=$USER_GUID" | jq -r '.resources[].guid'); do
+    cf curl "/v3/roles/$role_guid" -X DELETE
+  done
+}
+
 # Expected results:
 #  - User 1 is in org 1 and org 3
 #  - User 2 is in org 2. User 2 shares no orgs with User 1.
@@ -63,6 +92,13 @@ EOF
 cf create-org "$CF_ORG_1_NAME"
 cf create-org "$CF_ORG_2_NAME"
 cf create-org "$CF_ORG_3_NAME"
+
+# Delete sandbox org roles for test users so we can be sure that
+# their only orgs are the ones we have provisioned
+delete_sandbox_org_roles "$TEST_USER_1_USERNAME"
+delete_sandbox_org_roles "$TEST_USER_2_USERNAME"
+delete_sandbox_org_roles "$TEST_USER_3_USERNAME"
+delete_sandbox_org_roles "$TEST_USER_4_USERNAME"
 
 # User 1 is an org manager in org 1 and org 3
 cf set-org-role "$TEST_USER_1_USERNAME" "$CF_ORG_1_NAME" OrgManager
