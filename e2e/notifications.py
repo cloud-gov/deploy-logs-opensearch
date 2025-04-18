@@ -124,7 +124,7 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
 
     index_input = page.locator("#index")
     index_input.wait_for()
-    index_input.fill("logs-app*")
+    index_input.fill("logs-app-*")
     page.keyboard.press("Enter")
 
     wait_for_loading_finished(page)
@@ -142,17 +142,21 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
 
     wait_for_loading_finished(page)
 
+    trigger_name_input = page.locator('input[name="triggerDefinitions[0].name"]')
+    trigger_name_input.wait_for()
+    trigger_name_input.fill(trigger_name)
+
     query_time_interval = page.locator('input[name="bucketValue"]')
     query_time_interval.wait_for()
     query_time_interval.fill("15")
+
+    wait_for_loading_finished(page)
 
     query_time_interval_unit_select = page.locator("#bucketUnitOfTime")
     query_time_interval_unit_select.wait_for()
     query_time_interval_unit_select.select_option(label="minute(s)")
 
-    trigger_name_input = page.locator('input[name="triggerDefinitions[0].name"]')
-    trigger_name_input.wait_for()
-    trigger_name_input.fill(trigger_name)
+    wait_for_loading_finished(page)
 
     trigger_threshold_input = page.locator(
         'input[name="triggerDefinitions[0].thresholdValue"]'
@@ -161,6 +165,8 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
     # set threshold to 1 billion records for alert to trigger so that e2e tests for
     # access do not actually trigger alerts
     trigger_threshold_input.fill("1000000000")
+
+    wait_for_loading_finished(page)
 
     action_name_input = page.get_by_placeholder("Enter action name")
     action_name_input.wait_for()
@@ -189,6 +195,8 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
     create_monitor_button = page.get_by_role("button", name="Create", exact=True)
     create_monitor_button.wait_for()
     create_monitor_button.click()
+
+    wait_for_loading_finished(page)
 
     expect(page.get_by_role("heading", name=monitor_name, exact=True)).to_be_visible()
     expect(page.get_by_text("Enabled")).to_be_visible()
