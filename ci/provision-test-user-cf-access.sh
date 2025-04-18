@@ -39,6 +39,12 @@ function set_org_user() {
   ORG_GUID=$(cf org "$2" --guid)
   TMP_FILE=$(mktemp)
 
+  COUNT_ORG_USER_ROLES=$(cf curl "/v3/roles?organization_guids=$ORG_GUID&user_guids=$USER_GUID&types=organization_user" | jq -r '.pagination.total_results')
+  if [[ $COUNT_ORG_USER_ROLES -gt 0 ]]; then
+    echo "user already has organization_user role in $2, continuing"
+    return
+  fi
+
   cat > "${TMP_FILE}" << EOF
 {
   "type": "organization_user",
@@ -59,7 +65,8 @@ EOF
 
   cf curl "/v3/roles" \
     -X POST \
-    -d "@$TMP_FILE"
+    -d "@$TMP_FILE" \
+    --fail > /dev/null
   
   rm "$TMP_FILE"
 }
@@ -71,6 +78,10 @@ function delete_sandbox_org_roles() {
   fi
 
   SANDBOX_SPACE=$(echo "$1" | cut -d '@' -f1)
+  if ! cf space "$SANDBOX_SPACE" > /dev/null; then
+    return
+  fi
+
   SANDBOX_ORG_GUID=$(cf org "$SANDBOX_ORG" --guid)
   USER_GUID=$(get_user_guid "$1")
 
