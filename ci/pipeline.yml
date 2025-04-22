@@ -261,6 +261,16 @@ jobs:
             resource: terraform-yaml-development
             trigger: true
           - get: general-task
+      - task: prepare-deployment
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch
+          BOSH_ERRAND: prepare_deploy
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
       - task: opensearch-manifest
         image: general-task
         config:
@@ -302,6 +312,16 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
           vars_files:
             - terraform-secrets/terraform.yml
+      - task: finish-deployment
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch
+          BOSH_ERRAND: finish_deploy
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -498,6 +518,16 @@ jobs:
             resource: terraform-yaml-staging
             trigger: true
           - get: general-task
+      - task: prepare-deployment
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch
+          BOSH_ERRAND: prepare_deploy
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
       - task: opensearch-manifest
         image: general-task
         config:
@@ -539,6 +569,16 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
           vars_files:
             - terraform-secrets/terraform.yml
+      - task: finish-deployment
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch
+          BOSH_ERRAND: finish_deploy
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -800,6 +840,16 @@ jobs:
           - get: terraform-yaml
             resource: terraform-yaml-production
           - get: general-task
+      - task: prepare-deployment
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch
+          BOSH_ERRAND: prepare_deploy
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
       - task: opensearch-manifest
         image: general-task
         config:
@@ -811,6 +861,16 @@ jobs:
         params:
           <<: *prod-deploy-params
           dry_run: false
+      - task: finish-deployment
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch
+          BOSH_ERRAND: finish_deploy
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
