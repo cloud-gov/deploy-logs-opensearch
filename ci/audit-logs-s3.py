@@ -4,6 +4,7 @@ import subprocess
 import json
 import boto3
 import os
+import traceback
 import functools
 from datetime import datetime,timedelta,timezone
 
@@ -83,7 +84,7 @@ def upload_to_s3(bucket_name, object_name, data):
             )
         print("success for time "+ str(start_time))
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         print(f'Error upload file to S3 for time starting' + str(start_time))
 
 def update_latest_stamp_in_s3(latest_timestamp):
