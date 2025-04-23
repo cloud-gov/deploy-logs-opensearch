@@ -20,8 +20,8 @@ end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 timestamp_key = "timestamp"
 # comment out next 2 lines if ever making a new timestamp key
-# current_stamp_response=s3_client.get_object(Bucket=bucket_name, Key=timestamp_key)
-# start_time = current_stamp_response['Body'].read().strip().decode('utf-8')
+current_stamp_response=s3_client.get_object(Bucket=bucket_name, Key=timestamp_key)
+start_time = current_stamp_response['Body'].read().strip().decode('utf-8')
 cf_api = os.environ.get('CF_API_URL')
 cf_user = os.environ.get('CF_USERNAME')
 cf_pass = os.environ.get('CF_PASSWORD')
