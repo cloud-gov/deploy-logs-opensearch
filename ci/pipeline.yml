@@ -178,7 +178,7 @@ jobs:
       file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
       params:
         BUCKET: ((opensearch-audit-bucket-development))
-        CF_API_URL: ((cf-api-url-development))
+        CF_API_URL: ((dev-cf-api-url))
         CF_USERNAME: ((cf-username-development))
         CF_PASSWORD: ((cf-password-development))
         AWS_DEFAULT_REGION: ((aws-region))
@@ -199,7 +199,7 @@ jobs:
       file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
       params:
         BUCKET: ((opensearch-audit-bucket-staging))
-        CF_API_URL: ((cf-api-url-staging))
+        CF_API_URL: ((staging-cf-api-url))
         CF_USERNAME: ((cf-username-staging))
         CF_PASSWORD: ((cf-password-staging))
         AWS_DEFAULT_REGION: ((aws-region))
