@@ -3,7 +3,9 @@ groups:
   - name: all
     jobs:
       - set-self
-      - audit-to-s3
+      - audit-to-s3-development
+      - audit-to-s3-staging
+      - audit-to-s3-production
       - build-opensearch-release
       - deploy-opensearch-development
       - upload-dashboards-objects-development
@@ -21,6 +23,12 @@ groups:
       - smoke-tests-production
       - e2e-tests-production
       - tenant-production
+  - name: tasks
+    jobs:
+      - audit-to-s3-development
+      - audit-to-s3-staging
+      - audit-to-s3-production
+      - build-opensearch-release
   - name: update-test-users
     jobs:
       - update-test-users-dev
