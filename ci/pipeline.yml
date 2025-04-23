@@ -156,7 +156,49 @@ jobs:
           :x: Failed to update test users
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: audit-to-s3
+  - name: audit-to-s3-development
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+    - get: pipeline-tasks
+    - get: opensearch-development-deployment
+    - task: transfer-audit-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
+      params:
+        BUCKET: ((opensearch-audit-bucket-development))
+        CF_API_URL: ((cf-api-url-development))
+        CF_USERNAME: ((cf-username-development))
+        CF_PASSWORD: ((cf-password-development))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+
+  - name: audit-to-s3-staging
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+    - get: pipeline-tasks
+    - get: opensearch-staging-deployment
+    - task: transfer-audit-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
+      params:
+        BUCKET: ((opensearch-audit-bucket-staging))
+        CF_API_URL: ((cf-api-url-staging))
+        CF_USERNAME: ((cf-username-staging))
+        CF_PASSWORD: ((cf-password-staging))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+
+  - name: audit-to-s3-production
     serial: true
     plan:
     - get: general-task
@@ -169,7 +211,7 @@ jobs:
       image: general-task
       file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
       params:
-        BUCKET: ((opensearch-audit-bucket))
+        BUCKET: ((opensearch-audit-bucket-production))
         CF_API_URL: ((cf-api-url-production))
         CF_USERNAME: ((cf-username-production))
         CF_PASSWORD: ((cf-password-production))
