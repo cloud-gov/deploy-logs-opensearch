@@ -20,8 +20,8 @@ end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 timestamp_key = "timestamp"
 # comment out next 2 lines if ever making a new timestamp key
-current_stamp_response=s3_client.get_object(Bucket=bucket_name, Key=timestamp_key)
-start_time = current_stamp_response['Body'].read().strip().decode('utf-8')
+# current_stamp_response=s3_client.get_object(Bucket=bucket_name, Key=timestamp_key)
+# start_time = current_stamp_response['Body'].read().strip().decode('utf-8')
 cf_api = os.environ.get('CF_API_URL')
 cf_user = os.environ.get('CF_USERNAME')
 cf_pass = os.environ.get('CF_PASSWORD')
@@ -113,10 +113,10 @@ def main():
             timestamp=audit_logs[-1]['created_at']
             object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
             upload_to_s3(bucket_name, object_name,audit_logs)
-            # update latest timestamp on success
-            update_latest_stamp_in_s3(timestamp)
         else:
             print("empty list")
+        # update latest timestamp on success
+        update_latest_stamp_in_s3(timestamp)
     except Exception as e:
         print("error " + str(e))
         exit(1)
