@@ -3,6 +3,7 @@
 import subprocess
 import json
 import boto3
+import ast
 import os
 import traceback
 import functools
@@ -57,13 +58,17 @@ def get_cf_entity_name(entity, guid):
     """
     if not guid:
         return
-    cf_json = subprocess.check_output(
-        "cf curl /v3/" + entity + "/" + guid,
-        universal_newlines=True,
-        shell=True,
-    )
-    cf_data = json.loads(cf_json)
-    return cf_data.get("name", "N/A")
+    elif 'guid' in guid:
+        guid = ast.literal_eval(guid)['guid']
+        cf_json = subprocess.check_output(
+            "cf curl /v3/" + entity + "/" + guid,
+            universal_newlines=True,
+            shell=True,
+        )
+        cf_data = json.loads(cf_json)
+        return cf_data.get("name", "N/A")
+    else:
+        return "None"
 
 
 def upload_to_s3(bucket_name, object_name, data):
@@ -71,8 +76,8 @@ def upload_to_s3(bucket_name, object_name, data):
         body = '\n'.join([
                     json.dumps({
                            **{k: v for k,v in item.items() if k not in ["links"]},
-                           "organization_name": get_cf_entity_name("organizations", f"{item['organization']['guid']}") if f"{item['organization']['guid']}" else "",
-                           "space_name": get_cf_entity_name("spaces", f"{item['space']['guid']}") if  f"{item['space']['guid']}" else ""
+                           "organization_name": get_cf_entity_name("organizations", f"{item['organization']}"),
+                           "space_name": get_cf_entity_name("spaces", f"{item['space']}")
                            })
                           for item in data
                           ])
