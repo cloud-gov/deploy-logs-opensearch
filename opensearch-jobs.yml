@@ -410,10 +410,7 @@ instance_groups:
         http_host: 127.0.0.1
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+  - consumes: *consumes-opensearch-manager
     name: ingestor_s3
     properties:
       logstash:
@@ -442,7 +439,7 @@ instance_groups:
             private_key: ((logstash.private_key))
     provides:
       ingestor:
-        as: ingestor_cloudwtch
+        as: ingestor_s3
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
