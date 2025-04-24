@@ -113,10 +113,11 @@ def main():
             timestamp=audit_logs[-1]['created_at']
             object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
             upload_to_s3(bucket_name, object_name,audit_logs)
+            update_latest_stamp_in_s3(timestamp)
         else:
             print("empty list")
+            update_latest_stamp_in_s3(end_time)
         # update latest timestamp on success
-        update_latest_stamp_in_s3(timestamp)
     except Exception as e:
         print("error " + str(e))
         exit(1)
