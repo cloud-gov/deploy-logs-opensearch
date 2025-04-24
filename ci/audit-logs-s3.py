@@ -16,14 +16,14 @@ bucket_name = "{}".format(os.environ["BUCKET"])
 timestamp_key = "timestamp"
 
 CF_API_URL = os.environ.get("CF_API_URL")
-UAA_TOKEN_URL = os.environ.get("UAA_TOKEN_URL")
+UAA_API_URL = os.environ.get("UAA_API_URL")
 UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
 UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
 
 
 def get_client_credentials_token():
     response = requests.post(
-        UAA_TOKEN_URL,
+        UAA_API_URL,
         data={
             "grant_type": "client_credentials",
             "client_id": UAA_CLIENT_ID,
@@ -124,6 +124,7 @@ def get_start_end_time(now):
             Bucket=bucket_name, Key=timestamp_key
         )
         start_time = current_stamp_response["Body"].read().strip().decode("utf-8")
+
     except ClientError as e:
         # There is no timestamp key yet
         if e.response["Error"]["Code"] == "NoSuchKey":
