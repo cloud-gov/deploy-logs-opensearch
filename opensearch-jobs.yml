@@ -391,43 +391,25 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: *consumes-opensearch-manager
     release: opensearch
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        admin:
-          certificate: ((opensearch_admin.certificate))
-          dn: CN=admin.opensearch.internal
-          private_key: ((opensearch_admin.private_key))
-        enable_proxy_auth: true
-        heap_size: 1G
-        http:
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((opensearch_node.certificate))
-            private_key: ((opensearch_node.private_key))
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        node:
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((opensearch_node.certificate))
-            dn:
-            - CN=node.opensearch.internal
-            - CN=dashboard.opensearch.internal
-            private_key: ((opensearch_node.private_key))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
-          defaultkeystorepass: ((default_keystore_password))
           from: ((notification_from))
           host: ((notification_host))
           keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
           password: ((notification_password))
           port: ((notification_port))
           privatekey: ((notification_ca.private_key))
           username: ((notification_username))
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
   - consumes:
       opensearch:
         from: opensearch_manager
