@@ -1,126 +1,163 @@
 #!/usr/bin/env python
 
-import subprocess
+from urllib.parse import urljoin
+from botocore.exceptions import ClientError
+
 import json
 import boto3
-import ast
+import requests
 import os
-import traceback
 import functools
-from datetime import datetime,timedelta,timezone
+from datetime import datetime, timedelta, timezone
 
 
 s3_client = boto3.client("s3")
-bucket_name= "{}".format(os.environ["BUCKET"])
-
-now = datetime.now(timezone.utc)
-fifteen_minutes_ago= now - timedelta(minutes=15)
-start_time = fifteen_minutes_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
-end_time = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-
+bucket_name = "{}".format(os.environ["BUCKET"])
 timestamp_key = "timestamp"
-# comment out next 2 lines if ever making a new timestamp key
-current_stamp_response=s3_client.get_object(Bucket=bucket_name, Key=timestamp_key)
-start_time = current_stamp_response['Body'].read().strip().decode('utf-8')
-cf_api = os.environ.get('CF_API_URL')
-cf_user = os.environ.get('CF_USERNAME')
-cf_pass = os.environ.get('CF_PASSWORD')
-try:
-    subprocess.run(['cf', 'api', cf_api],check=True)
-    subprocess.run(['cf', 'auth',cf_user,cf_pass], check=True)
-    print("logged in")
-except subprocess.CalledProcessError as e:
-    print(f"error during login: {e}")
 
-def get_audit_logs(start,end):
-    audit_logs=[]
-    cf_json = subprocess.check_output(
-        "cf curl '/v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at'",
-        universal_newlines=True,
-        shell=True,
+CF_API_URL = os.environ.get("CF_API_URL")
+UAA_TOKEN_URL = os.environ.get("UAA_TOKEN_URL")
+UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
+UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
+
+
+def get_client_credentials_token():
+    response = requests.post(
+        UAA_TOKEN_URL,
+        data={
+            "grant_type": "client_credentials",
+            "client_id": UAA_CLIENT_ID,
+            "client_secret": UAA_CLIENT_SECRET,
+            "response_type": "token",
+        },
+        auth=requests.auth.HTTPBasicAuth(UAA_CLIENT_ID, UAA_CLIENT_SECRET),
+        timeout=30,
     )
-    pages=json.loads(cf_json)
-    total_results = pages['pagination']["total_results"]
-    if total_results > 0:
-        total_pages= pages['pagination']["total_pages"]
-        for page in range(total_pages):
-            result= subprocess.check_output(
-            "cf curl '/v3/audit_events?created_ats[gt]=" + str(start) + "&created_ats[lt]=" + str(end) + "&order_by=created_at&page=" + str(page+1)+"'",
-            universal_newlines=True,
-            shell=True,
-            )
-            data= json.loads(result)
-            result_data=data.get("resources",{})
-            audit_logs.extend(result_data)
-        return audit_logs
-    else:
-        return "empty"
+
+    response.raise_for_status()
+    return response.json()["access_token"]
+
+
+def get_audit_logs(start, end):
+    audit_logs = []
+    token = get_client_credentials_token()
+    with requests.Session() as s:
+        s.headers["Authorization"] = f"Bearer {token}"
+        params = {
+            "created_ats[gt]": str(start),
+            "created_ats[lt]": str(end),
+            "order_by": "created_at",
+        }
+        url = urljoin(CF_API_URL, "v3/roles")
+
+        first_response = s.get(url, params=params)
+        data = first_response.json()
+        audit_logs.extend(data["resources"])
+
+        while data["pagination"]["next"] is not None:
+            data = s.get(data["pagination"]["next"]["href"]).json()
+            audit_logs.extend(data["resources"])
+
+    return audit_logs
+
 
 @functools.cache
-def get_cf_entity_name(entity, guid):
+def get_cf_entity_name(session, entity_path, entity_data):
     """
     Retrieves the name of a CF entity from a GUID.
     """
-    if not guid:
+    if not entity_data["guid"]:
         return
-    elif 'guid' in guid:
-        guid = ast.literal_eval(guid)['guid']
-        cf_json = subprocess.check_output(
-            "cf curl /v3/" + entity + "/" + guid,
-            universal_newlines=True,
-            shell=True,
+
+    guid = entity_data["guid"]
+    url = urljoin(CF_API_URL, f"v3/{entity_path}/{guid}")
+    response = session.get(url)
+    data = response.json()
+    return data["name"]
+
+
+def transform_audit_event_record(session, audit_event):
+    return {
+        **{k: v for k, v in audit_event.items() if k not in ["links"]},
+        "organization_name": get_cf_entity_name(
+            session, "organizations", audit_event["organization"]
+        ),
+        "space_name": get_cf_entity_name(session, "spaces", audit_event["space"]),
+    }
+
+
+# Upload a batch of audit events to S3 as a single object
+def upload_audit_events_to_s3(bucket_name, object_name, audit_events):
+    token = get_client_credentials_token()
+    with requests.Session() as s:
+        s.headers["Authorization"] = f"Bearer {token}"
+        body = "\n".join(
+            [
+                json.dumps(transform_audit_event_record(s, audit_event))
+                for audit_event in audit_events
+            ]
         )
-        cf_data = json.loads(cf_json)
-        return cf_data.get("name", "N/A")
-    else:
-        return "None"
+    s3_client.put_object(
+        Bucket=bucket_name,
+        Key=object_name,
+        Body=body,
+        ContentType="application/json",
+    )
 
-
-def upload_to_s3(bucket_name, object_name, data):
-    try:
-        body = '\n'.join([
-                    json.dumps({
-                           **{k: v for k,v in item.items() if k not in ["links"]},
-                           "organization_name": get_cf_entity_name("organizations", f"{item['organization']}"),
-                           "space_name": get_cf_entity_name("spaces", f"{item['space']}")
-                           })
-                          for item in data
-                          ])
-        s3_client.put_object(
-            Bucket=bucket_name,
-            Key=object_name,
-            Body=body,
-            ContentType='application/json'
-            )
-        print("success for time "+ str(start_time))
-    except Exception as e:
-        print(traceback.format_exc())
-        print(f'Error upload file to S3 for time starting' + str(start_time) + " and end time" + str(end_time))
-        exit(1)
 
 def update_latest_stamp_in_s3(latest_timestamp):
     data = latest_timestamp
     s3_client.put_object(
-            Bucket=bucket_name,
-            Key=timestamp_key,
-            Body=data,
+        Bucket=bucket_name,
+        Key=timestamp_key,
+        Body=data,
+    )
+
+
+def get_start_end_time(now):
+    fifteen_minutes_ago = now - timedelta(minutes=15)
+    start_time = fifteen_minutes_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
+    end_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    try:
+        current_stamp_response = s3_client.get_object(
+            Bucket=bucket_name, Key=timestamp_key
+        )
+        start_time = current_stamp_response["Body"].read().strip().decode("utf-8")
+        end_time = start_time + timedelta(minutes=15)
+    except ClientError as e:
+        # There is no timestamp key yet
+        if e.response["Error"]["Code"] == "NoSuchKey":
+            print(f"No existing start timestamp, starting from {start_time}")
+        else:
+            raise e
+    return (start_time, end_time)
+
+
+def upload_audit_logs_to_s3():
+    now = datetime.now(timezone.utc)
+    (start_time, end_time) = get_start_end_time(now)
+
+    audit_logs = get_audit_logs(start_time, end_time)
+    if len(audit_logs) > 0:
+        timestamp = audit_logs[-1]["created_at"]
+        object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
+        try:
+            upload_audit_events_to_s3(bucket_name, object_name, audit_logs)
+            print(f"success for start time {start_time} and end time {end_time}")
+        except Exception as e:
+            print(
+                f"Error upload file to S3 for time starting {start_time} and end time {end_time}"
             )
+            raise e
+        update_latest_stamp_in_s3(timestamp)
+    else:
+        update_latest_stamp_in_s3(end_time)
+
 
 def main():
-    try:
-        audit_logs = get_audit_logs(start_time,end_time)
-        if audit_logs != "empty":
-            timestamp=audit_logs[-1]['created_at']
-            object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
-            upload_to_s3(bucket_name, object_name,audit_logs)
-            update_latest_stamp_in_s3(timestamp)
-        else:
-            print("empty list")
-            update_latest_stamp_in_s3(end_time)
-        # update latest timestamp on success
-    except Exception as e:
-        print("error " + str(e))
-        exit(1)
+    upload_audit_logs_to_s3()
+
 
 if __name__ == "__main__":
     main()
