@@ -80,9 +80,9 @@ def transform_audit_event_record(session, audit_event):
     return {
         **{k: v for k, v in audit_event.items() if k not in ["links"]},
         "organization_name": get_cf_entity_name(
-            session, "organizations", f"{audit_event['organization']}"
+            session, "organizations", audit_event["organization"]
         ),
-        "space_name": get_cf_entity_name(session, "spaces", f"{audit_event['space']}"),
+        "space_name": get_cf_entity_name(session, "spaces", audit_event["space"]),
     }
 
 
