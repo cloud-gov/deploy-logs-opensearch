@@ -124,7 +124,6 @@ def get_start_end_time(now):
             Bucket=bucket_name, Key=timestamp_key
         )
         start_time = current_stamp_response["Body"].read().strip().decode("utf-8")
-        end_time = start_time + timedelta(minutes=15)
     except ClientError as e:
         # There is no timestamp key yet
         if e.response["Error"]["Code"] == "NoSuchKey":
