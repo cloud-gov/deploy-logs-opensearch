@@ -52,6 +52,7 @@ def get_audit_logs(start, end):
 
         first_response = s.get(url, params=params)
         data = first_response.json()
+        print(data)
         audit_logs.extend(data["resources"])
 
         while data["pagination"]["next"] is not None:
