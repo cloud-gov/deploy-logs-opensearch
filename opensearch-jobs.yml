@@ -442,7 +442,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: "logs-opensearch-cf-audit-s3"
+          bucket: ((bucket))
           region: ((region))
         syslog_tls:
           port: 6972
