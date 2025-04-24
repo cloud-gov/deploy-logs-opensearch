@@ -168,7 +168,7 @@ jobs:
     serial: true
     plan:
     - get: general-task
-    - get: fifteen-timer
+    - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -189,7 +189,7 @@ jobs:
     serial: true
     plan:
     - get: general-task
-    - get: fifteen-timer
+    - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -210,7 +210,7 @@ jobs:
     serial: true
     plan:
     - get: general-task
-    - get: fifteen-timer
+    - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -1169,7 +1169,7 @@ resources:
     source:
       interval: 30m
 
-  - name: fifteen-timer
+  - name: fifteen-minute-timer
     type: time
     source:
       interval: 15m
