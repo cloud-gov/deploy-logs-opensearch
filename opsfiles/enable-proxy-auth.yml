@@ -37,6 +37,10 @@
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_rds/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
+# ingestor_s3
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
 # add variable for auth proxy certs
 - type: replace
   path: /variables/name=auth_proxy?

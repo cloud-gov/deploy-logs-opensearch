@@ -384,8 +384,7 @@ instance_groups:
   networks:
   - name: services
 
-- azs:
-  - z1
+- name: ingestor_s3
   instances: 1
   jobs:
   - name: bpm
@@ -443,13 +442,11 @@ instance_groups:
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
-  name: ingestor_s3
+  azs: [z1]
   networks:
   - name: services
   persistent_disk_type: logs_opensearch_ingestor
   stemcell: default
-  update:
-    serial: true
   vm_extensions:
   - logs-opensearch-ingestor-profile
   - 50GB_ephemeral_disk

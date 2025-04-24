@@ -140,6 +140,22 @@
   path: /instance_groups/name=ingestor_cloudwatch_rds/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
+# ingestor_s3
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
 
 # smoke_tests
 # - type: replace
