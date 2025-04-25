@@ -54,6 +54,10 @@ class AuditEventsS3Uploader:
             s.headers["Authorization"] = f"Bearer {self.token}"
             url = urljoin(self.CF_API_URL, f"v3/{entity_path}/{entity_guid}")
             response = s.get(url)
+
+            if response.status_code == 404:
+                return
+
             data = response.json()
             return data["name"]
 
@@ -81,14 +85,21 @@ class AuditEventsS3Uploader:
 
     def transform_audit_event(self, audit_event):
         transformed_event = {k: v for k, v in audit_event.items() if k not in ["links"]}
-        transformed_event["organization_name"] = self.get_cf_entity_name(
-            "organizations",
-            audit_event.get("organization", {}).get("guid", None),
-        )
-        transformed_event["space_name"] = self.get_cf_entity_name(
-            "spaces",
-            audit_event.get("space", {}).get("guid", None),
-        )
+
+        organization = audit_event.get("organization", {})
+        if organization:
+            transformed_event["organization_name"] = self.get_cf_entity_name(
+                "organizations",
+                organization.get("guid", None),
+            )
+
+        space = audit_event.get("space", {})
+        if space:
+            transformed_event["space_name"] = self.get_cf_entity_name(
+                "spaces",
+                space.get("guid", None),
+            )
+
         return transformed_event
 
     # Upload a batch of audit events to S3 as a single object
