@@ -84,8 +84,10 @@ class AuditEventsS3Uploader:
         return audit_logs
 
     def transform_audit_event(self, audit_event):
+        transformed_event = audit_event
+
         # remove "links" property from event
-        transformed_event = {k: v for k, v in audit_event.items() if k not in ["links"]}
+        transformed_event.pop("links")
 
         organization = audit_event.get("organization", {})
         if organization:
