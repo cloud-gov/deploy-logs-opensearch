@@ -89,13 +89,11 @@ class AuditEventsS3Uploader:
         # remove "links" property from event
         transformed_event.pop("links")
 
-        organization = audit_event.get("organization", {})
-        if organization:
-            organization_name = self.get_cf_entity_name(
+        if organization := audit_event.get("organization"):
+           if organization_name := self.get_cf_entity_name(
                 "organizations",
                 organization.get("guid", None),
             )
-            if organization_name:
                 transformed_event["organization_name"] = organization_name
 
         space = audit_event.get("space", {})
