@@ -84,26 +84,31 @@ class AuditEventsS3Uploader:
         return audit_logs
 
     def transform_audit_event(self, audit_event):
+        # remove "links" property from event
         transformed_event = {k: v for k, v in audit_event.items() if k not in ["links"]}
 
         organization = audit_event.get("organization", {})
         if organization:
-            transformed_event["organization_name"] = self.get_cf_entity_name(
+            organization_name = self.get_cf_entity_name(
                 "organizations",
                 organization.get("guid", None),
             )
+            if organization_name:
+                transformed_event["organization_name"] = organization_name
 
         space = audit_event.get("space", {})
         if space:
-            transformed_event["space_name"] = self.get_cf_entity_name(
+            space_name = self.get_cf_entity_name(
                 "spaces",
                 space.get("guid", None),
             )
+            if space_name:
+                transformed_event["space_name"] = space_name
 
         return transformed_event
 
     # Upload a batch of audit events to S3 as a single object
-    def upload_audit_events_to_s3(self, object_name, audit_events):
+    def put_audit_events_to_s3(self, object_name, audit_events):
         body = "\n".join(
             [
                 json.dumps(self.transform_audit_event(audit_event))
@@ -144,7 +149,7 @@ class AuditEventsS3Uploader:
                 raise e
         return (start_time, end_time)
 
-    def upload_audit_logs_to_s3(self):
+    def upload_audit_events_to_s3(self):
         now = datetime.now(timezone.utc)
         (start_time, end_time) = self.get_start_end_time(now)
 
@@ -153,7 +158,7 @@ class AuditEventsS3Uploader:
             timestamp = audit_logs[-1]["created_at"]
             object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
             try:
-                self.upload_audit_events_to_s3(object_name, audit_logs)
+                self.put_audit_events_to_s3(object_name, audit_logs)
                 print(f"success for start time {start_time} and end time {end_time}")
             except Exception as e:
                 print(
@@ -167,7 +172,7 @@ class AuditEventsS3Uploader:
 
 def main():
     audit_events_s3_uploader = AuditEventsS3Uploader()
-    audit_events_s3_uploader.upload_audit_logs_to_s3()
+    audit_events_s3_uploader.upload_audit_events_to_s3()
 
 
 if __name__ == "__main__":
