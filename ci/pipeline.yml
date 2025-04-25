@@ -1169,7 +1169,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: audit-s3
+      branch: main
 
 
   - name: opensearch-stemcell-jammy
