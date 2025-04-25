@@ -8,9 +8,9 @@ run:
   args:
   - -c
   - |
-   cd deploy-logs-opensearch-config/ci/
-   python -m pip install -r requirements.txt
-   python upload_audit_events_s3.py
+   cd deploy-logs-opensearch-config/
+   python -m pip install -r requirements-test.txt
+   python ci/upload_audit_events_s3.py
 params:
   AWS_DEFAULT_REGION:
   AWS_ACCESS_KEY_ID:

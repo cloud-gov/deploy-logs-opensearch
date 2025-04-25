@@ -44,7 +44,7 @@ To view downloaded trace files:
 
 ```shell
 source venv/bin/activate
-pip install -r ci/requirements.txt
+pip install -r requirements-test.txt
 playwright show-trace ci-test-results/<dir>/trace.zip
 ```
 
