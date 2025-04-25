@@ -130,6 +130,15 @@ jobs:
         username: ((slack-username))
         icon_url: ((slack-icon-url))
 
+  - name: run-tests
+    plan:
+    - get: general-task
+    - get: deploy-logs-opensearch-config
+      trigger: true
+    - task: run-unit-tests
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
+
   - name: audit-to-s3-development
     serial: true
     plan:
@@ -137,6 +146,7 @@ jobs:
     - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
+      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-development-deployment
     - task: transfer-audit-logs-to-s3
@@ -161,6 +171,7 @@ jobs:
     - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
+      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-staging-deployment
     - task: transfer-audit-logs-to-s3
@@ -185,6 +196,7 @@ jobs:
     - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
+      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-production-deployment
     - task: transfer-audit-logs-to-s3

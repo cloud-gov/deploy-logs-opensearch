@@ -1,0 +1,13 @@
+platform: linux
+
+inputs:
+- name: deploy-logs-opensearch-config
+
+run:
+  path: sh
+  args:
+  - -c
+  - |
+   cd deploy-logs-opensearch-config/
+   python -m pip install -r requirements-test.txt
+   pythom -m pytest tests
