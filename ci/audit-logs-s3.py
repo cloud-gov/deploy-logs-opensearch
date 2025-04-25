@@ -7,6 +7,7 @@ import json
 import boto3
 import requests
 import os
+import ast
 import functools
 from datetime import datetime, timedelta, timezone
 
@@ -23,7 +24,7 @@ UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
 
 def get_client_credentials_token():
     response = requests.post(
-        urljoin(UAA_API_URL, "/token"),
+        urljoin(UAA_API_URL, "/oauth/token"),
         data={
             "grant_type": "client_credentials",
             "client_id": UAA_CLIENT_ID,
@@ -33,7 +34,6 @@ def get_client_credentials_token():
         auth=requests.auth.HTTPBasicAuth(UAA_CLIENT_ID, UAA_CLIENT_SECRET),
         timeout=30,
     )
-
     response.raise_for_status()
     return response.json()["access_token"]
 
@@ -48,11 +48,10 @@ def get_audit_logs(start, end):
             "created_ats[lt]": str(end),
             "order_by": "created_at",
         }
-        url = urljoin(CF_API_URL, "v3/roles")
+        url = urljoin(CF_API_URL, "/v3/audit_events")
 
         first_response = s.get(url, params=params)
         data = first_response.json()
-        print(data)
         audit_logs.extend(data["resources"])
 
         while data["pagination"]["next"] is not None:
@@ -67,23 +66,23 @@ def get_cf_entity_name(session, entity_path, entity_data):
     """
     Retrieves the name of a CF entity from a GUID.
     """
-    if not entity_data["guid"]:
+    if not guid:
         return
-
-    guid = entity_data["guid"]
-    url = urljoin(CF_API_URL, f"v3/{entity_path}/{guid}")
-    response = session.get(url)
-    data = response.json()
-    return data["name"]
+    elif 'guid' in entity_data:
+        guid = ast.literal_eval(entity_data)['guid']
+        url = urljoin(CF_API_URL, f"v3/{entity_path}/{guid}")
+        response = session.get(url)
+        data = response.json()
+        return data["name"]
 
 
 def transform_audit_event_record(session, audit_event):
     return {
         **{k: v for k, v in audit_event.items() if k not in ["links"]},
         "organization_name": get_cf_entity_name(
-            session, "organizations", audit_event["organization"]
+            session, "organizations", str(audit_event["organization"])
         ),
-        "space_name": get_cf_entity_name(session, "spaces", audit_event["space"]),
+        "space_name": get_cf_entity_name(session, "spaces", str(audit_event["space"])),
     }
 
 
