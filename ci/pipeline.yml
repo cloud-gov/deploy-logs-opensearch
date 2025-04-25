@@ -3,6 +3,9 @@ groups:
   - name: all
     jobs:
       - set-self
+      - audit-to-s3-development
+      - audit-to-s3-staging
+      - audit-to-s3-production
       - build-opensearch-release
       - deploy-opensearch-development
       - upload-dashboards-objects-development
@@ -20,6 +23,13 @@ groups:
       - smoke-tests-production
       - e2e-tests-production
       - tenant-production
+      - run-tests
+  - name: tasks
+    jobs:
+      - audit-to-s3-development
+      - audit-to-s3-staging
+      - audit-to-s3-production
+      - build-opensearch-release
   - name: update-test-users
     jobs:
       - update-test-users-dev
@@ -120,6 +130,88 @@ jobs:
         channel: ((slack-channel-customer-success))
         username: ((slack-username))
         icon_url: ((slack-icon-url))
+
+  - name: run-tests
+    plan:
+    - get: general-task
+    - get: deploy-logs-opensearch-config
+      trigger: true
+      passed: [set-self]
+    - task: run-unit-tests
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
+
+  - name: audit-to-s3-development
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-minute-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+      passed: [run-tests]
+    - get: pipeline-tasks
+    - get: opensearch-development-deployment
+    - task: transfer-audit-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
+      params:
+        BUCKET: ((opensearch-audit-bucket-development))
+        UAA_API_URL: ((uaa-url-development))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
+        CF_API_URL: ((dev-cf-api-url))
+        CF_USERNAME: ((cf-username-development))
+        CF_PASSWORD: ((cf-password-development))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+
+  - name: audit-to-s3-staging
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-minute-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+      passed: [run-tests]
+    - get: pipeline-tasks
+    - get: opensearch-staging-deployment
+    - task: transfer-audit-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
+      params:
+        BUCKET: ((opensearch-audit-bucket-staging))
+        CF_API_URL: ((staging-cf-api-url))
+        CF_USERNAME: ((cf-username-staging))
+        CF_PASSWORD: ((cf-password-staging))
+        UAA_API_URL: ((uaa-url-staging))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-staging))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+
+  - name: audit-to-s3-production
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-minute-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+      passed: [run-tests]
+    - get: pipeline-tasks
+    - get: opensearch-production-deployment
+    - task: transfer-audit-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
+      params:
+        BUCKET: ((opensearch-audit-bucket-production))
+        CF_API_URL: ((cf-api-url-production))
+        CF_USERNAME: ((cf-username-production))
+        CF_PASSWORD: ((cf-password-production))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
 
   - name: update-test-users-dev
     serial: true
@@ -230,7 +322,7 @@ jobs:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-config
             trigger: true
-            passed: [set-self]
+            passed: [run-tests]
           - get: opensearch-release
             trigger: true
           - get: opensearch-stemcell-jammy
@@ -499,9 +591,9 @@ jobs:
       - task: prepare-deployment
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_ENVIRONMENT: ((bosh_staging_environment))
           BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: prepare_deploy
           BOSH_FLAGS: "--keep-alive"
@@ -550,9 +642,9 @@ jobs:
       - task: finish-deployment
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_ENVIRONMENT: ((bosh_staging_environment))
           BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: finish_deploy
           BOSH_FLAGS: "--keep-alive"
@@ -821,9 +913,9 @@ jobs:
       - task: prepare-deployment
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_ENVIRONMENT: ((bosh_production_environment))
           BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: prepare_deploy
           BOSH_FLAGS: "--keep-alive"
@@ -842,9 +934,9 @@ jobs:
       - task: finish-deployment
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_ENVIRONMENT: ((bosh_production_environment))
           BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: finish_deploy
           BOSH_FLAGS: "--keep-alive"
@@ -1077,7 +1169,8 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: audit-s3
+
 
   - name: opensearch-stemcell-jammy
     source:
@@ -1095,6 +1188,11 @@ resources:
     type: time
     source:
       interval: 30m
+
+  - name: fifteen-minute-timer
+    type: time
+    source:
+      interval: 15m
 
   - name: slack
     type: slack-notification
