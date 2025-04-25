@@ -49,7 +49,7 @@ def fake_requests(audit_event):
         yield m
 
 
-def test_transform_audit_event_(fake_requests, audit_event):
+def test_transform_audit_event(fake_requests, audit_event):
     audit_events_s3_uploader = AuditEventsS3Uploader()
     transformed_record = audit_events_s3_uploader.transform_audit_event(audit_event)
 
@@ -114,3 +114,55 @@ def test_transform_audit_event_no_organization(fake_requests, audit_event):
     assert len(fake_requests.request_history) == 2
     space_guid = audit_event["space"]["guid"]
     assert fake_requests.request_history[1].path == f"/v3/spaces/{space_guid}"
+
+
+def test_transform_audit_event_organization_does_not_exist(fake_requests, audit_event):
+    org_guid = audit_event["organization"]["guid"]
+    fake_requests.get(
+        f"http://cf.localhost/v3/organizations/{org_guid}",
+        status_code=404,
+    )
+
+    audit_events_s3_uploader = AuditEventsS3Uploader()
+    transformed_record = audit_events_s3_uploader.transform_audit_event(audit_event)
+
+    assert transformed_record == {
+        "guid": audit_event["guid"],
+        "created_at": audit_event["created_at"],
+        "updated_at": audit_event["updated_at"],
+        "type": audit_event["type"],
+        "actor": audit_event["actor"],
+        "target": audit_event["target"],
+        "data": audit_event["data"],
+        "space": audit_event["space"],
+        "organization": audit_event["organization"],
+        "space_name": "fake-space",
+    }
+
+    assert len(fake_requests.request_history) == 3
+
+
+def test_transform_audit_event_space_does_not_exist(fake_requests, audit_event):
+    space_guid = audit_event["space"]["guid"]
+    fake_requests.get(
+        f"http://cf.localhost/v3/spaces/{space_guid}",
+        status_code=404,
+    )
+
+    audit_events_s3_uploader = AuditEventsS3Uploader()
+    transformed_record = audit_events_s3_uploader.transform_audit_event(audit_event)
+
+    assert transformed_record == {
+        "guid": audit_event["guid"],
+        "created_at": audit_event["created_at"],
+        "updated_at": audit_event["updated_at"],
+        "type": audit_event["type"],
+        "actor": audit_event["actor"],
+        "target": audit_event["target"],
+        "data": audit_event["data"],
+        "space": audit_event["space"],
+        "organization": audit_event["organization"],
+        "organization_name": "fake-org",
+    }
+
+    assert len(fake_requests.request_history) == 3
