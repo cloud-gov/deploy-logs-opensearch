@@ -23,6 +23,7 @@ groups:
       - smoke-tests-production
       - e2e-tests-production
       - tenant-production
+      - run-tests
   - name: tasks
     jobs:
       - audit-to-s3-development
