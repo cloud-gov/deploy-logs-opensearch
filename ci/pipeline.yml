@@ -178,7 +178,7 @@ jobs:
     - get: opensearch-staging-deployment
     - task: transfer-audit-logs-to-s3
       image: general-task
-      file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
+      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
       params:
         BUCKET: ((opensearch-audit-bucket-staging))
         CF_API_URL: ((staging-cf-api-url))
