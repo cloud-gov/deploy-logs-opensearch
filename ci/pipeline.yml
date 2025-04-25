@@ -322,7 +322,7 @@ jobs:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-config
             trigger: true
-            passed: [set-self]
+            passed: [run-tests]
           - get: opensearch-release
             trigger: true
           - get: opensearch-stemcell-jammy
