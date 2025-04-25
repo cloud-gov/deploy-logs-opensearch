@@ -96,13 +96,8 @@ class AuditEventsS3Uploader:
             )
                 transformed_event["organization_name"] = organization_name
 
-        space = audit_event.get("space", {})
-        if space:
-            space_name = self.get_cf_entity_name(
-                "spaces",
-                space.get("guid", None),
-            )
-            if space_name:
+        if space_guid := audit_event.get("space", {}).get("guid"):
+            if space_name := self.get_cf_entity_name("spaces", space_guid):
                 transformed_event["space_name"] = space_name
 
         return transformed_event
