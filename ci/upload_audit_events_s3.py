@@ -90,14 +90,14 @@ class AuditEventsS3Uploader:
         transformed_event.pop("links")
 
         if organization := audit_event.get("organization"):
-           if organization_name := self.get_cf_entity_name(
+            if organization_name := self.get_cf_entity_name(
                 "organizations",
                 organization.get("guid", None),
-            )
+            ):
                 transformed_event["organization_name"] = organization_name
 
-        if space_guid := audit_event.get("space", {}).get("guid"):
-            if space_name := self.get_cf_entity_name("spaces", space_guid):
+        if space := audit_event.get("space"):
+            if space_name := self.get_cf_entity_name("spaces", space.get("guid", None)):
                 transformed_event["space_name"] = space_name
 
         return transformed_event
