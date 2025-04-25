@@ -179,8 +179,8 @@ jobs:
       params:
         BUCKET: ((opensearch-audit-bucket-development))
         UAA_API_URL: ((uaa-url-development))
-        UAA_CLIENT_ID: ((uaa-client-id-development))
-        UAA_CLIENT_SECRET: ((uaa-client-secret-development))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
         CF_API_URL: ((dev-cf-api-url))
         CF_USERNAME: ((cf-username-development))
         CF_PASSWORD: ((cf-password-development))

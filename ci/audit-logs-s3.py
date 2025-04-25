@@ -23,7 +23,7 @@ UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
 
 def get_client_credentials_token():
     response = requests.post(
-        urljoin(UAA_API_URL, "oauth/token"),
+        urljoin(UAA_API_URL, "/token"),
         data={
             "grant_type": "client_credentials",
             "client_id": UAA_CLIENT_ID,
