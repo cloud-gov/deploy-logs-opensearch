@@ -10,4 +10,4 @@ run:
   - |
    cd deploy-logs-opensearch-config/
    python -m pip install -r requirements-test.txt
-   pythom -m pytest tests
+   python -m pytest tests
