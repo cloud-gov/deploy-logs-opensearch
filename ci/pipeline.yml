@@ -136,6 +136,7 @@ jobs:
     - get: general-task
     - get: deploy-logs-opensearch-config
       trigger: true
+      passed: [set-self]
     - task: run-unit-tests
       image: general-task
       file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
