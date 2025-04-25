@@ -114,7 +114,7 @@ class AuditEventsS3Uploader:
             Bucket=self.bucket_name,
             Key=object_name,
             Body=body,
-            ContentType="application/json",
+            ContentType="text/plain",
         )
 
     def update_latest_stamp_in_s3(self, latest_timestamp):
