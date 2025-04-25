@@ -153,7 +153,7 @@ jobs:
     - get: opensearch-development-deployment
     - task: transfer-audit-logs-to-s3
       image: general-task
-      file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
+      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
       params:
         BUCKET: ((opensearch-audit-bucket-development))
         UAA_API_URL: ((uaa-url-development))
@@ -203,7 +203,7 @@ jobs:
     - get: opensearch-production-deployment
     - task: transfer-audit-logs-to-s3
       image: general-task
-      file: deploy-logs-opensearch-config/ci/audit-logs-s3.yml
+      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
       params:
         BUCKET: ((opensearch-audit-bucket-production))
         CF_API_URL: ((cf-api-url-production))
