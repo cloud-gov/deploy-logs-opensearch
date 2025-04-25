@@ -66,7 +66,7 @@ def get_cf_entity_name(session, entity_path, entity_data):
     """
     Retrieves the name of a CF entity from a GUID.
     """
-    if not guid:
+    if not entity_data:
         return
     elif 'guid' in entity_data:
         guid = ast.literal_eval(entity_data)['guid']
