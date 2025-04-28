@@ -115,6 +115,7 @@ class AuditEventsS3Uploader:
             Key=object_name,
             Body=body,
             ContentType="text/plain",
+            ServerSideEncryption='AES256'
         )
 
     def update_latest_stamp_in_s3(self, latest_timestamp):
@@ -123,6 +124,7 @@ class AuditEventsS3Uploader:
             Bucket=self.bucket_name,
             Key=timestamp_key,
             Body=data,
+            ServerSideEncryption='AES256'
         )
 
     def get_start_end_time(self, now):
