@@ -163,8 +163,8 @@ jobs:
         CF_USERNAME: ((cf-username-development))
         CF_PASSWORD: ((cf-password-development))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key))
 
   - name: audit-to-s3-staging
     serial: true
