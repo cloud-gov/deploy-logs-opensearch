@@ -163,8 +163,8 @@ jobs:
         CF_USERNAME: ((cf-username-development))
         CF_PASSWORD: ((cf-password-development))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
 
   - name: audit-to-s3-staging
     serial: true
@@ -188,8 +188,8 @@ jobs:
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-staging))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_staging))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_staging))
 
   - name: audit-to-s3-production
     serial: true
@@ -209,9 +209,12 @@ jobs:
         CF_API_URL: ((cf-api-url-production))
         CF_USERNAME: ((cf-username-production))
         CF_PASSWORD: ((cf-password-production))
+        UAA_API_URL: ((uaa-url-production))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_production))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_production))
 
   - name: update-test-users-dev
     serial: true
