@@ -168,7 +168,7 @@ jobs:
       params:
         <<: *slack-failure-params
         text: |
-          :x: Failed to update audit to s3 in development
+          :x: Failed to upload audit to s3 in development
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: audit-to-s3-staging
@@ -198,7 +198,7 @@ jobs:
       params:
         <<: *slack-failure-params
         text: |
-          :x: Failed to update audit to s3 in staging
+          :x: Failed to upload audit to s3 in staging
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: audit-to-s3-production
@@ -228,7 +228,7 @@ jobs:
       params:
         <<: *slack-failure-params
         text: |
-          :x: Failed to update audit to s3 in production
+          :x: Failed to upload audit to s3 in production
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: update-test-users-dev
