@@ -160,8 +160,6 @@ jobs:
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
         CF_API_URL: ((dev-cf-api-url))
-        CF_USERNAME: ((cf-username-development))
-        CF_PASSWORD: ((cf-password-development))
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
@@ -182,8 +180,6 @@ jobs:
       params:
         BUCKET: ((opensearch-audit-bucket-staging))
         CF_API_URL: ((staging-cf-api-url))
-        CF_USERNAME: ((cf-username-staging))
-        CF_PASSWORD: ((cf-password-staging))
         UAA_API_URL: ((uaa-url-staging))
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-staging))
@@ -207,8 +203,6 @@ jobs:
       params:
         BUCKET: ((opensearch-audit-bucket-production))
         CF_API_URL: ((cf-api-url-production))
-        CF_USERNAME: ((cf-username-production))
-        CF_PASSWORD: ((cf-password-production))
         UAA_API_URL: ((uaa-url-production))
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
