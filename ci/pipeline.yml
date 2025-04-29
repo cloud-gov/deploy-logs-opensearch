@@ -163,6 +163,13 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: Failed to update audit to s3 in development
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: audit-to-s3-staging
     serial: true
@@ -186,6 +193,13 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_staging))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_staging))
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: Failed to update audit to s3 in staging
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: audit-to-s3-production
     serial: true
@@ -209,6 +223,13 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_production))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_production))
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: Failed to update audit to s3 in production
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: update-test-users-dev
     serial: true
