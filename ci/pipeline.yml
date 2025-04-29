@@ -160,11 +160,16 @@ jobs:
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
         CF_API_URL: ((dev-cf-api-url))
-        CF_USERNAME: ((cf-username-development))
-        CF_PASSWORD: ((cf-password-development))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: Failed to upload audit to s3 in development
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: audit-to-s3-staging
     serial: true
@@ -182,14 +187,19 @@ jobs:
       params:
         BUCKET: ((opensearch-audit-bucket-staging))
         CF_API_URL: ((staging-cf-api-url))
-        CF_USERNAME: ((cf-username-staging))
-        CF_PASSWORD: ((cf-password-staging))
         UAA_API_URL: ((uaa-url-staging))
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-staging))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_staging))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_staging))
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: Failed to upload audit to s3 in staging
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: audit-to-s3-production
     serial: true
@@ -207,11 +217,19 @@ jobs:
       params:
         BUCKET: ((opensearch-audit-bucket-production))
         CF_API_URL: ((cf-api-url-production))
-        CF_USERNAME: ((cf-username-production))
-        CF_PASSWORD: ((cf-password-production))
+        UAA_API_URL: ((uaa-url-production))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_production))
+        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_production))
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: Failed to upload audit to s3 in production
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: update-test-users-dev
     serial: true
