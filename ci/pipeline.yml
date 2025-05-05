@@ -1278,6 +1278,15 @@ resources:
     source:
       url: ((slack-webhook-url))
 
+  - name: opensearch-test-deployment
+    type: bosh-deployment
+    source: &bosh-params-development
+      target: ((bosh-director-info.development.environment))
+      client: ((bosh-director-info.development.client))
+      client_secret: ((bosh-director-info.development.client_secret))
+      ca_cert: ((bosh-director-info.development.ca_cert))
+      deployment: logs-opensearch-test
+
   - name: opensearch-development-deployment
     type: bosh-deployment
     source: &bosh-params-development
