@@ -177,6 +177,7 @@ instance_groups:
         event_types:
         - LogMessage
         - ContainerMetric
+        - Audit
         client_id: opensearch_client_id
       dashboards_objects:
         upload_patterns:
