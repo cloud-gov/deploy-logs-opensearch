@@ -27,6 +27,9 @@ instance_groups:
 - name: ingestor_cloudwatch_rds
   instances: 0
 
+- name: ingestor_s3
+  instances: 0
+
 - name: maintenance
   vm_type: t3.large
   instances: 0

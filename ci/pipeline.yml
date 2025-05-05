@@ -381,7 +381,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/enable-dashboard-dns.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-dashboards-tls.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-proxy-auth.yml
-            - deploy-logs-opensearch-test-config/opsfiles/enable-auth-proxy-route-dev.yml
+            - deploy-logs-opensearch-test-config/opsfiles/enable-auth-proxy-route-test.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
           vars_files:
