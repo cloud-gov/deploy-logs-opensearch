@@ -30,6 +30,7 @@ groups:
       - audit-to-s3-staging
       - audit-to-s3-production
       - build-opensearch-release
+      - deploy-opensearch-test
   - name: update-test-users
     jobs:
       - update-test-users-dev
@@ -332,6 +333,60 @@ jobs:
         text: |
           :x: Failed to update test users
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+  - name: deploy-opensearch-test
+    serial_groups: [bosh-development]
+    plan:
+      - in_parallel:
+          - get: pipeline-tasks
+          - get: deploy-logs-opensearch-test-config
+          - get: opensearch-release
+          - get: opensearch-stemcell-jammy
+            trigger: true
+          - get: terraform-yaml
+            resource: terraform-yaml-development
+          - get: general-task
+      - task: opensearch-manifest
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: deploy-logs-opensearch-test-config
+            - name: terraform-yaml
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-test-config spruce merge \
+                  --prune terraform_outputs \
+                  deploy-logs-opensearch-test-config/opensearch-test-deployment.yml \
+                  deploy-logs-opensearch-test-config/opensearch-jobs.yml \
+                  deploy-logs-opensearch-test-config/opensearch-test.yml \
+                  terraform-yaml/state.yml \
+                  > opensearch-manifest/manifest.yml
+          outputs:
+            - name: opensearch-manifest
+      - task: terraform-secrets
+        image: general-task
+        file: deploy-logs-opensearch-test-config/ci/terraform-secrets.yml
+      - put: opensearch-test-deployment
+        params:
+          manifest: opensearch-manifest/manifest.yml
+          releases:
+            - opensearch-release/*.tgz
+          stemcells:
+            - opensearch-stemcell-jammy/*.tgz
+          ops_files:
+            - deploy-logs-opensearch-test-config/opsfiles/enable-node-tls.yml
+            - deploy-logs-opensearch-test-config/opsfiles/enable-dashboard-dns.yml
+            - deploy-logs-opensearch-test-config/opsfiles/enable-dashboards-tls.yml
+            - deploy-logs-opensearch-test-config/opsfiles/enable-proxy-auth.yml
+            - deploy-logs-opensearch-test-config/opsfiles/enable-auth-proxy-route-dev.yml
+            - deploy-logs-opensearch-test-config/opsfiles/enable-syslog.yml
+            - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
+          vars_files:
+            - terraform-secrets/terraform.yml
 
   - name: deploy-opensearch-development
     serial_groups: [bosh-development]
@@ -1189,6 +1244,12 @@ resources:
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
       branch: main
 
+  - name: deploy-logs-opensearch-test-config
+    type: git
+    source:
+      commit_verification_keys: ((cloud-gov-pgp-keys))
+      uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
+      branch: test
 
   - name: opensearch-stemcell-jammy
     source:

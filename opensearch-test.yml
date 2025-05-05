@@ -1,0 +1,55 @@
+instance_groups:
+- name: opensearch_manager
+  vm_type: t3.large
+  instances: 1
+  networks:
+  - name: services
+
+- name: opensearch_data
+  instances: 1
+  vm_type: r6i.large
+  update:
+    max_in_flight: 1
+    canaries: 1
+
+- name: opensearch_dashboards
+  vm_type: t3.xlarge
+  instances: 1
+
+- name: archiver
+  instances: 0
+  vm_type: m6i.xlarge
+
+- name: ingestor
+  instances: 1
+  vm_type: m6i.large
+
+- name: ingestor_cloudwatch_rds
+  instances: 0
+
+- name: maintenance
+  vm_type: t3.large
+  instances: 0
+  jobs:
+  - name: upload_opensearch_config
+    release: opensearch
+    properties:
+      opensearch_config:
+        rollover_document_size: 3gb
+        rollover_index_age: 1d
+        shard_count: 3
+
+addons:
+- name: bosh-dns-aliases
+  jobs:
+  - name: bosh-dns-aliases
+    release: bosh-dns-aliases
+    properties:
+      aliases:
+      - domain: nats.service.cf.internal
+        targets:
+        - deployment: cf-development
+          domain: bosh
+          instance_group: nats
+          network: default
+          query: '*'
