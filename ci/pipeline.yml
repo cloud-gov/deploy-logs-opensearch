@@ -335,7 +335,6 @@ jobs:
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: deploy-opensearch-test
-    serial_groups: [bosh-development]
     plan:
       - in_parallel:
           - get: pipeline-tasks
