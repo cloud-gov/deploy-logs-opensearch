@@ -369,7 +369,7 @@ jobs:
             - name: opensearch-manifest
       - task: terraform-secrets
         image: general-task
-        file: deploy-logs-opensearch-test-config/ci/terraform-secrets.yml
+        file: deploy-logs-opensearch-test-config/ci/terraform-test-secrets.yml
       - put: opensearch-test-deployment
         params:
           manifest: opensearch-manifest/manifest.yml
