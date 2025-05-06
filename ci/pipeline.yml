@@ -359,7 +359,7 @@ jobs:
               - |
                 SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-test-config spruce merge \
                   --prune terraform_outputs \
-                  deploy-logs-opensearch-test-config/opensearch-test-deployment.yml \
+                  deploy-logs-opensearch-test-config/opensearch-deployment.yml \
                   deploy-logs-opensearch-test-config/opensearch-jobs.yml \
                   deploy-logs-opensearch-test-config/opensearch-test.yml \
                   terraform-yaml/state.yml \
@@ -368,7 +368,9 @@ jobs:
             - name: opensearch-manifest
       - task: terraform-secrets
         image: general-task
-        file: deploy-logs-opensearch-test-config/ci/terraform-test-secrets.yml
+        input_mapping:
+          deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
+        file: deploy-logs-opensearch-test-config/ci/terraform-secrets.yml
       - put: opensearch-test-deployment
         params:
           manifest: opensearch-manifest/manifest.yml
@@ -384,6 +386,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/enable-auth-proxy-route-test.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
+            - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
           vars_files:
             - terraform-secrets/terraform.yml
 
