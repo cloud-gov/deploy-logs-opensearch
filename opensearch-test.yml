@@ -6,18 +6,18 @@ instance_groups:
   - name: services
 
 - name: opensearch_data
-  instances: 3
+  instances: 1
   vm_type: r6i.large
   update:
-    max_in_flight: 2
-    canaries: 2
+    max_in_flight: 1
+    canaries: 1
 
 - name: opensearch_dashboards
   vm_type: t3.xlarge
   instances: 1
 
 - name: archiver
-  instances: 1
+  instances: 0
   vm_type: m6i.xlarge
 
 - name: ingestor
@@ -25,14 +25,14 @@ instance_groups:
   vm_type: m6i.large
 
 - name: ingestor_cloudwatch_rds
-  instances: 1
+  instances: 0
 
 - name: ingestor_s3
-  instances: 1
+  instances: 0
 
 - name: maintenance
   vm_type: t3.large
-  instances: 1
+  instances: 0
   jobs:
   - name: upload_opensearch_config
     release: opensearch

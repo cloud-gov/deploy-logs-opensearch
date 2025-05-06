@@ -31,6 +31,9 @@ instance_groups:
   instances: 1
   vm_type: r6i.large
 
+- name: ingestor_s3
+  instances: 1
+
 - name: maintenance
   vm_type: t3.large
   instances: 1
