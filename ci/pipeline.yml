@@ -190,16 +190,6 @@ jobs:
             tags: [iaas]
             params:
               file: finalized-release/releases-dir-opensearch-test.tgz
-    on_failure:
-      put: slack
-      params: &slack-failure-params
-        text: |
-          :x: FAILED to build OpenSearch BOSH release
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: ((slack-channel-customer-success))
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
-
 
   - name: run-tests
     plan:
