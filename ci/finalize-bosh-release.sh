@@ -4,12 +4,6 @@ set -e -u
 
 cd release-git-repo
 
-if [ -n "$FINAL_YML_CONTENT" ]; then
-cat <<EOF > "config/final.yml"
-$FINAL_YML_CONTENT
-EOF
-fi
-
 RELEASE_NAME=$(grep final_name config/final.yml | awk '{print $2}')
 
 tar -zxf "../final-builds-dir-tarball/final-builds-dir-${RELEASE_NAME}.tgz"
