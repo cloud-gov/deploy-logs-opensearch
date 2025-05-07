@@ -141,7 +141,7 @@ jobs:
           - get: release-git-repo
             resource: opensearch-test-release-git-repo
             trigger: true
-          - get: pipeline-tasks
+          - get: deploy-logs-opensearch-test-config
           - get: final-builds-dir-tarball
             resource: opensearch-test-final-builds-dir-tarball
           - get: releases-dir-tarball
@@ -163,7 +163,9 @@ jobs:
                 # run release template unit tests
                 bundle exec rspec
       - task: finalize-release
-        file: pipeline-tasks/finalize-bosh-release.yml
+        input_mapping:
+          deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
+        file: deploy-logs-opensearch-test-config/finalize-bosh-release.yml
         tags: [iaas]
         params:
           AWS_DEFAULT_REGION: ((aws_default_region))
@@ -177,6 +179,14 @@ jobs:
                 bucket_name: ((s3-bosh-blobstore-info.bucket_name))
                 credentials_source: ((s3-bosh-blobstore-info.credentials_source))
                 server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
+          FINAL_YML_CONTENT: |-
+            ---
+            blobstore:
+              provider: s3
+              options:
+                bucket_name: ((s3-bosh-blobstore-info.bucket_name))
+                region: ((s3-bosh-blobstore-info.region))
+            final_name: opensearch-test
       - in_parallel:
           - put: opensearch-test-release
             tags: [iaas]
