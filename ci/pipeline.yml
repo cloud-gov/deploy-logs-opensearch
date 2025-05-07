@@ -1271,20 +1271,6 @@ resources:
       <<: *bosh-releases-bucket-info
       versioned_file: releases-dir-opensearch.tgz
 
-  - name: opensearch-test-final-builds-dir-tarball
-    type: s3-iam
-    source: &bosh-releases-bucket-info
-      bucket: ((s3-bosh-releases-bucket))
-      region_name: ((aws-region))
-      server_side_encryption: AES256
-      versioned_file: final-builds-dir-opensearch-test.tgz
-
-  - name: opensearch-test-releases-dir-tarball
-    type: s3-iam
-    source:
-      <<: *bosh-releases-bucket-info
-      versioned_file: releases-dir-opensearch-test.tgz
-
   - name: opensearch-release
     type: s3-iam
     source:
