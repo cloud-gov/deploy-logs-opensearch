@@ -165,7 +165,7 @@ jobs:
       - task: finalize-release
         input_mapping:
           deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
-        file: deploy-logs-opensearch-test-config/finalize-bosh-release.yml
+        file: deploy-logs-opensearch-test-config/ci/finalize-bosh-release.yml
         tags: [iaas]
         params:
           AWS_DEFAULT_REGION: ((aws_default_region))
