@@ -162,10 +162,10 @@ jobs:
                 bundle install
                 # run release template unit tests
                 bundle exec rspec
-      - task: finalize-release
+      - task: create-test-release
         input_mapping:
           deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
-        file: deploy-logs-opensearch-test-config/ci/finalize-bosh-release.yml
+        file: deploy-logs-opensearch-test-config/ci/create-bosh-test-release.yml
         tags: [iaas]
         params:
           AWS_DEFAULT_REGION: ((aws_default_region))
@@ -182,7 +182,7 @@ jobs:
       - put: opensearch-test-release
         tags: [iaas]
         params:
-          file: finalized-release/opensearch-*.tgz
+          file: finalized-release/opensearch-test-*.tgz
 
   - name: run-tests
     plan:
