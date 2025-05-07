@@ -182,7 +182,7 @@ jobs:
       - put: opensearch-test-release
         tags: [iaas]
         params:
-          file: finalized-release/opensearch-test-*.tgz
+          file: finalized-release/opensearch-*.tgz
 
   - name: run-tests
     plan:

@@ -15,8 +15,5 @@ EOF
 bosh-cli -n create-release --force --timestamp-version
 bosh-cli upload-release
 
-latest_release=$(echo releases/"${RELEASE_NAME}"/"${RELEASE_NAME}"*.yml | grep -oe '[0-9.]\+.yml' | sed -e 's/\.yml$//' | sort -V | tail -1)
+latest_release=$(echo dev_releases/"${RELEASE_NAME}"/"${RELEASE_NAME}"*.yml | grep -oE '[0-9]+\+dev\.[0-9]+.yml' | sed -e 's/\.yml$//' | sort -V | tail -1)
 mv "${RELEASE_NAME}.tgz" "../finalized-release/${RELEASE_NAME}-${latest_release}.tgz"
-
-tar -czhf "../finalized-release/final-builds-dir-${RELEASE_NAME}.tgz" .final_builds
-tar -czhf "../finalized-release/releases-dir-${RELEASE_NAME}.tgz" releases
