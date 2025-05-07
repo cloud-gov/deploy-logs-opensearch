@@ -409,6 +409,7 @@ jobs:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-test-config
           - get: opensearch-test-release
+            trigger: true
           - get: opensearch-stemcell-jammy
             trigger: true
           - get: terraform-yaml
