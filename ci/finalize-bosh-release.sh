@@ -12,7 +12,9 @@ cat <<EOF > "config/private.yml"
 $PRIVATE_YML_CONTENT
 EOF
 
-bosh-cli -n create-release --force --timestamp-version
+TIMESTAMP=$(date +%s)
+TEST_RELEASE_TARBALL_NAME="$RELEASE_NAME-test-$TIMESTAMP.tgz"
 
-latest_release=$(echo dev_releases/"${RELEASE_NAME}"/"${RELEASE_NAME}"*.yml | grep -oE '[0-9]+\+dev\.[0-9]+.yml' | sed -e 's/\.yml$//' | sort -V | tail -1)
-mv "${RELEASE_NAME}.tgz" "../finalized-release/${RELEASE_NAME}-${latest_release}.tgz"
+bosh-cli -n create-release --force --tarball "$TEST_RELEASE_TARBALL_NAME"
+
+mv "$TEST_RELEASE_TARBALL_NAME" "../finalized-release/$TEST_RELEASE_TARBALL_NAME.tgz"
