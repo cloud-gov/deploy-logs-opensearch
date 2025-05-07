@@ -143,9 +143,9 @@ jobs:
             trigger: true
           - get: deploy-logs-opensearch-test-config
           - get: final-builds-dir-tarball
-            resource: opensearch-test-final-builds-dir-tarball
+            resource: opensearch-final-builds-dir-tarball
           - get: releases-dir-tarball
-            resource: opensearch-test-releases-dir-tarball
+            resource: opensearch-releases-dir-tarball
           - get: general-task
       - task: run-tests
         image: general-task
@@ -179,19 +179,10 @@ jobs:
                 bucket_name: ((s3-bosh-blobstore-info.bucket_name))
                 credentials_source: ((s3-bosh-blobstore-info.credentials_source))
                 server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
-      - in_parallel:
-          - put: opensearch-test-release
-            tags: [iaas]
-            params:
-              file: finalized-release/opensearch-test-*.tgz
-          - put: opensearch-test-final-builds-dir-tarball
-            tags: [iaas]
-            params:
-              file: finalized-release/final-builds-dir-opensearch-test.tgz
-          - put: opensearch-test-releases-dir-tarball
-            tags: [iaas]
-            params:
-              file: finalized-release/releases-dir-opensearch-test.tgz
+      - put: opensearch-test-release
+        tags: [iaas]
+        params:
+          file: finalized-release/opensearch-test-*.tgz
 
   - name: run-tests
     plan:
