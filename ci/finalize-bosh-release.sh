@@ -18,7 +18,9 @@ cat <<EOF > "config/private.yml"
 $PRIVATE_YML_CONTENT
 EOF
 
-bosh-cli -n create-release --force --final --tarball="./${RELEASE_NAME}.tgz"
+bosh-cli -n create-release --force --timestamp-version
+bosh-cli upload-release
+
 latest_release=$(echo releases/"${RELEASE_NAME}"/"${RELEASE_NAME}"*.yml | grep -oe '[0-9.]\+.yml' | sed -e 's/\.yml$//' | sort -V | tail -1)
 mv "${RELEASE_NAME}.tgz" "../finalized-release/${RELEASE_NAME}-${latest_release}.tgz"
 

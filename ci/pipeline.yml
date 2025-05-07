@@ -179,14 +179,6 @@ jobs:
                 bucket_name: ((s3-bosh-blobstore-info.bucket_name))
                 credentials_source: ((s3-bosh-blobstore-info.credentials_source))
                 server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
-          FINAL_YML_CONTENT: |-
-            ---
-            blobstore:
-              provider: s3
-              options:
-                bucket_name: ((s3-bosh-blobstore-info.bucket_name))
-                region: ((s3-bosh-blobstore-info.region))
-            final_name: opensearch-test
       - in_parallel:
           - put: opensearch-test-release
             tags: [iaas]
