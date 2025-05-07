@@ -13,7 +13,6 @@ $PRIVATE_YML_CONTENT
 EOF
 
 bosh-cli -n create-release --force --timestamp-version
-bosh-cli upload-release
 
 latest_release=$(echo dev_releases/"${RELEASE_NAME}"/"${RELEASE_NAME}"*.yml | grep -oE '[0-9]+\+dev\.[0-9]+.yml' | sed -e 's/\.yml$//' | sort -V | tail -1)
 mv "${RELEASE_NAME}.tgz" "../finalized-release/${RELEASE_NAME}-${latest_release}.tgz"
