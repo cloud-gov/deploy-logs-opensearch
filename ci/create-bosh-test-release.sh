@@ -13,8 +13,8 @@ $PRIVATE_YML_CONTENT
 EOF
 
 TIMESTAMP=$(date +%s)
-TEST_RELEASE_TARBALL_NAME="$RELEASE_NAME-test-$TIMESTAMP.tgz"
+TEST_RELEASE_TARBALL_NAME="$RELEASE_NAME-test-$TIMESTAMP"
 
-bosh-cli -n create-release --force --tarball "$TEST_RELEASE_TARBALL_NAME"
+bosh-cli -n create-release --force --tarball "$TEST_RELEASE_TARBALL_NAME.tgz"
 
-mv "$TEST_RELEASE_TARBALL_NAME" "../finalized-release/$TEST_RELEASE_TARBALL_NAME.tgz"
+mv "$TEST_RELEASE_TARBALL_NAME.tgz" "../finalized-release/$TEST_RELEASE_TARBALL_NAME.tgz"
