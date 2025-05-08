@@ -15,6 +15,6 @@ EOF
 TIMESTAMP=$(date +%s)
 TEST_RELEASE_TARBALL_NAME="$RELEASE_NAME-test-$TIMESTAMP"
 
-bosh-cli -n create-release --force --tarball "$TEST_RELEASE_TARBALL_NAME.tgz"
+bosh-cli -n create-release --force --timestamp-version --tarball "$TEST_RELEASE_TARBALL_NAME.tgz"
 
 mv "$TEST_RELEASE_TARBALL_NAME.tgz" "../finalized-release/$TEST_RELEASE_TARBALL_NAME.tgz"
