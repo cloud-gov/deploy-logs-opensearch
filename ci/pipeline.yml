@@ -30,12 +30,15 @@ groups:
       - audit-to-s3-staging
       - audit-to-s3-production
       - build-opensearch-release
-      - deploy-opensearch-test
   - name: update-test-users
     jobs:
       - update-test-users-dev
       - update-test-users-staging
       - update-test-users-production
+  - name: test
+    jobs:
+      - build-opensearch-test-release
+      - deploy-opensearch-test
   - name: development
     jobs:
       - deploy-opensearch-development
@@ -131,6 +134,55 @@ jobs:
         channel: ((slack-channel-customer-success))
         username: ((slack-username))
         icon_url: ((slack-icon-url))
+
+  - name: build-opensearch-test-release
+    plan:
+      - in_parallel:
+          - get: release-git-repo
+            resource: opensearch-test-release-git-repo
+            trigger: true
+          - get: deploy-logs-opensearch-test-config
+          - get: final-builds-dir-tarball
+            resource: opensearch-final-builds-dir-tarball
+          - get: releases-dir-tarball
+            resource: opensearch-releases-dir-tarball
+          - get: general-task
+      - task: run-tests
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: release-git-repo
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                cd release-git-repo
+                bundle install
+                # run release template unit tests
+                bundle exec rspec
+      - task: create-test-release
+        input_mapping:
+          deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
+        file: deploy-logs-opensearch-test-config/ci/create-bosh-test-release.yml
+        tags: [iaas]
+        params:
+          AWS_DEFAULT_REGION: ((aws_default_region))
+          AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+          AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+          PRIVATE_YML_CONTENT: |-
+            ---
+            blobstore:
+              options:
+                region: ((s3-bosh-blobstore-info.region))
+                bucket_name: ((s3-bosh-blobstore-info.bucket_name))
+                credentials_source: ((s3-bosh-blobstore-info.credentials_source))
+                server_side_encryption: ((s3-bosh-blobstore-info.server_side_encryption))
+      - put: opensearch-test-release
+        tags: [iaas]
+        params:
+          file: finalized-release/opensearch-test-*.tgz
 
   - name: run-tests
     plan:
@@ -339,7 +391,8 @@ jobs:
       - in_parallel:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-test-config
-          - get: opensearch-release
+          - get: opensearch-test-release
+            trigger: true
           - get: opensearch-stemcell-jammy
             trigger: true
           - get: terraform-yaml
@@ -375,7 +428,7 @@ jobs:
         params:
           manifest: opensearch-manifest/manifest.yml
           releases:
-            - opensearch-release/*.tgz
+            - opensearch-test-release/*.tgz
           stemcells:
             - opensearch-stemcell-jammy/*.tgz
           ops_files:
@@ -1196,6 +1249,14 @@ resources:
       uri: https://github.com/cloud-gov/opensearch-boshrelease
       branch: main
 
+  - name: opensearch-test-release-git-repo
+    type: git
+    source:
+      commit_verification_keys: ((cloud-gov-pgp-keys))
+      uri: https://github.com/cloud-gov/opensearch-boshrelease
+      branch: ((test-opensearch-release-branch))
+
+
   - name: opensearch-final-builds-dir-tarball
     type: s3-iam
     source: &bosh-releases-bucket-info
@@ -1216,6 +1277,14 @@ resources:
       bucket: ((s3-bosh-releases-bucket))
       region_name: ((aws-region))
       regexp: opensearch-([\d\.]*).tgz
+      server_side_encryption: AES256
+
+  - name: opensearch-test-release
+    type: s3-iam
+    source:
+      bucket: ((s3-bosh-releases-bucket))
+      region_name: ((aws-region))
+      regexp: opensearch-test-([\d\.]*).tgz
       server_side_encryption: AES256
 
   - name: terraform-yaml-development
@@ -1251,7 +1320,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: test
+      branch: ((deploy-logs-opensearch-config-test-branch))
 
   - name: opensearch-stemcell-jammy
     source:
