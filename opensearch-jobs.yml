@@ -459,6 +459,8 @@ instance_groups:
   - logs-opensearch-ingestor-profile
   - 50GB_ephemeral_disk
   vm_type: t3.large
+  update:
+    serial: true # Block on this job to create deploy group 5
 
 - name: ingestor_cloudwatch_rds
   instances: 1
@@ -527,10 +529,10 @@ instance_groups:
   networks:
   - name: services
   update:
-    serial: true # Block on this job to create deploy group 1
+    serial: true # Block on this job to create deploy group 6
 
 #########################################################
-#5th deploy group - dashboards
+#7th deploy group - dashboards
 #########################################################
 - name: opensearch_dashboards
   instances: 2
