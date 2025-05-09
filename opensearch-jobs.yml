@@ -253,7 +253,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 2
 
 #########################################################
-#3rd deploy group - archiver, ingestors
+#3rd deploy group - archiver
 #########################################################
 - name: archiver
   instances: 1
@@ -315,7 +315,12 @@ instance_groups:
   - logs-opensearch-ingestor-profile
   - 50GB_ephemeral_disk
   vm_type: t3.medium
+  update:
+    serial: true # Block on this job to create deploy group 3
 
+#########################################################
+#4th deploy group -mingestors
+#########################################################
 - name: ingestor
   instances: 1
   jobs:
@@ -384,6 +389,8 @@ instance_groups:
   - 50GB_ephemeral_disk
   networks:
   - name: services
+  update:
+    serial: true # Block on this job to create deploy group 4
 
 - name: ingestor_s3
   instances: 1
