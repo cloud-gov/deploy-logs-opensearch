@@ -319,7 +319,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 3
 
 #########################################################
-#4th deploy group -mingestors
+#4th deploy group ingestors
 #########################################################
 - name: ingestor
   instances: 1
@@ -530,7 +530,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 1
 
 #########################################################
-#4th deploy group - dashboards
+#5th deploy group - dashboards
 #########################################################
 - name: opensearch_dashboards
   instances: 2
