@@ -1,6 +1,6 @@
 instance_groups:
 #######################################################
-#First deploy group - opensearch_data, maintenance
+#First deploy group - opensearch_data
 #######################################################
 - name: opensearch_data
   instances: 11
@@ -51,6 +51,66 @@ instance_groups:
     bosh:
       swap_size: 0
 
+#########################################################
+#2nd deploy group - opensearch_manager
+#########################################################
+
+- name: opensearch_manager
+  instances: 3
+  vm_extensions: [15GB_ephemeral_disk]
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    provides:
+      opensearch:
+        as: opensearch_manager
+    properties:
+      opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_cluster_manager: true
+          allow_data: false
+    release: opensearch
+  - name: snort-config
+    properties:
+      snort:
+        rules:
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
+    release: jammy-snort
+  azs:
+  - z1
+  persistent_disk_type: logs_opensearch_os_master
+  stemcell: default
+  vm_type: t3.large
+  networks:
+   - name: services
+  update:
+    serial: true # Block on this job to create deploy group 2
+
+#########################################################
+#3rd deploy group - maintenance
+#########################################################
 - name: maintenance
   instances: 1
   vm_extensions: [errand-profile,15GB_ephemeral_disk]
@@ -193,67 +253,10 @@ instance_groups:
   networks:
   - name: services
   update:
-    serial: true # Block on this job to create deploy group 1
+    serial: true # Block on this job to create deploy group 3
 
 #########################################################
-#2nd deploy group - opensearch_manager
-#########################################################
-
-- name: opensearch_manager
-  instances: 3
-  vm_extensions: [15GB_ephemeral_disk]
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    provides:
-      opensearch:
-        as: opensearch_manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        clustername: opensearch
-        limits:
-          fd: 131072 # 2 ** 17
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        node:
-          allow_cluster_manager: true
-          allow_data: false
-    release: opensearch
-  - name: snort-config
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-    release: jammy-snort
-  azs:
-  - z1
-  persistent_disk_type: logs_opensearch_os_master
-  stemcell: default
-  vm_type: t3.large
-  networks:
-   - name: services
-  update:
-    serial: true # Block on this job to create deploy group 2
-
-#########################################################
-#3rd deploy group - archiver
+#4th deploy group - archiver
 #########################################################
 - name: archiver
   instances: 1
@@ -316,10 +319,10 @@ instance_groups:
   - 50GB_ephemeral_disk
   vm_type: t3.medium
   update:
-    serial: true # Block on this job to create deploy group 3
+    serial: true # Block on this job to create deploy group 4
 
 #########################################################
-#4th deploy group ingestors
+#5th deploy group ingestors
 #########################################################
 - name: ingestor
   instances: 1
@@ -390,7 +393,7 @@ instance_groups:
   networks:
   - name: services
   update:
-    serial: true # Block on this job to create deploy group 4
+    serial: true # Block on this job to create deploy group 5
 
 - name: ingestor_s3
   instances: 1
@@ -460,7 +463,7 @@ instance_groups:
   - 50GB_ephemeral_disk
   vm_type: t3.large
   update:
-    serial: true # Block on this job to create deploy group 5
+    serial: true # Block on this job to create deploy group 6
 
 - name: ingestor_cloudwatch_rds
   instances: 1
@@ -529,10 +532,10 @@ instance_groups:
   networks:
   - name: services
   update:
-    serial: true # Block on this job to create deploy group 6
+    serial: true # Block on this job to create deploy group 7
 
 #########################################################
-#7th deploy group - dashboards
+#8th deploy group - dashboards
 #########################################################
 - name: opensearch_dashboards
   instances: 2
