@@ -1,6 +1,9 @@
 instance_groups:
 #######################################################
 #First deploy group - opensearch_data
+# Data nodes are updated first as they are the most flexible with ingestors and need to be complete before managers.
+# we run 2 at a time to cut down on collisions. Data nodes can be updated 1 at a time or 2 at a time
+# DO NOT DO 3
 #######################################################
 - name: opensearch_data
   instances: 11
@@ -53,6 +56,8 @@ instance_groups:
 
 #########################################################
 #2nd deploy group - opensearch_manager
+# manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
+# They are updated so one is always up as opensearch can survive on one manager in a disaster
 #########################################################
 
 - name: opensearch_manager
@@ -110,6 +115,7 @@ instance_groups:
 
 #########################################################
 #3rd deploy group - maintenance
+# maintenance is ran after data and manager as it interacts with both.
 #########################################################
 - name: maintenance
   instances: 1
@@ -323,6 +329,7 @@ instance_groups:
 
 #########################################################
 #5th deploy group ingestors
+# Ingestors are run second to last and updated one at a time to avoid collisions
 #########################################################
 - name: ingestor
   instances: 1
@@ -536,6 +543,9 @@ instance_groups:
 
 #########################################################
 #8th deploy group - dashboards
+# Dashboard is ran last as it checks the types of other instances when restarting. all dashboard nodes must either be updated at the same
+# time or have instances not ran yet turned off for opensearch.
+# IF DASHBOARD IS UPDATING WITH A OLD VERSION BOTH WILL ERROR
 #########################################################
 - name: opensearch_dashboards
   instances: 2
