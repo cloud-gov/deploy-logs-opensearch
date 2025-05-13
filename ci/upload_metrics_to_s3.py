@@ -29,6 +29,7 @@ opensearch_domain_metrics = [
 
 class MetricEventsS3Uploader:
     def __init__(self):
+        self.CF_API_URL = os.environ.get("CF_API_URL")
         self.UAA_API_URL = os.environ.get("UAA_API_URL")
         self.UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
@@ -72,26 +73,49 @@ class MetricEventsS3Uploader:
             data = response.json()
             return data["name"]
 
-    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags,instance):
-            response= cloudwatch_client.get_metric_statistics(
-                Namespace=namespace,
-                MetricName=metric,
-                Dimensions=dimensions,
-                StartTime=start,
-                EndTime=end,
-                Period=period,
-                Statistics=statistic
-            )
-            print(response)
-            datapoints = response.get("Datapoints",[])
-            if not datapoints:
-                return
-            for i, dp in enumerate(datapoints):
-                dp["Tag"]=tags
-                dp["MetricName"]=metric
-                dp["InstanceName"]=instance
+    # some metrics need a specific instance called for them
+    def get_instance_ids_for_domain(self,namespace,domain,metric):
 
+        response = cloudwatch_client.list_metrics(
+            Namespace=namespace,
+            Dimensions = [{"Name": "DomainName", "Value": domain}],
+            MetricName=metric["name"],
 
+        )
+        instance_ids = []
+        for metric in response["Metrics"]:
+            for dim in metric["Dimensions"]:
+                if dim["Name"] == "NodeId":
+                    instance_ids.append(dim["Value"])
+        return instance_ids
+
+    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags,instance,org_name,space_name):
+        response= cloudwatch_client.get_metric_statistics(
+            Namespace=namespace,
+            MetricName=metric["name"],
+            Dimensions=dimensions,
+            StartTime=start,
+            EndTime=end,
+            Period=period,
+            Statistics=statistic,
+            Unit=metric["unit"]
+        )
+        datapoints = response.get("Datapoints",[])
+
+        if not datapoints:
+            return []
+
+        metric_events = []
+        for dp in datapoints:
+            dp["Tags"] = tags
+            dp["MetricName"] = metric["name"]
+            dp["InstanceName"] = instance
+            dp["Time"] = dp["Timestamp"].isoformat()
+            dp.pop("Timestamp", None)
+            dp["Organization_name"] = org_name
+            dp["Space_name"] = space_name
+            metric_events.append(dp)
+        return metric_events
 
 
     def get_cg_domains(self):
@@ -167,18 +191,59 @@ class MetricEventsS3Uploader:
     def generate_opensearch_domain_metrics(self,start_time,end_time):
         domains = self.get_cg_domains()
         domain_logs = []
+
         for domain in domains:
-            arn = f"arn:aws:es:{region}:{account_id}:domain/{domain}"
+            arn = f"arn:aws-us-gov:es:{region}:{account_id}:domain/{domain}"
             try:
                 tag_response = es_client.list_tags(ARN=arn)
                 tags = {tag["Key"]: tag["Value"] for tag in tag_response.get("TagList",[])}
             except Exception as e:
                 print(f"Error getting tags for {domain}: {e}")
                 tags = {}
+
+            org_name = None
+            space_name= None
+            if organization_name := self.get_cf_entity_name(
+                "organizations",
+                tags.get("Organization GUID", None),
+            ): org_name = organization_name
+            if space_name := self.get_cf_entity_name("spaces", tags.get("Space GUID", None)): space_name = space_name
+
             for metric in opensearch_domain_metrics:
-                dimensions = [{"Name": "DomainName", "Value": domain}]
-                metric_logs = self.get_metric_logs(start_time, end_time, namespace="AWS/ES",metric=metric,dimensions=dimensions,period=60,statistic=["Average"],tags=tags,instance=domain)
-                domain_logs.append(metric_logs)
+                instance_ids = self.get_instance_ids_for_domain("AWS/ES",domain,metric)
+                if instance_ids != []:
+                    for instance in instance_ids:
+                        dimensions = [{"Name": "DomainName", "Value": domain},{"Name": "NodeId", "Value": instance},{"Name": "ClientId", "Value": str(account_id)}]
+                        metric_logs = self.get_metric_logs(
+                            start_time,
+                            end_time,
+                            namespace="AWS/ES",
+                            metric=metric,
+                            dimensions=dimensions,
+                            period=60,
+                            statistic=["Average"],
+                            tags=tags,
+                            instance=domain,
+                            org_name=org_name,
+                            space_name=space_name
+                            )
+                        domain_logs.extend(metric_logs)
+                else:
+                    dimensions = [{"Name": "DomainName", "Value": domain}]
+                    metric_logs = self.get_metric_logs(
+                        start_time,
+                        end_time,
+                        namespace="AWS/ES",
+                        metric=metric,
+                        dimensions=dimensions,
+                        period=60,
+                        statistic=["Average"],
+                        tags=tags,
+                        instance=domain,
+                        org_name=org_name,
+                        space_name=space_name
+                        )
+                    domain_logs.extend(metric_logs)
         return domain_logs
 
 
@@ -188,7 +253,6 @@ class MetricEventsS3Uploader:
 
         #Opensearch_domain logs
         domain_logs = self.generate_opensearch_domain_metrics(start_time=start_time,end_time=end_time)
-
         if len(domain_logs) > 0:
             timestamp = domain_logs[-1]["created_at"]
             object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
@@ -206,7 +270,7 @@ class MetricEventsS3Uploader:
 
 
 def main():
-    metric_events_s3_uploader = metricEventsS3Uploader()
+    metric_events_s3_uploader = MetricEventsS3Uploader()
     metric_events_s3_uploader.upload_metric_events_to_s3()
 
 
