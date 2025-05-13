@@ -28,6 +28,7 @@ groups:
   - name: tasks
     jobs:
       - audit-to-s3-development
+      - metrics-to-s3-development
       - audit-to-s3-staging
       - audit-to-s3-production
       - build-opensearch-release
@@ -1337,7 +1338,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: serial-seperation
 
   - name: deploy-logs-opensearch-test-config
     type: git
