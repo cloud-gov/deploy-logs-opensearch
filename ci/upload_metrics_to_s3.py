@@ -194,8 +194,7 @@ class MetricEventsS3Uploader:
                             period=60,
                             statistic=["Average"],
                             tags=tags,
-                            instance=instance,
-                            domain=domain
+                            instance=instance
                             )
                         domain_logs.extend(metric_logs)
                 else:
@@ -209,8 +208,7 @@ class MetricEventsS3Uploader:
                         period=60,
                         statistic=["Average"],
                         tags=tags,
-                        instance=instance,
-                        domain=domain
+                        instance=instance
                         )
                     domain_logs.extend(metric_logs)
         return domain_logs
