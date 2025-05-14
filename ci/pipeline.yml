@@ -211,10 +211,10 @@ jobs:
       file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
       params:
         BUCKET: ((opensearch-metric-bucket-development))
-        UAA_API_URL: ((uaa-url-development))
+        CF_API_URL: ((cf-api-url-production))
+        UAA_API_URL: ((uaa-url-production))
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
-        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
-        CF_API_URL: ((dev-cf-api-url))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
