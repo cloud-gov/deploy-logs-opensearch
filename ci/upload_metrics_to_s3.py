@@ -254,7 +254,7 @@ class MetricEventsS3Uploader:
         #Opensearch_domain logs
         domain_logs = self.generate_opensearch_domain_metrics(start_time=start_time,end_time=end_time)
         if len(domain_logs) > 0:
-            timestamp = domain_logs[-1]["created_at"]
+            timestamp = end_time
             object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
             try:
                 self.put_metric_events_to_s3(object_name, domain_logs)
