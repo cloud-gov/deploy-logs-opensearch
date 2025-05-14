@@ -431,14 +431,14 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: audit
+        type: metric
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((audit_bucket))
+          bucket: ((metric_bucket))
           region: ((region))
         syslog_tls:
           port: 6972
@@ -448,7 +448,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((alias))
+          index: jason
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))

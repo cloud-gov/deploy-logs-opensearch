@@ -28,7 +28,7 @@ instance_groups:
   instances: 0
 
 - name: ingestor_s3
-  instances: 0
+  instances: 1
 
 - name: maintenance
   vm_type: t3.large
