@@ -114,7 +114,7 @@ class MetricEventsS3Uploader:
             dp.pop("Timestamp", None)
             dp["Organization_name"] = org_name
             dp["Space_name"] = space_name
-            dp["plan_name"] = plan_name
+            dp["Plan_name"] = plan_name
             metric_events.append(dp)
         return metric_events
 
