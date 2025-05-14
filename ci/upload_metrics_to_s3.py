@@ -89,7 +89,7 @@ class MetricEventsS3Uploader:
                     instance_ids.append(dim["Value"])
         return instance_ids
 
-    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags,instance,org_name,space_name,plan_name):
+    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags,domain, instance,org_name,space_name,plan_name):
         response= cloudwatch_client.get_metric_statistics(
             Namespace=namespace,
             MetricName=metric["name"],
@@ -109,6 +109,7 @@ class MetricEventsS3Uploader:
         for dp in datapoints:
             dp["Tags"] = tags
             dp["MetricName"] = metric["name"]
+            dp["DomainName"] = domain
             dp["InstanceName"] = instance
             dp["Time"] = dp["Timestamp"].isoformat()
             dp.pop("Timestamp", None)
@@ -205,7 +206,8 @@ class MetricEventsS3Uploader:
                             period=60,
                             statistic=["Average"],
                             tags=tags,
-                            instance=domain,
+                            instance=instance,
+                            domain=domain,
                             org_name=org_name,
                             space_name=space_name,
                             plan_name=plan_name
@@ -222,7 +224,8 @@ class MetricEventsS3Uploader:
                         period=60,
                         statistic=["Average"],
                         tags=tags,
-                        instance=domain,
+                        instance=instance,
+                        domain=domain,
                         org_name=org_name,
                         space_name=space_name,
                         plan_name=plan_name
