@@ -89,7 +89,7 @@ class MetricEventsS3Uploader:
                     instance_ids.append(dim["Value"])
         return instance_ids
 
-    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags,instance,org_name,space_name):
+    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags,instance,org_name,space_name,plan_name):
         response= cloudwatch_client.get_metric_statistics(
             Namespace=namespace,
             MetricName=metric["name"],
@@ -114,6 +114,7 @@ class MetricEventsS3Uploader:
             dp.pop("Timestamp", None)
             dp["Organization_name"] = org_name
             dp["Space_name"] = space_name
+            dp["plan_name"] = plan_name
             metric_events.append(dp)
         return metric_events
 
@@ -188,6 +189,7 @@ class MetricEventsS3Uploader:
                 tags.get("Organization GUID", None),
             ): org_name = organization_name
             if space_name := self.get_cf_entity_name("spaces", tags.get("Space GUID", None)): space_name = space_name
+            if plan_name := self.get_cf_entity_name("service_plans", tags.get("Plan GUID", None)): plan_name = plan_name
 
             for metric in opensearch_domain_metrics:
                 instance_ids = self.get_instance_ids_for_domain("AWS/ES",domain,metric)
@@ -205,7 +207,8 @@ class MetricEventsS3Uploader:
                             tags=tags,
                             instance=domain,
                             org_name=org_name,
-                            space_name=space_name
+                            space_name=space_name,
+                            plan_name=plan_name
                             )
                         domain_logs.extend(metric_logs)
                 else:
@@ -221,7 +224,8 @@ class MetricEventsS3Uploader:
                         tags=tags,
                         instance=domain,
                         org_name=org_name,
-                        space_name=space_name
+                        space_name=space_name,
+                        plan_name=plan_name
                         )
                     domain_logs.extend(metric_logs)
         return domain_logs
