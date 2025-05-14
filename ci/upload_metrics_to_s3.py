@@ -124,31 +124,11 @@ class MetricEventsS3Uploader:
         matching_domains = [d for d in domain_names if d.startswith('cg-')]
         return matching_domains
 
-
-    def transform_metric_event(self, metric_event):
-        transformed_event = metric_event
-
-        # remove "links" property from event
-        transformed_event.pop("links")
-
-        if organization := metric_event.get("organization"):
-            if organization_name := self.get_cf_entity_name(
-                "organizations",
-                organization.get("guid", None),
-            ):
-                transformed_event["organization_name"] = organization_name
-
-        if space := metric_event.get("space"):
-            if space_name := self.get_cf_entity_name("spaces", space.get("guid", None)):
-                transformed_event["space_name"] = space_name
-
-        return transformed_event
-
     # Upload a batch of metric events to S3 as a single object
     def put_metric_events_to_s3(self, object_name, metric_events):
         body = "\n".join(
             [
-                json.dumps(self.transform_metric_event(metric_event))
+                json.dumps(metric_event)
                 for metric_event in metric_events
             ]
         )
