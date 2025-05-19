@@ -21,10 +21,18 @@ account_id = sts.get_caller_identity()['Account']
 region = boto3.Session().region_name
 
 timestamp_key = "timestamp"
+daily_key = "daily_timestamp"
+is_daily = False
+S3_PREFIX = "cg-"
+
 opensearch_domain_metrics = [
     {"name": "CPUUtilization", "unit": "Percent"},
     {"name": "JVMMemoryPressure", "unit": "Percent"},
     {"name": "FreeStorageSpace", "unit": "Bytes"}
+]
+
+s3_daily_metrics = [
+{"name": "BucketSizeBytes", "unit": "Bytes"}
 ]
 
 class MetricEventsS3Uploader:
@@ -147,6 +155,34 @@ class MetricEventsS3Uploader:
             ServerSideEncryption='AES256'
         )
 
+    def update_daily_stamp_in_s3(self, latest_timestamp):
+        data = latest_timestamp
+        s3_client.put_object(
+            Bucket=self.bucket_name,
+            Key=daily_key,
+            Body=data,
+            ServerSideEncryption='AES256'
+        )
+
+    def get_check_daily_time(self, now):
+        try:
+            current_stamp_response = s3_client.get_object(
+                Bucket=self.bucket_name, Key=daily_key
+            )
+            start_time = current_stamp_response["Body"].read().strip().decode("utf-8")
+        except ClientError as e:
+            # There is no timestamp key yet
+            if e.response["Error"]["Code"] == "NoSuchKey":
+                start_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+                print(f"No existing daily timestamp, starting from {start_time}")
+                self.is_daily = True
+                return
+            else:
+                raise e
+        if start_time < now - timedelta(days=1):
+            self.is_daily = True
+
+
     def get_start_end_time(self, now):
         fifteen_minutes_ago = now - timedelta(minutes=15)
         start_time = fifteen_minutes_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -165,6 +201,44 @@ class MetricEventsS3Uploader:
             else:
                 raise e
         return (start_time, end_time)
+
+    def get_s3_buckets(self):
+        buckets = s3_client.list_buckets()
+        bucket_list=[bucket['Name'] for bucket in buckets['Buckets']]
+        return bucket_list
+
+    def generate_s3_daily_metrics(self,now):
+        buckets = self.get_s3_buckets()
+        s3_logs = []
+
+        for s3_instance in buckets:
+            # Skip databases that aren't brokered in production
+            if S3_PREFIX not in s3_instance:
+                continue
+
+            tags = {}
+            # Retrieve all of the tags associated with the instance.
+            try:
+                s3_instance_tag_list=s3_client.get_bucket_tagging(Bucket=s3_instance)
+                tag_list=s3_instance_tag_list.get('TagSet',[])
+                tags = {tag.get("Key"): tag.get("Value") for tag in tag_list}
+            except ClientError as e:
+                tags={}
+            for metric in s3_daily_metrics:
+                dimensions = [{"Name":"BucketName","Value":s3_instance,},{"Name":"StorageType","Value":"StandardStorage",}],
+                s3_logs = self.get_metric_logs(
+                    StartTime=now - datetime.timedelta(days=1),
+                    EndTime=now,
+                    namespace="AWS/S3",
+                    metric=metric,
+                    dimensions=dimensions,
+                    period=86400,
+                    statistic=["Average"],
+                    tags=tags
+                )
+                s3_logs.extend(s3_logs)
+        return s3_logs
+
 
     def generate_opensearch_domain_metrics(self,start_time,end_time):
         domains = self.get_cg_domains()
@@ -217,6 +291,7 @@ class MetricEventsS3Uploader:
     def upload_metric_events_to_s3(self):
         now = datetime.now(timezone.utc)
         (start_time, end_time) = self.get_start_end_time(now)
+        self.get_check_daily_time(self,now)
 
         #Opensearch_domain logs
         domain_logs = self.generate_opensearch_domain_metrics(start_time=start_time,end_time=end_time)
@@ -234,6 +309,24 @@ class MetricEventsS3Uploader:
             self.update_latest_stamp_in_s3(timestamp)
         else:
             self.update_latest_stamp_in_s3(end_time)
+
+        if self.is_daily:
+            daily_point = self.generate_s3_daily_metrics(now=now)
+            if len(daily_point) > 0:
+                object_name = f"{now.year}/{now.month:02d}/{now.day:02d}/s3_daily"
+                try:
+                    self.put_metric_events_to_s3(object_name, daily_point)
+                    print(f"success for daily")
+                except Exception as e:
+                    print(
+                        f"Error upload file to S3 for daily"
+                    )
+                    raise e
+                self.update_daily_stamp_in_s3(now)
+            else:
+                print("no daily points")
+                self.update_daily_stamp_in_s3(now)
+
 
 
 def main():
