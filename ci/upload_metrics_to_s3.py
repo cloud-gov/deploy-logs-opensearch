@@ -227,7 +227,7 @@ class MetricEventsS3Uploader:
             for metric in s3_daily_metrics:
                 dimensions = [{"Name":"BucketName","Value":s3_instance,},{"Name":"StorageType","Value":"StandardStorage",}],
                 s3_logs = self.get_metric_logs(
-                    StartTime=now - datetime.timedelta(days=1),
+                    StartTime=now - timedelta(days=1),
                     EndTime=now,
                     namespace="AWS/S3",
                     metric=metric,
