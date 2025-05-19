@@ -97,7 +97,7 @@ class MetricEventsS3Uploader:
                     instance_ids.append(dim["Value"])
         return instance_ids
 
-    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags, instance):
+    def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags, instance=None):
         response= cloudwatch_client.get_metric_statistics(
             Namespace=namespace,
             MetricName=metric["name"],
@@ -227,8 +227,8 @@ class MetricEventsS3Uploader:
             for metric in s3_daily_metrics:
                 dimensions = [{"Name":"BucketName","Value":s3_instance,},{"Name":"StorageType","Value":"StandardStorage",}],
                 s3_logs = self.get_metric_logs(
-                    start_time=now - timedelta(days=1),
-                    end_time=now,
+                    start=now - timedelta(days=1),
+                    end=now,
                     namespace="AWS/S3",
                     metric=metric,
                     dimensions=dimensions,
