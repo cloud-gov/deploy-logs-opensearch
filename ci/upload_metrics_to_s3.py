@@ -37,12 +37,12 @@ s3_daily_metrics = [
 
 class MetricEventsS3Uploader:
     def __init__(self):
-        self.CF_API_URL = os.environ.get("CF_API_URL")
-        self.UAA_API_URL = os.environ.get("UAA_API_URL")
-        self.UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
-        self.UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
+        # self.CF_API_URL = os.environ.get("CF_API_URL")
+        # self.UAA_API_URL = os.environ.get("UAA_API_URL")
+        # self.UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
+        # self.UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
         self.bucket_name = "{}".format(os.environ["BUCKET"])
-        self.token = self.get_client_credentials_token()
+        # self.token = self.get_client_credentials_token()
 
     def get_client_credentials_token(self):
         with requests.Session() as s:
@@ -322,10 +322,10 @@ class MetricEventsS3Uploader:
                         f"Error upload file to S3 for daily"
                     )
                     raise e
-                self.update_daily_stamp_in_s3(now)
+                self.update_daily_stamp_in_s3(now.strftime("%Y-%m-%dT%H:%M:%SZ"))
             else:
                 print("no daily points")
-                self.update_daily_stamp_in_s3(now)
+                self.update_daily_stamp_in_s3(now.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 
 
