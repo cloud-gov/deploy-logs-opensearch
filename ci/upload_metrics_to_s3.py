@@ -291,7 +291,7 @@ class MetricEventsS3Uploader:
     def upload_metric_events_to_s3(self):
         now = datetime.now(timezone.utc)
         (start_time, end_time) = self.get_start_end_time(now)
-        self.get_check_daily_time(self,now)
+        self.get_check_daily_time(now)
 
         #Opensearch_domain logs
         domain_logs = self.generate_opensearch_domain_metrics(start_time=start_time,end_time=end_time)
