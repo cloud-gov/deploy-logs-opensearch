@@ -22,7 +22,7 @@ region = boto3.Session().region_name
 
 timestamp_key = "timestamp"
 daily_key = "daily_timestamp"
-is_daily = False
+
 S3_PREFIX = "cg-"
 
 opensearch_domain_metrics = [
@@ -42,6 +42,7 @@ class MetricEventsS3Uploader:
         # self.UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
         # self.UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
         self.bucket_name = "{}".format(os.environ["BUCKET"])
+        self.is_daily = False
         # self.token = self.get_client_credentials_token()
 
     def get_client_credentials_token(self):
@@ -169,12 +170,13 @@ class MetricEventsS3Uploader:
             current_stamp_response = s3_client.get_object(
                 Bucket=self.bucket_name, Key=daily_key
             )
-            start_time = current_stamp_response["Body"].read().strip().decode("utf-8")
+            start_time_str = current_stamp_response["Body"].read().strip().decode("utf-8")
+            start_time = datetime.strftime(start_time_str,"%Y-%m-%dT%H:%M:%SZ")
         except ClientError as e:
             # There is no timestamp key yet
             if e.response["Error"]["Code"] == "NoSuchKey":
-                start_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-                print(f"No existing daily timestamp, starting from {start_time}")
+                start_time = now
+                print(f"No existing daily timestamp, starting from {start_time.isoformat()}")
                 self.is_daily = True
                 return
             else:
@@ -209,7 +211,7 @@ class MetricEventsS3Uploader:
 
     def generate_s3_daily_metrics(self,now):
         buckets = self.get_s3_buckets()
-        s3_logs = []
+        s3_bucket_logs = []
 
         for s3_instance in buckets:
             # Skip databases that aren't brokered in production
@@ -236,8 +238,8 @@ class MetricEventsS3Uploader:
                     statistic=["Average"],
                     tags=tags
                 )
-                s3_logs.extend(s3_logs)
-        return s3_logs
+                s3_bucket_logs.extend(s3_logs)
+        return s3_bucket_logs
 
 
     def generate_opensearch_domain_metrics(self,start_time,end_time):
