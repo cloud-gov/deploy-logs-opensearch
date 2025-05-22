@@ -216,8 +216,8 @@ jobs:
         UAA_CLIENT_ID: ((uaa-read-only-client-username))
         UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
         AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
-        AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
+        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_development))
+        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_development))
 
   - name: audit-to-s3-development
     serial: true
@@ -1345,7 +1345,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: ((deploy-logs-opensearch-config-test-branch))
+      branch: serial-seperation
 
   - name: opensearch-stemcell-jammy
     source:
