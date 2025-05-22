@@ -227,6 +227,7 @@ class MetricEventsS3Uploader:
                 tag_list=s3_instance_tag_list.get('TagSet',[])
                 tags = {tag.get("Key"): tag.get("Value") for tag in tag_list}
             except ClientError as e:
+                print(e)
                 tags={}
             for metric in s3_daily_metrics:
                 dimensions = [{"Name":"BucketName","Value":s3_instance},{"Name":"StorageType","Value":"StandardStorage"}]
