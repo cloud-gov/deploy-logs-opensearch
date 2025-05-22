@@ -168,10 +168,11 @@ class MetricEventsS3Uploader:
     def get_check_daily_time(self, now):
         try:
             current_stamp_response = s3_client.get_object(
-                Bucket=self.bucket_name, Key=daily_key
+                Bucket=self.bucket_name,
+                Key=daily_key
             )
             start_time_str = current_stamp_response["Body"].read().strip().decode("utf-8")
-            start_time = datetime.strftime(start_time_str,"%Y-%m-%dT%H:%M:%SZ")
+            start_time = datetime.strptime(start_time_str,"%Y-%m-%dT%H:%M:%SZ")
         except ClientError as e:
             # There is no timestamp key yet
             if e.response["Error"]["Code"] == "NoSuchKey":
