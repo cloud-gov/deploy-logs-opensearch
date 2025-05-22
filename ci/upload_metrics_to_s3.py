@@ -173,6 +173,7 @@ class MetricEventsS3Uploader:
             )
             start_time_str = current_stamp_response["Body"].read().strip().decode("utf-8")
             start_time = datetime.strptime(start_time_str,"%Y-%m-%dT%H:%M:%SZ")
+            start_time = start_time.replace(tzinfo=timezone.utc)
         except ClientError as e:
             # There is no timestamp key yet
             if e.response["Error"]["Code"] == "NoSuchKey":
