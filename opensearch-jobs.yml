@@ -448,7 +448,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: jason
+          index: mark
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
