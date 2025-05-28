@@ -229,7 +229,7 @@ class MetricEventsS3Uploader:
             except ClientError as e:
                 print(e)
                 print(s3_instance)
-                tags={}
+                continue
             for metric in s3_daily_metrics:
                 dimensions = [{"Name":"BucketName","Value":s3_instance},{"Name":"StorageType","Value":"StandardStorage"}]
                 s3_logs = self.get_metric_logs(
