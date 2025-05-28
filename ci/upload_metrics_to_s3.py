@@ -230,6 +230,10 @@ class MetricEventsS3Uploader:
                 print(e)
                 print(s3_instance)
                 continue
+            org_guid_exists = tags.get("Organization GUID")
+            if not org_guid_exists:
+                print(f"Skipping {s3_instance} missing org tag")
+                continue
             for metric in s3_daily_metrics:
                 dimensions = [{"Name":"BucketName","Value":s3_instance},{"Name":"StorageType","Value":"StandardStorage"}]
                 s3_logs = self.get_metric_logs(
