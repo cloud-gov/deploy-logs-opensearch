@@ -183,7 +183,7 @@ class MetricEventsS3Uploader:
                 return
             else:
                 raise e
-        if start_time < now - timedelta(days=1):
+        if start_time < now - timedelta(minutes=30):
             self.is_daily = True
 
 
