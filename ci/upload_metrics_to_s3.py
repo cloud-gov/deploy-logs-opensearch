@@ -264,7 +264,7 @@ class MetricEventsS3Uploader:
                             )
                         domain_logs.extend(metric_logs)
                 else:
-                    dimensions = [{"Name": "DomainName", "Value": domain}]
+                    dimensions = [{"Name": "DomainName", "Value": domain},{"Name": "ClientId", "Value": str(account_id)}]
                     metric_logs = self.get_metric_logs(
                         start_time,
                         end_time,
