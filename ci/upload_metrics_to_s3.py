@@ -22,8 +22,8 @@ region = boto3.Session().region_name
 
 timestamp_key = "timestamp"
 daily_key = "daily_timestamp"
-
 S3_PREFIX = "cg-"
+DOMAIN_PREFIX = "cg-broker-"
 
 opensearch_domain_metrics = [
     {"name": "CPUUtilization", "unit": "Percent"},
@@ -37,50 +37,17 @@ s3_daily_metrics = [
 
 class MetricEventsS3Uploader:
     def __init__(self):
-        # self.CF_API_URL = os.environ.get("CF_API_URL")
-        # self.UAA_API_URL = os.environ.get("UAA_API_URL")
-        # self.UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
-        # self.UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
         self.bucket_name = "{}".format(os.environ["BUCKET"])
+        self.environment = "{}".format(os.environ["ENVIRONMENT"])
+        self.s3_prefix = f"{self.environment}-{S3_PREFIX}" if self.environment in ["development","staging"] else S3_PREFIX
+        if self.environment == "production":
+            self.domain_prefix = DOMAIN_PREFIX +"prd-"
+        if self.environment == "staging":
+            self.domain_prefix = DOMAIN_PREFIX +"stg-"
+        if self.environment == "development":
+            self.domain_prefix = DOMAIN_PREFIX +"dev-"
         self.is_daily = False
-        # self.token = self.get_client_credentials_token()
 
-    def get_client_credentials_token(self):
-        with requests.Session() as s:
-            response = s.post(
-                urljoin(self.UAA_API_URL, "oauth/token"),
-                data={
-                    "grant_type": "client_credentials",
-                    "client_id": self.UAA_CLIENT_ID,
-                    "client_secret": self.UAA_CLIENT_SECRET,
-                    "response_type": "token",
-                },
-                auth=requests.auth.HTTPBasicAuth(
-                    self.UAA_CLIENT_ID, self.UAA_CLIENT_SECRET
-                ),
-                timeout=30,
-            )
-            response.raise_for_status()
-            return response.json()["access_token"]
-
-    @functools.cache
-    def get_cf_entity_name(self, entity_path, entity_guid):
-        """
-        Retrieves the name of a CF entity from a GUID.
-        """
-        if not entity_guid:
-            return
-
-        with requests.Session() as s:
-            s.headers["Authorization"] = f"Bearer {self.token}"
-            url = urljoin(self.CF_API_URL, f"v3/{entity_path}/{entity_guid}")
-            response = s.get(url)
-
-            if response.status_code == 404:
-                return
-
-            data = response.json()
-            return data["name"]
 
     # some metrics need a specific instance called for them
     def get_instance_ids_for_domain(self,namespace,domain,metric):
@@ -124,11 +91,10 @@ class MetricEventsS3Uploader:
             metric_events.append(dp)
         return metric_events
 
-
     def get_cg_domains(self):
         domain_list = es_client.list_domain_names()
         domain_names = [d['DomainName'] for d in domain_list['DomainNames']]
-        matching_domains = [d for d in domain_names if d.startswith('cg-')]
+        matching_domains = [d for d in domain_names if d.startswith(self.domain_prefix)]
         return matching_domains
 
     # Upload a batch of metric events to S3 as a single object
@@ -206,19 +172,20 @@ class MetricEventsS3Uploader:
                 raise e
         return (start_time, end_time)
 
+    # List buckets
+    # Skip buckets that aren't in environment
     def get_s3_buckets(self):
-        buckets = s3_client.list_buckets()
-        bucket_list=[bucket['Name'] for bucket in buckets['Buckets']]
-        return bucket_list
+        return [
+            bucket["Name"]
+            for bucket in s3_client.list_buckets()["Buckets"]
+            if bucket["Name"].startswith(self.s3_prefix)
+        ]
 
     def generate_s3_daily_metrics(self,now):
         buckets = self.get_s3_buckets()
         s3_bucket_logs = []
 
         for s3_instance in buckets:
-            # Skip databases that aren't brokered in production
-            if S3_PREFIX not in s3_instance:
-                continue
 
             tags = {}
             # Retrieve all of the tags associated with the instance.
