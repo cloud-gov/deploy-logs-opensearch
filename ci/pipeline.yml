@@ -220,6 +220,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_development))
+        ENVIRONMENT: development
 
   - name: audit-to-s3-development
     serial: true
@@ -273,6 +274,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_staging))
         AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_staging))
+        ENVIRONMENT: staging
 
   - name: audit-to-s3-staging
     serial: true
@@ -327,6 +329,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_production))
         AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_production))
+        ENVIRONMENT: production
 
   - name: audit-to-s3-production
     serial: true
