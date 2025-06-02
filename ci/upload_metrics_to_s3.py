@@ -29,16 +29,23 @@ opensearch_domain_metrics = [
     {"name": "CPUUtilization", "unit": "Percent"},
     {"name": "JVMMemoryPressure", "unit": "Percent"},
     {"name": "FreeStorageSpace", "unit": "Bytes"},
-    {"name": "OldGenJVMMemoryPressure", "unit": "
-    {"name": "MasterCPUUtilization", "unit": "
-    {"name": "MasterJVMMemoryPressure", "unit": "
-    {"name": "MasterOldGenJVMMemoryPressure", "unit": "
-    {"name": "ThreadpoolWriteQueue", "unit": "
-    {"name": "ThreadpoolSearchQueue", "unit": "
-    {"name": "ThreadpoolSearchRejected", "unit": "
-    {"name": "ThreadpoolWriteRejected", "unit": "
+    {"name": "OldGenJVMMemoryPressure", "unit": "Percent"},
+    {"name": "MasterCPUUtilization", "unit": "Percent"},
+    {"name": "MasterJVMMemoryPressure", "unit": "Percent"},
+    {"name": "MasterOldGenJVMMemoryPressure", "unit": "Percent"},
+    {"name": "ThreadpoolWriteQueue", "unit": "Count"},
+    {"name": "ThreadpoolSearchQueue", "unit": "Count"},
+    {"name": "ThreadpoolSearchRejected", "unit": "Count"},
+    {"name": "ThreadpoolWriteRejected", "unit": "Count"}
 ]
-
+domain_node_exclude_list = [
+    "FreeStorageSpace",
+    "MasterCPUUtilization",
+    "MasterJVMMemoryPressure",
+    "MasterOldGenJVMMemoryPressure",
+    "ThreadpoolWriteRejected",
+    "ThreadpoolSearchRejected"
+]
 s3_daily_metrics = [
 {"name": "BucketSizeBytes", "unit": "Bytes"}
 ]
@@ -240,8 +247,8 @@ class MetricEventsS3Uploader:
                 tags = {}
 
             for metric in opensearch_domain_metrics:
-                instance_ids = self.get_instance_ids_for_domain("AWS/ES",domain,metric)
-                if instance_ids != [] and metric["name"] != "FreeStorageSpace" :
+                if metric["name"] not in domain_node_exclude_list:
+                    instance_ids = self.get_instance_ids_for_domain("AWS/ES",domain,metric)
                     for instance in instance_ids:
                         dimensions = [{"Name": "DomainName", "Value": domain},{"Name": "NodeId", "Value": instance},{"Name": "ClientId", "Value": str(account_id)}]
                         metric_logs = self.get_metric_logs(
