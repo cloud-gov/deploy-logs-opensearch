@@ -28,7 +28,15 @@ DOMAIN_PREFIX = "cg-broker-"
 opensearch_domain_metrics = [
     {"name": "CPUUtilization", "unit": "Percent"},
     {"name": "JVMMemoryPressure", "unit": "Percent"},
-    {"name": "FreeStorageSpace", "unit": "Bytes"}
+    {"name": "FreeStorageSpace", "unit": "Bytes"},
+    {"name": "OldGenJVMMemoryPressure", "unit": "
+    {"name": "MasterCPUUtilization", "unit": "
+    {"name": "MasterJVMMemoryPressure", "unit": "
+    {"name": "MasterOldGenJVMMemoryPressure", "unit": "
+    {"name": "ThreadpoolWriteQueue", "unit": "
+    {"name": "ThreadpoolSearchQueue", "unit": "
+    {"name": "ThreadpoolSearchRejected", "unit": "
+    {"name": "ThreadpoolWriteRejected", "unit": "
 ]
 
 s3_daily_metrics = [
@@ -233,7 +241,7 @@ class MetricEventsS3Uploader:
 
             for metric in opensearch_domain_metrics:
                 instance_ids = self.get_instance_ids_for_domain("AWS/ES",domain,metric)
-                if instance_ids != []:
+                if instance_ids != [] and metric["name"] != "FreeStorageSpace" :
                     for instance in instance_ids:
                         dimensions = [{"Name": "DomainName", "Value": domain},{"Name": "NodeId", "Value": instance},{"Name": "ClientId", "Value": str(account_id)}]
                         metric_logs = self.get_metric_logs(
