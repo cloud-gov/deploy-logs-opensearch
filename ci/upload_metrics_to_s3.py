@@ -46,6 +46,10 @@ domain_node_exclude_list = [
     "ThreadpoolWriteRejected",
     "ThreadpoolSearchRejected"
 ]
+no_unit_list = [
+    "FreeStorageSpace"
+]
+
 s3_daily_metrics = [
 {"name": "BucketSizeBytes", "unit": "Bytes"}
 ]
@@ -81,16 +85,21 @@ class MetricEventsS3Uploader:
         return instance_ids
 
     def get_metric_logs(self, start, end, namespace, metric, dimensions,period, statistic,tags, instance=None):
-        response= cloudwatch_client.get_metric_statistics(
-            Namespace=namespace,
-            MetricName=metric["name"],
-            Dimensions=dimensions,
-            StartTime=start,
-            EndTime=end,
-            Period=period,
-            Statistics=statistic,
-            Unit=metric["unit"]
-        )
+        unit=metric["unit"]
+        if metric["name"] in no_unit_list:
+            unit = None
+        kwargs = {
+            "Namespace": namespace,
+            "MetricName": metric["name"],
+            "Dimensions": dimensions,
+            "StartTime": start,
+            "EndTime": end,
+            "Period": period,
+            "Statistics": statistic,
+        }
+        if unit:
+          kwargs["Unit"] = unit
+        response = cloudwatch_client.get_metric_statistics(**kwargs)
         datapoints = response.get("Datapoints",[])
 
         if not datapoints:
