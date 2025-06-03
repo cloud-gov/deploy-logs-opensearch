@@ -28,7 +28,7 @@ DOMAIN_PREFIX = "cg-broker-"
 opensearch_domain_metrics = [
     {"name": "CPUUtilization", "unit": "Percent"},
     {"name": "JVMMemoryPressure", "unit": "Percent"},
-    {"name": "FreeStorageSpace", "unit": "Bytes"},
+    {"name": "FreeStorageSpace", "unit": "GiB"},
     {"name": "OldGenJVMMemoryPressure", "unit": "Percent"},
     {"name": "MasterCPUUtilization", "unit": "Percent"},
     {"name": "MasterJVMMemoryPressure", "unit": "Percent"},
