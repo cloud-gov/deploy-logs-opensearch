@@ -30,6 +30,9 @@ instance_groups:
 - name: ingestor_cloudwatch_rds
   instances: 1
 
+- name: ingestor_metrics
+  instances: 1
+
 - name: ingestor_s3
   instances: 1
 
