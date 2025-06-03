@@ -26,15 +26,15 @@ S3_PREFIX = "cg-"
 DOMAIN_PREFIX = "cg-broker-"
 
 opensearch_domain_metrics = [
-    {"name": "CPUUtilization", "unit": "Percent"},
-    {"name": "JVMMemoryPressure", "unit": "Percent"},
+    {"name": "CPUUtilization", "unit": "Percent"},X
+    {"name": "JVMMemoryPressure", "unit": "Percent"},X
     {"name": "FreeStorageSpace", "unit": "Bytes"},
-    {"name": "OldGenJVMMemoryPressure", "unit": "Percent"},
+    {"name": "OldGenJVMMemoryPressure", "unit": "Percent"},X
     {"name": "MasterCPUUtilization", "unit": "Percent"},
     {"name": "MasterJVMMemoryPressure", "unit": "Percent"},
     {"name": "MasterOldGenJVMMemoryPressure", "unit": "Percent"},
-    {"name": "ThreadpoolWriteQueue", "unit": "Count"},
-    {"name": "ThreadpoolSearchQueue", "unit": "Count"},
+    {"name": "ThreadpoolWriteQueue", "unit": "Count"},X
+    {"name": "ThreadpoolSearchQueue", "unit": "Count"},X
     {"name": "ThreadpoolSearchRejected", "unit": "Count"},
     {"name": "ThreadpoolWriteRejected", "unit": "Count"}
 ]
@@ -249,6 +249,8 @@ class MetricEventsS3Uploader:
             for metric in opensearch_domain_metrics:
                 if metric["name"] not in domain_node_exclude_list:
                     instance_ids = self.get_instance_ids_for_domain("AWS/ES",domain,metric)
+                    if not instance_ids:
+                        print(f"[no instances found for metric {metric["name"]} on domain {domain}]")
                     for instance in instance_ids:
                         dimensions = [{"Name": "DomainName", "Value": domain},{"Name": "NodeId", "Value": instance},{"Name": "ClientId", "Value": str(account_id)}]
                         metric_logs = self.get_metric_logs(
