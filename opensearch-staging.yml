@@ -31,7 +31,7 @@ instance_groups:
   instances: 1
 
 - name: ingestor_metrics
-  instances: 1
+  instances: 0
 
 - name: ingestor_s3
   instances: 1
