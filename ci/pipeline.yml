@@ -533,7 +533,7 @@ jobs:
             trigger: true
           - get: opensearch-test-deployment
             trigger: true
-            passed: [deploy-opensearch-testt]
+            passed: [deploy-opensearch-test]
       - task: create-tenants
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
