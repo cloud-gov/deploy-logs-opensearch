@@ -45,6 +45,7 @@ groups:
     jobs:
       - build-opensearch-test-release
       - deploy-opensearch-test
+      - tenant-test
       - upload-dashboards-objects-test
   - name: development
     jobs:
