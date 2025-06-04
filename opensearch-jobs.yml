@@ -244,6 +244,7 @@ instance_groups:
         - LogMessage
         - ContainerMetric
         - Audit
+        - Metrics
         client_id: opensearch_client_id
       dashboards_objects:
         upload_patterns:
