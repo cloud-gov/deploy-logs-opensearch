@@ -529,7 +529,7 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
           - get: opensearch-stemcell-jammy
-          - get: deploy-logs-opensearch-config
+          - get: deploy-logs-opensearch-test-config
             passed: [deploy-opensearch-test]
             trigger: true
           - get: opensearch-test-deployment
