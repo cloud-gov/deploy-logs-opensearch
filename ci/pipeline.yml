@@ -523,6 +523,28 @@ jobs:
           vars_files:
             - terraform-secrets/terraform.yml
 
+  - name: tenant-development
+    plan:
+      - in_parallel:
+          - get: general-task
+          - get: pipeline-tasks
+          - get: deploy-logs-opensearch-test-config
+            passed: [deploy-opensearch-test]
+            trigger: true
+          - get: opensearch-test-deployment
+            trigger: true
+            passed: [deploy-opensearch-testt]
+      - task: create-tenants
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch-test
+          BOSH_ERRAND: upload_tenant
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+
   - name: upload-dashboards-objects-test
     plan:
       - in_parallel:
