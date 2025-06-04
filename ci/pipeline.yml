@@ -523,7 +523,7 @@ jobs:
           vars_files:
             - terraform-secrets/terraform.yml
 
-  - name: tenant-development
+  - name: tenant-test
     plan:
       - in_parallel:
           - get: general-task
