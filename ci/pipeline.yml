@@ -45,6 +45,7 @@ groups:
     jobs:
       - build-opensearch-test-release
       - deploy-opensearch-test
+      - upload-dashboards-objects-test
   - name: development
     jobs:
       - deploy-opensearch-development
@@ -521,6 +522,29 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
           vars_files:
             - terraform-secrets/terraform.yml
+
+  - name: upload-dashboards-objects-test
+    plan:
+      - in_parallel:
+          - get: pipeline-tasks
+          - get: opensearch-release
+          - get: opensearch-stemcell-jammy
+          - get: deploy-logs-opensearch-config
+            passed: [deploy-opensearch-test]
+            trigger: true
+          - get: opensearch-test-deployment
+            passed: [deploy-opensearch-test]
+            trigger: true
+      - task: upload-dashboards-objects
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch-test
+          BOSH_ERRAND: upload-dashboards-objects
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
   - name: deploy-opensearch-development
     serial_groups: [bosh-development]
