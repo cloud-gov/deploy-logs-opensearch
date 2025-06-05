@@ -137,20 +137,11 @@ class MetricEventsS3Uploader:
             ServerSideEncryption='AES256'
         )
 
-    def update_latest_stamp_in_s3(self, latest_timestamp):
+    def update_latest_stamp_in_s3(self, latest_timestamp, key):
         data = latest_timestamp
         s3_client.put_object(
             Bucket=self.bucket_name,
-            Key=timestamp_key,
-            Body=data,
-            ServerSideEncryption='AES256'
-        )
-
-    def update_daily_stamp_in_s3(self, latest_timestamp):
-        data = latest_timestamp
-        s3_client.put_object(
-            Bucket=self.bucket_name,
-            Key=daily_key,
+            Key=key,
             Body=data,
             ServerSideEncryption='AES256'
         )
@@ -173,7 +164,7 @@ class MetricEventsS3Uploader:
                 return
             else:
                 raise e
-        if start_time < now - timedelta(hours=12):
+        if start_time < now - timedelta(hours=24):
             self.is_daily = True
 
 
@@ -320,9 +311,9 @@ class MetricEventsS3Uploader:
                     f"Error upload file to S3 for time starting {start_time} and end time {end_time}"
                 )
                 raise e
-            self.update_latest_stamp_in_s3(timestamp)
+            self.update_latest_stamp_in_s3(timestamp,timestamp_key)
         else:
-            self.update_latest_stamp_in_s3(end_time)
+            self.update_latest_stamp_in_s3(end_time,timestamp_key)
 
         if self.is_daily:
             daily_point = self.generate_s3_daily_metrics(now=now)
@@ -336,10 +327,10 @@ class MetricEventsS3Uploader:
                         f"Error upload file to S3 for daily"
                     )
                     raise e
-                self.update_daily_stamp_in_s3(now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+                self.update_latest_stamp_in_s3(now.strftime("%Y-%m-%dT%H:%M:%SZ"),daily_key)
             else:
                 print("no daily points")
-                self.update_daily_stamp_in_s3(now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+                self.update_latest_stamp_in_s3(now.strftime("%Y-%m-%dT%H:%M:%SZ"),daily_key)
 
 
 
