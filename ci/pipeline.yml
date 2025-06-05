@@ -1439,14 +1439,14 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: serial-seperation
+      branch: main
 
   - name: deploy-logs-opensearch-test-config
     type: git
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: serial-seperation
+      branch: ((deploy-logs-opensearch-config-test-branch))
 
   - name: opensearch-stemcell-jammy
     source:
