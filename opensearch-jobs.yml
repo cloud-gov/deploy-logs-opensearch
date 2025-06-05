@@ -244,6 +244,7 @@ instance_groups:
         - LogMessage
         - ContainerMetric
         - Audit
+        - Metrics
         client_id: opensearch_client_id
       dashboards_objects:
         upload_patterns:
@@ -439,6 +440,76 @@ instance_groups:
       logstash_ingestor:
         s3:
           bucket: ((audit_bucket))
+          region: ((region))
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
+      logstash_parser:
+        opensearch:
+          data_hosts:
+          - localhost
+          index: ((alias))
+          index_type: '%{@type}'
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_s3
+    release: opensearch
+  - name: deployment_lookup_config
+    release: opensearch
+  azs: [z1]
+  networks:
+  - name: services
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  vm_type: t3.large
+  update:
+    serial: true # Block on this job to create deploy group 6
+
+- name: ingestor_metrics
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        notification:
+          ca: ((notification_ca.ca))
+          certificate: ((notification_ca.certificate))
+          from: ((notification_from))
+          host: ((notification_host))
+          keystorepass: ((keystore_password))
+          defaultkeystorepass: ((default_keystore_password))
+          password: ((notification_password))
+          port: ((notification_port))
+          privatekey: ((notification_ca.private_key))
+          username: ((notification_username))
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - consumes: *consumes-opensearch-manager
+    name: ingestor_s3
+    properties:
+      logstash:
+        type: metric
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_ingestor:
+        s3:
+          bucket: ((metric_bucket))
           region: ((region))
         syslog_tls:
           port: 6972

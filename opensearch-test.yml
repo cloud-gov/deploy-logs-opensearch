@@ -30,9 +30,12 @@ instance_groups:
 - name: ingestor_s3
   instances: 0
 
+- name: ingestor_metrics
+  instances: 1
+
 - name: maintenance
   vm_type: t3.large
-  instances: 0
+  instances: 1
   jobs:
   - name: upload_opensearch_config
     release: opensearch

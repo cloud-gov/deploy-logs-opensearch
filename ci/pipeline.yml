@@ -4,8 +4,11 @@ groups:
     jobs:
       - set-self
       - audit-to-s3-development
+      - metrics-to-s3-development
       - audit-to-s3-staging
+      - metrics-to-s3-staging
       - audit-to-s3-production
+      - metrics-to-s3-production
       - build-opensearch-release
       - deploy-opensearch-development
       - upload-dashboards-objects-development
@@ -27,8 +30,11 @@ groups:
   - name: tasks
     jobs:
       - audit-to-s3-development
+      - metrics-to-s3-development
       - audit-to-s3-staging
+      - metrics-to-s3-staging
       - audit-to-s3-production
+      - metrics-to-s3-production
       - build-opensearch-release
   - name: update-test-users
     jobs:
@@ -39,6 +45,8 @@ groups:
     jobs:
       - build-opensearch-test-release
       - deploy-opensearch-test
+      - tenant-test
+      - upload-dashboards-objects-test
   - name: development
     jobs:
       - deploy-opensearch-development
@@ -194,6 +202,30 @@ jobs:
       image: general-task
       file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
 
+  - name: metrics-to-s3-development
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-minute-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+      passed: [run-tests]
+    - get: pipeline-tasks
+    - get: opensearch-development-deployment
+    - task: transfer-metric-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
+      params:
+        BUCKET: ((opensearch-metric-bucket-development))
+        CF_API_URL: ((cf-api-url-development))
+        UAA_API_URL: ((uaa-url-development))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_development))
+        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_development))
+        ENVIRONMENT: development
+
   - name: audit-to-s3-development
     serial: true
     plan:
@@ -224,6 +256,30 @@ jobs:
           :x: Failed to upload audit to s3 in development
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+  - name: metrics-to-s3-staging
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-minute-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+      passed: [run-tests]
+    - get: pipeline-tasks
+    - get: opensearch-staging-deployment
+    - task: transfer-metric-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
+      params:
+        BUCKET: ((opensearch-metric-bucket-staging))
+        CF_API_URL: ((cf-api-url-staging))
+        UAA_API_URL: ((uaa-url-staging))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-staging))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_staging))
+        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_staging))
+        ENVIRONMENT: staging
+
   - name: audit-to-s3-staging
     serial: true
     plan:
@@ -253,6 +309,31 @@ jobs:
         text: |
           :x: Failed to upload audit to s3 in staging
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+
+  - name: metrics-to-s3-production
+    serial: true
+    plan:
+    - get: general-task
+    - get: fifteen-minute-timer
+      trigger: true
+    - get: deploy-logs-opensearch-config
+      passed: [run-tests]
+    - get: pipeline-tasks
+    - get: opensearch-production-deployment
+    - task: transfer-metric-logs-to-s3
+      image: general-task
+      file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
+      params:
+        BUCKET: ((opensearch-metric-bucket-production))
+        CF_API_URL: ((cf-api-url-production))
+        UAA_API_URL: ((uaa-url-production))
+        UAA_CLIENT_ID: ((uaa-read-only-client-username))
+        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
+        AWS_DEFAULT_REGION: ((aws-region))
+        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_production))
+        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_production))
+        ENVIRONMENT: production
 
   - name: audit-to-s3-production
     serial: true
@@ -442,6 +523,51 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
           vars_files:
             - terraform-secrets/terraform.yml
+
+  - name: tenant-test
+    plan:
+      - in_parallel:
+          - get: general-task
+          - get: pipeline-tasks
+          - get: deploy-logs-opensearch-test-config
+            passed: [deploy-opensearch-test]
+            trigger: true
+          - get: opensearch-test-deployment
+            trigger: true
+            passed: [deploy-opensearch-test]
+      - task: create-tenants
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch-test
+          BOSH_ERRAND: upload_tenant
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+
+  - name: upload-dashboards-objects-test
+    plan:
+      - in_parallel:
+          - get: pipeline-tasks
+          - get: opensearch-release
+          - get: opensearch-stemcell-jammy
+          - get: deploy-logs-opensearch-test-config
+            passed: [deploy-opensearch-test]
+            trigger: true
+          - get: opensearch-test-deployment
+            passed: [deploy-opensearch-test]
+            trigger: true
+      - task: upload-dashboards-objects
+        file: pipeline-tasks/bosh-logs-errand.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_development_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_DEPLOYMENT: logs-opensearch-test
+          BOSH_ERRAND: upload-dashboards-objects
+          BOSH_FLAGS: "--keep-alive"
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
   - name: deploy-opensearch-development
     serial_groups: [bosh-development]
