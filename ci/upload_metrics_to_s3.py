@@ -169,9 +169,10 @@ class MetricEventsS3Uploader:
 
 
     def get_start_end_time(self, now):
-        fifteen_minutes_ago = now - timedelta(minutes=15)
+        end_time_aligned = now -timedelta(minutes=2)
+        fifteen_minutes_ago = end_time_aligned - timedelta(minutes=15)
         start_time = fifteen_minutes_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
-        end_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_time = end_time_aligned.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         try:
             current_stamp_response = s3_client.get_object(
