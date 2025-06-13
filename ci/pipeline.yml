@@ -206,7 +206,7 @@ jobs:
     serial: true
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
       passed: [run-tests]
@@ -260,7 +260,7 @@ jobs:
     serial: true
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
       passed: [run-tests]
@@ -315,7 +315,7 @@ jobs:
     serial: true
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
       passed: [run-tests]
@@ -1469,6 +1469,11 @@ resources:
     type: time
     source:
       interval: 15m
+
+  - name: ten-minute-timer
+    type: time
+    source:
+      interval: 10m
 
   - name: slack
     type: slack-notification
