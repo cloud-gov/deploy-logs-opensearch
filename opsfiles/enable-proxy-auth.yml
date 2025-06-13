@@ -84,6 +84,12 @@
           ca: ((opensearch_node.ca))
           certificate: ((auth_proxy.certificate))
           key: ((auth_proxy.private_key))
+        opensearch:
+          ssl:
+            ca: /var/vcap/jobs/opensearch_dashboards/config/ssl/opensearch.ca
+            certificate: /var/vcap/jobs/opensearch_dashboards/config/ssl/dashboard-opensearch.crt
+            key: /var/vcap/jobs/opensearch_dashboards/config/ssl/dashboard-opensearch.key
+          url: https://localhost:9200
         opensearch_dashboards:
           ssl:
             ca: /var/vcap/jobs/opensearch_dashboards/config/ssl/opensearch.ca
