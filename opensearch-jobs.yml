@@ -75,6 +75,7 @@ instance_groups:
       opensearch:
         as: opensearch_manager
     properties:
+      opensearch:
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
