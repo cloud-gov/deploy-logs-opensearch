@@ -15,9 +15,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -78,10 +75,6 @@ instance_groups:
       opensearch:
         as: opensearch_manager
     properties:
-      opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -133,9 +126,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -282,9 +272,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -353,9 +340,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -427,9 +411,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -500,9 +481,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -573,9 +551,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
@@ -651,9 +626,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        plugins:
-          datasource:
-            masterkey: ((datasource_masterkey))
         notification:
           ca: ((notification_ca.ca))
           certificate: ((notification_ca.certificate))
