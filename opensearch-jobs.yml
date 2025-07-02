@@ -686,7 +686,7 @@ instance_groups:
   vm_extensions:
   - 15GB_ephemeral_disk
   stemcell: default
-  azs: [z1,z2]
+  azs: [z1]
   networks:
    - name: services
   env:
