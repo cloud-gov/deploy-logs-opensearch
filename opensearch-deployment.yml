@@ -3,10 +3,10 @@ features:
 
 update:
   serial: false
-  canaries: 2
+  canaries: 1
   canary_watch_time: 30000-600000
   update_watch_time: 5000-6000000
-  max_in_flight: 2
+  max_in_flight: 1
   max_errors: 1
 variables: []
 
