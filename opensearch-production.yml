@@ -16,8 +16,8 @@ instance_groups:
   vm_type: t3.xlarge
   instances: 2
   update:
-    max_in_flight: 2
-    canaries: 2
+    max_in_flight: 100%
+    canaries: 100%
 
 - name: archiver
   instances: 3
