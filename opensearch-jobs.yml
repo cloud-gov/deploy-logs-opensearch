@@ -27,6 +27,8 @@ instance_groups:
           privatekey: ((notification_ca.private_key))
           username: ((notification_username))
         node:
+          attributes:
+            box_type: hot
           allow_cluster_manager: false
           allow_data: true
         limits:
@@ -76,6 +78,8 @@ instance_groups:
           privatekey: ((notification_ca.private_key))
           username: ((notification_username))
         node:
+          attributes:
+            box_type: warm
           allow_cluster_manager: false
           allow_data: true
         limits:
