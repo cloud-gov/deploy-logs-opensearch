@@ -12,6 +12,13 @@ instance_groups:
     max_in_flight: 2
     canaries: 2
 
+- name: opensearch_old_data
+  instances: 24
+  vm_type: r6i.xlarge
+  update:
+    max_in_flight: 2
+    canaries: 2
+
 - name: opensearch_dashboards
   vm_type: t3.xlarge
   instances: 2
