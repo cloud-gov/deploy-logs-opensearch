@@ -20,3 +20,9 @@
   path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties?/opensearch?/cf?/domain?
   value: ((cf-api-staging))
 
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties?/opensearch?/cf?/client_password?
+  value: ((/bosh/cf-staging/opensearch_client_secret))
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties?/opensearch?/cf?/domain?
+  value: ((cf-api-staging))

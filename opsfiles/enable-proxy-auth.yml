@@ -15,6 +15,11 @@
   path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
   value: true
 
+# opensearch_old_data
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties/opensearch?/enable_proxy_auth
+  value: true
+
 # opensearch_dashboards
 - type: replace
   path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
