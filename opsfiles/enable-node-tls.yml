@@ -65,6 +65,23 @@
   path: /instance_groups/name=opensearch_data/jobs/name=opensearch/properties/opensearch/http?/ssl?
   value: *http-tls-properties
 
+# opensearch_old_data
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties/opensearch/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties/opensearch/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties/opensearch/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/jobs/name=opensearch/properties/opensearch/http?/ssl?
+  value: *http-tls-properties
+
 # opensearch_dashboards
 - type: replace
   path: /instance_groups/name=opensearch_dashboards/jobs/name=opensearch/properties?/opensearch?/http_host?
