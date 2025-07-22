@@ -352,9 +352,6 @@ class MetricEventsS3Uploader:
                 )
             else:
                 print("no daily points")
-                self.update_latest_stamp_in_s3(
-                    now.strftime("%Y-%m-%dT%H:%M:%SZ"), daily_key
-                )
 
 
 def main():
