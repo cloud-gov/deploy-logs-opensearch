@@ -169,7 +169,7 @@ class MetricEventsS3Uploader:
                 return
             else:
                 raise e
-        if start_time < now - timedelta(hours=8):
+        if start_time < now - timedelta(hours=12):
             self.is_daily = True
 
     def get_start_end_time(self, now):
