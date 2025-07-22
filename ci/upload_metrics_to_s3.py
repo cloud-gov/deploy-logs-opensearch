@@ -344,12 +344,12 @@ class MetricEventsS3Uploader:
                 try:
                     self.put_metric_events_to_s3(object_name, daily_point)
                     print(f"success for daily")
+                    self.update_latest_stamp_in_s3(
+                        now.strftime("%Y-%m-%dT%H:%M:%SZ"), daily_key
+                    )
                 except Exception as e:
                     print(f"Error upload file to S3 for daily")
                     raise e
-                self.update_latest_stamp_in_s3(
-                    now.strftime("%Y-%m-%dT%H:%M:%SZ"), daily_key
-                )
             else:
                 print("no daily points")
 
