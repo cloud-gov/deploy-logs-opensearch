@@ -282,6 +282,9 @@ instance_groups:
         app_index_settings:
           index.mapping.total_fields.limit: 2000
           index.queries.cache.enabled: "false"
+        metric_index_settings:
+          index.mapping.total_fields.limit: 100
+          index.queries.cache.enabled: "false"
         base_index_component_name: component-index-mappings-base
         index_mappings_component_name: index-mappings
         index_settings_component_name: index-settings
