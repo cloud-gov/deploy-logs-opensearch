@@ -255,8 +255,10 @@ instance_groups:
     properties:
       opensearch_config:
         alias: ((alias))
+        metrics_alias: ((metric_alias))
         component_templates:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
+        - metric-shards-and-replica: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas-metrics.json
         - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
         - index-mappings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-mappings.json
         - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings-base.json
@@ -285,6 +287,7 @@ instance_groups:
         index_settings_component_name: index-settings
         platform_index_component_name: index-mappings-platform
         shards_and_replicas_component_name: shards-and-replicas
+        metrics_shards_and_replicas_component_name: metric-shards-and-replica
     release: opensearch
   - name: upload-dashboards-objects
     release: opensearch
