@@ -263,7 +263,7 @@ instance_groups:
         - index-mappings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-mappings.json
         - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings-base.json
         - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
-        - component-index-mappings-platform: /var/vcap/jobs/opensearch_templates/component-index-mappings-platform.json
+        - component-index-mappings-metrics: /var/vcap/jobs/opensearch_templates/component-index-mappings-metrics.json
         index_templates:
         - index-template: /var/vcap/jobs/opensearch_templates/index-template.json
         - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
