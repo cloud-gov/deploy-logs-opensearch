@@ -255,7 +255,7 @@ instance_groups:
     properties:
       opensearch_config:
         alias: ((alias))
-        metrics_alias: ((metric_alias))
+        metric_alias: ((metric_alias))
         component_templates:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
         - metric-shards-and-replica: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas-metrics.json
