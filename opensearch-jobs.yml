@@ -286,6 +286,7 @@ instance_groups:
         index_mappings_component_name: index-mappings
         index_settings_component_name: index-settings
         platform_index_component_name: index-mappings-platform
+        metric_index_component_name: component-index-mappings-metrics
         shards_and_replicas_component_name: shards-and-replicas
         metrics_shards_and_replicas_component_name: metric-shards-and-replica
     release: opensearch
