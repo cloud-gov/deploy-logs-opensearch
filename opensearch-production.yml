@@ -52,9 +52,10 @@ instance_groups:
     release: opensearch
     properties:
       opensearch_config:
-        rollover_document_size: 600gb
+        rollover_document_size: 30gb
         rollover_index_age: 1d
-        shard_count: 24
+        shard_count: 20
+        metrics_shard_coun: 4
 
 addons:
 - name: bosh-dns-aliases
