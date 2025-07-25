@@ -442,6 +442,7 @@ instance_groups:
           - localhost
           index: ((alias))
           index_type: '%{@type}'
+          index_metrics: ((metric_alias))
           ssl:
             ca: ((opensearch_node.ca))
             certificate: ((logstash.certificate))
