@@ -255,16 +255,19 @@ instance_groups:
     properties:
       opensearch_config:
         alias: ((alias))
+        metric_alias: ((metric_alias))
         component_templates:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
+        - metric-shards-and-replica: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas-metrics.json
         - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
         - index-mappings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-mappings.json
         - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings-base.json
         - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
-        - component-index-mappings-platform: /var/vcap/jobs/opensearch_templates/component-index-mappings-platform.json
+        - component-index-mappings-metrics: /var/vcap/jobs/opensearch_templates/component-index-mappings-metrics.json
         index_templates:
         - index-template: /var/vcap/jobs/opensearch_templates/index-template.json
         - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
+        - index-template-metrics: /var/vcap/jobs/opensearch_templates/index-template-metrics.json
     release: opensearch
   - name: upload_tenant
     consumes: *consumes-opensearch-manager
@@ -280,11 +283,16 @@ instance_groups:
         app_index_settings:
           index.mapping.total_fields.limit: 2000
           index.queries.cache.enabled: "false"
+        metric_index_settings:
+          index.mapping.total_fields.limit: 100
+          index.queries.cache.enabled: "false"
         base_index_component_name: component-index-mappings-base
         index_mappings_component_name: index-mappings
         index_settings_component_name: index-settings
         platform_index_component_name: index-mappings-platform
+        metric_index_component_name: component-index-mappings-metrics
         shards_and_replicas_component_name: shards-and-replicas
+        metrics_shards_and_replicas_component_name: metric-shards-and-replica
     release: opensearch
   - name: upload-dashboards-objects
     release: opensearch
@@ -435,6 +443,7 @@ instance_groups:
           - localhost
           index: ((alias))
           index_type: '%{@type}'
+          index_metrics: ((metric_alias))
           ssl:
             ca: ((opensearch_node.ca))
             certificate: ((logstash.certificate))
