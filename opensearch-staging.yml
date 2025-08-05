@@ -13,7 +13,7 @@ instance_groups:
     canaries: 1
 
 - name: opensearch_old_data
-  instances: 4
+  instances: 2
   vm_type: r6i.large
   update:
     max_in_flight: 2
