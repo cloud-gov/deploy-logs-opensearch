@@ -55,7 +55,7 @@ instance_groups:
         rollover_document_size: 30gb
         rollover_index_age: 1d
         shard_count: 20
-        metrics_shard_coun: 4
+        metrics_shard_count: 4
 
 addons:
 - name: bosh-dns-aliases

@@ -54,7 +54,7 @@ instance_groups:
         rollover_document_size: 3gb
         rollover_index_age: 1d
         shard_count: 3
-        metrics_shard_coun: 1
+        metrics_shard_count: 1
 
 
 addons:
