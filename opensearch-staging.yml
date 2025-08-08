@@ -6,14 +6,14 @@ instance_groups:
   - name: services
 
 - name: opensearch_data
-  instances: 4
+  instances: 3
   vm_type: r6i.large
   update:
     max_in_flight: 1
     canaries: 1
 
 - name: opensearch_old_data
-  instances: 2
+  instances: 3
   vm_type: r6i.large
   update:
     max_in_flight: 2
