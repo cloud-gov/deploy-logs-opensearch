@@ -6,7 +6,7 @@ instance_groups:
   - name: services
 
 - name: opensearch_data
-  instances: 27
+  instances: 26
   vm_type: r6i.2xlarge
   update:
     max_in_flight: 1
