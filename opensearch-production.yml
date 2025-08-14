@@ -31,7 +31,7 @@ instance_groups:
   vm_type: r6i.xlarge
 
 - name: ingestor
-  instances: 9
+  instances: 12
   vm_type: r6i.xlarge.logsearch.ingestor
 
 - name: ingestor_cloudwatch_rds
@@ -54,8 +54,8 @@ instance_groups:
       opensearch_config:
         rollover_document_size: 30gb
         rollover_index_age: 1d
-        shard_count: 20
-        metrics_shard_count: 4
+        shard_count: 18
+        metrics_shard_count: 6
 
 addons:
 - name: bosh-dns-aliases
