@@ -216,7 +216,6 @@ jobs:
     - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
-      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-development-deployment
       passed: [deploy-opensearch-development]
@@ -242,7 +241,6 @@ jobs:
     - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
-      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-development-deployment
       passed: [deploy-opensearch-development]
@@ -274,7 +272,6 @@ jobs:
     - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
-      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-staging-deployment
       passed: [deploy-opensearch-staging]
@@ -299,7 +296,6 @@ jobs:
     - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
-      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-staging-deployment
       passed: [deploy-opensearch-staging]
@@ -332,7 +328,6 @@ jobs:
     - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
-      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-production-deployment
       passed: [deploy-opensearch-production]
@@ -358,7 +353,6 @@ jobs:
     - get: fifteen-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
-      passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-production-deployment
       passed: [deploy-opensearch-production]
