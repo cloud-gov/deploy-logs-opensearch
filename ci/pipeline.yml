@@ -54,6 +54,8 @@ groups:
       - smoke-tests-development
       - e2e-tests-development
       - tenant-development
+      - audit-to-s3-development
+      - metrics-to-s3-development
   - name: staging
     jobs:
       - deploy-opensearch-staging
@@ -61,6 +63,8 @@ groups:
       - smoke-tests-staging
       - e2e-tests-staging
       - tenant-staging
+      - audit-to-s3-staging
+      - metrics-to-s3-staging
   - name: production
     jobs:
       - plan-opensearch-production
@@ -204,6 +208,7 @@ jobs:
 
   - name: metrics-to-s3-development
     serial: true
+    serial_groups: [bosh-development]
     plan:
     - get: general-task
     - get: ten-minute-timer
@@ -212,6 +217,7 @@ jobs:
       passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-development-deployment
+      passed: [deploy-opensearch-development]
     - task: transfer-metric-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
@@ -228,6 +234,7 @@ jobs:
 
   - name: audit-to-s3-development
     serial: true
+    serial_groups: [bosh-development]
     plan:
     - get: general-task
     - get: fifteen-minute-timer
@@ -236,6 +243,7 @@ jobs:
       passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-development-deployment
+      passed: [deploy-opensearch-development]
     - task: transfer-audit-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
@@ -258,6 +266,7 @@ jobs:
 
   - name: metrics-to-s3-staging
     serial: true
+    serial_groups: [bosh-staging]
     plan:
     - get: general-task
     - get: ten-minute-timer
@@ -266,6 +275,7 @@ jobs:
       passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-staging-deployment
+      passed: [deploy-opensearch-staging]
     - task: transfer-metric-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
@@ -281,7 +291,7 @@ jobs:
         ENVIRONMENT: staging
 
   - name: audit-to-s3-staging
-    serial: true
+    serial_groups: [bosh-staging]
     plan:
     - get: general-task
     - get: fifteen-minute-timer
@@ -290,6 +300,7 @@ jobs:
       passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-staging-deployment
+      passed: [deploy-opensearch-staging]
     - task: transfer-audit-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
@@ -313,6 +324,7 @@ jobs:
 
   - name: metrics-to-s3-production
     serial: true
+    serial_groups: [bosh-production]
     plan:
     - get: general-task
     - get: ten-minute-timer
@@ -321,6 +333,7 @@ jobs:
       passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-production-deployment
+      passed: [deploy-opensearch-production]
     - task: transfer-metric-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
@@ -337,6 +350,7 @@ jobs:
 
   - name: audit-to-s3-production
     serial: true
+    serial_groups: [bosh-production]
     plan:
     - get: general-task
     - get: fifteen-minute-timer
@@ -345,6 +359,7 @@ jobs:
       passed: [run-tests]
     - get: pipeline-tasks
     - get: opensearch-production-deployment
+      passed: [deploy-opensearch-production]
     - task: transfer-audit-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-audit-events-s3.yml
