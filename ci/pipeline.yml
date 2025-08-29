@@ -73,6 +73,8 @@ groups:
       - smoke-tests-production
       - e2e-tests-production
       - tenant-production
+      - audit-to-s3-production
+      - metrics-to-s3-production
 
 jobs:
   - name: set-self
