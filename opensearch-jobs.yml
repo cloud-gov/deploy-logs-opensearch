@@ -572,7 +572,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_bucket))
+          bucket: opensearch-metric-stream-development-metrics
           region: ((region))
         syslog_tls:
           port: 6972
@@ -582,7 +582,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((alias))
+          index: s3jason
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
