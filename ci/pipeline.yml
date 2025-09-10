@@ -209,7 +209,6 @@ jobs:
       file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
 
   - name: metrics-to-s3-development
-    serial: true
     serial_groups: [bosh-development]
     plan:
     - get: general-task
@@ -234,7 +233,6 @@ jobs:
         ENVIRONMENT: development
 
   - name: audit-to-s3-development
-    serial: true
     serial_groups: [bosh-development]
     plan:
     - get: general-task
@@ -265,7 +263,6 @@ jobs:
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: metrics-to-s3-staging
-    serial: true
     serial_groups: [bosh-staging]
     plan:
     - get: general-task
@@ -321,7 +318,6 @@ jobs:
 
 
   - name: metrics-to-s3-production
-    serial: true
     serial_groups: [bosh-production]
     plan:
     - get: general-task
@@ -346,7 +342,6 @@ jobs:
         ENVIRONMENT: production
 
   - name: audit-to-s3-production
-    serial: true
     serial_groups: [bosh-production]
     plan:
     - get: general-task
