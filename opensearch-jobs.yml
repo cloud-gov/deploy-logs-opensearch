@@ -202,32 +202,6 @@ instance_groups:
         jvm_options:
           - "-Dlog4j2.formatMsgNoLookups=true"
   - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    name: finish_deploy
-    properties:
-      finish_deploy:
-        opensearch:
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((opensearch_admin.certificate))
-            private_key: ((opensearch_admin.private_key))
-    release: opensearch
-  - consumes:
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
-    name: prepare_deploy
-    properties:
-      prepare_deploy:
-        opensearch:
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((opensearch_admin.certificate))
-            private_key: ((opensearch_admin.private_key))
-    release: opensearch
-  - consumes:
       ingestor_link:
         from: ingestor_syslog
       opensearch:
