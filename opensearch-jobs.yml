@@ -114,6 +114,7 @@ instance_groups:
 # manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
 # They are updated so one is always up as opensearch can survive on one manager in a disaster
 #########################################################
+
 - name: opensearch_manager
   instances: 3
   vm_extensions: [15GB_ephemeral_disk]
