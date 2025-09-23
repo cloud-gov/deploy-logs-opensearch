@@ -209,7 +209,6 @@ jobs:
       file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
 
   - name: metrics-to-s3-development
-    serial_groups: [bosh-development]
     plan:
     - get: general-task
     - get: ten-minute-timer
@@ -217,7 +216,6 @@ jobs:
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
     - get: opensearch-development-deployment
-      passed: [deploy-opensearch-development]
     - task: transfer-metric-logs-to-s3
       image: general-task
       file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
@@ -233,7 +231,6 @@ jobs:
         ENVIRONMENT: development
 
   - name: audit-to-s3-development
-    serial_groups: [bosh-development]
     plan:
     - get: general-task
     - get: fifteen-minute-timer
@@ -263,7 +260,6 @@ jobs:
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: metrics-to-s3-staging
-    serial_groups: [bosh-staging]
     plan:
     - get: general-task
     - get: ten-minute-timer
@@ -287,7 +283,6 @@ jobs:
         ENVIRONMENT: staging
 
   - name: audit-to-s3-staging
-    serial_groups: [bosh-staging]
     plan:
     - get: general-task
     - get: fifteen-minute-timer
@@ -318,7 +313,6 @@ jobs:
 
 
   - name: metrics-to-s3-production
-    serial_groups: [bosh-production]
     plan:
     - get: general-task
     - get: ten-minute-timer
@@ -342,7 +336,6 @@ jobs:
         ENVIRONMENT: production
 
   - name: audit-to-s3-production
-    serial_groups: [bosh-production]
     plan:
     - get: general-task
     - get: fifteen-minute-timer
