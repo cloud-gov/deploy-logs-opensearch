@@ -37,7 +37,7 @@ instance_groups:
 - name: ingestor_s3
   instances: 0
 
-- name: ingestor_metrics
+- name: ingestor_aws_metrics
   instances: 1
 
 - name: maintenance
