@@ -51,6 +51,16 @@ instance_groups:
   vm_type: t3.large
   instances: 1
   jobs:
+  - name: smoke_tests
+    release: opensearch
+    properties:
+      smoke_tests:
+        count_test:
+          index_pattern: logs-app-*
+          minimum: 400
+          run: true
+          time_field: '@timestamp'
+          time_interval: 5m
   - name: upload_opensearch_config
     release: opensearch
     properties:
