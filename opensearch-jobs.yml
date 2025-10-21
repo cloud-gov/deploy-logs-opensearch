@@ -676,17 +676,18 @@ instance_groups:
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
   - consumes: *consumes-opensearch-manager
-    name: ingestor_cloudwatch
+    name: ingestor_s3
     properties:
       logstash:
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
           max_bytes: 30gb
       logstash_ingestor:
-        cloudwatch:
+        s3:
+          bucket: ((cloudwatch_bucket))
           region: ((region))
-          prefix: ((rds_cloudwatch_prefix))
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
@@ -703,7 +704,7 @@ instance_groups:
             private_key: ((logstash.private_key))
     provides:
       ingestor:
-        as: ingestor_cloudwtch
+        as: ingestor_s3
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
