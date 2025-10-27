@@ -46,6 +46,10 @@
 - type: replace
   path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
+# ingestor_metrics
+- type: replace
+  path: /instance_groups/name=ingestor_metrics/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
 # ingestor_aws_metrics
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
