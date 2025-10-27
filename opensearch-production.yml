@@ -38,6 +38,9 @@ instance_groups:
   instances: 1
   vm_type: r6i.large
 
+- name: ingestor_metrics
+  instances: 1
+
 - name: ingestor_aws_metrics
   instances: 1
 
