@@ -30,11 +30,8 @@ groups:
   - name: tasks
     jobs:
       - audit-to-s3-development
-      - metrics-to-s3-development
       - audit-to-s3-staging
-      - metrics-to-s3-staging
       - audit-to-s3-production
-      - metrics-to-s3-production
       - build-opensearch-release
   - name: update-test-users
     jobs:
@@ -55,7 +52,6 @@ groups:
       - e2e-tests-development
       - tenant-development
       - audit-to-s3-development
-      - metrics-to-s3-development
   - name: staging
     jobs:
       - deploy-opensearch-staging
@@ -64,7 +60,6 @@ groups:
       - e2e-tests-staging
       - tenant-staging
       - audit-to-s3-staging
-      - metrics-to-s3-staging
   - name: production
     jobs:
       - plan-opensearch-production
@@ -74,7 +69,6 @@ groups:
       - e2e-tests-production
       - tenant-production
       - audit-to-s3-production
-      - metrics-to-s3-production
 
 jobs:
   - name: set-self
@@ -208,27 +202,6 @@ jobs:
       image: general-task
       file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
 
-  - name: metrics-to-s3-development
-    plan:
-    - get: general-task
-    - get: ten-minute-timer
-      trigger: true
-    - get: deploy-logs-opensearch-config
-    - get: pipeline-tasks
-    - task: transfer-metric-logs-to-s3
-      image: general-task
-      file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
-      params:
-        BUCKET: ((opensearch-metric-bucket-development))
-        CF_API_URL: ((cf-api-url-development))
-        UAA_API_URL: ((uaa-url-development))
-        UAA_CLIENT_ID: ((uaa-read-only-client-username))
-        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-development))
-        AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_development))
-        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_development))
-        ENVIRONMENT: development
-
   - name: audit-to-s3-development
     plan:
     - get: general-task
@@ -256,27 +229,6 @@ jobs:
           :x: Failed to upload audit to s3 in development
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-  - name: metrics-to-s3-staging
-    plan:
-    - get: general-task
-    - get: ten-minute-timer
-      trigger: true
-    - get: deploy-logs-opensearch-config
-    - get: pipeline-tasks
-    - task: transfer-metric-logs-to-s3
-      image: general-task
-      file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
-      params:
-        BUCKET: ((opensearch-metric-bucket-staging))
-        CF_API_URL: ((cf-api-url-staging))
-        UAA_API_URL: ((uaa-url-staging))
-        UAA_CLIENT_ID: ((uaa-read-only-client-username))
-        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-staging))
-        AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_staging))
-        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_staging))
-        ENVIRONMENT: staging
-
   - name: audit-to-s3-staging
     plan:
     - get: general-task
@@ -303,28 +255,6 @@ jobs:
         text: |
           :x: Failed to upload audit to s3 in staging
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-
-
-  - name: metrics-to-s3-production
-    plan:
-    - get: general-task
-    - get: ten-minute-timer
-      trigger: true
-    - get: deploy-logs-opensearch-config
-    - get: pipeline-tasks
-    - task: transfer-metric-logs-to-s3
-      image: general-task
-      file: deploy-logs-opensearch-config/ci/upload-metrics-to-s3.yml
-      params:
-        BUCKET: ((opensearch-metric-bucket-production))
-        CF_API_URL: ((cf-api-url-production))
-        UAA_API_URL: ((uaa-url-production))
-        UAA_CLIENT_ID: ((uaa-read-only-client-username))
-        UAA_CLIENT_SECRET: ((uaa-read-only-client-secret-production))
-        AWS_DEFAULT_REGION: ((aws-region))
-        AWS_ACCESS_KEY_ID: ((metric_ingestor_aws_access_key_id_production))
-        AWS_SECRET_ACCESS_KEY: ((metric_ingestor_aws_secret_access_key_production))
-        ENVIRONMENT: production
 
   - name: audit-to-s3-production
     plan:
