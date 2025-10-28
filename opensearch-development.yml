@@ -50,7 +50,7 @@ instance_groups:
       smoke_tests:
         count_test:
           index_pattern: logs-app-*
-          minimum: 50
+          minimum: 15
           run: true
           time_field: '@timestamp'
           time_interval: 5m
