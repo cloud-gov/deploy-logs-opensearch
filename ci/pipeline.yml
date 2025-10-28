@@ -4,11 +4,8 @@ groups:
     jobs:
       - set-self
       - audit-to-s3-development
-      - metrics-to-s3-development
       - audit-to-s3-staging
-      - metrics-to-s3-staging
       - audit-to-s3-production
-      - metrics-to-s3-production
       - build-opensearch-release
       - deploy-opensearch-development
       - upload-dashboards-objects-development
@@ -1301,7 +1298,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: cloud-logs
 
   - name: deploy-logs-opensearch-test-config
     type: git
@@ -1331,11 +1328,6 @@ resources:
     type: time
     source:
       interval: 15m
-
-  - name: ten-minute-timer
-    type: time
-    source:
-      interval: 10m
 
   - name: slack
     type: slack-notification
