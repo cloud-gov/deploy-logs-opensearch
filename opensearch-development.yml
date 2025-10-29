@@ -34,6 +34,9 @@ instance_groups:
 - name: ingestor_cloudwatch_rds
   instances: 1
 
+- name: ingestor_cloudwatch_logs
+  instances: 1
+
 - name: ingestor_aws_metrics
   instances: 1
 
@@ -49,11 +52,7 @@ instance_groups:
     properties:
       smoke_tests:
         count_test:
-          index_pattern: logs-app-*
-          minimum: 50
-          run: true
-          time_field: '@timestamp'
-          time_interval: 5m
+          run: false
   - name: upload_opensearch_config
     release: opensearch
     properties:

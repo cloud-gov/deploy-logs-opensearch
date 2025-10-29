@@ -37,6 +37,9 @@ instance_groups:
 - name: ingestor_cloudwatch_rds
   instances: 1
 
+- name: ingestor_cloudwatch_logs
+  instances: 1
+
 - name: ingestor_aws_metrics
   instances: 1
 
