@@ -650,7 +650,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 7
 
 
-- name: ingestor_cloudwatch
+- name: ingestor_cloudwatch_logs
   instances: 1
   jobs:
   - name: bpm
