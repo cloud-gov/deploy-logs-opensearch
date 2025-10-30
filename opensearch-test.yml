@@ -54,6 +54,9 @@ instance_groups:
 - name: ingestor_aws_metrics
   instances: 0
 
+- name: ingestor_cloudwatch_logs
+  instances: 0
+
 - name: maintenance
   vm_type: t3.large
   instances: 0
