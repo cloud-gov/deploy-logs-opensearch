@@ -283,6 +283,7 @@ instance_groups:
     properties:
       cloudfoundry:
         event_types:
+        - HttpStartStop
         - LogMessage
         - ContainerMetric
         - Audit
