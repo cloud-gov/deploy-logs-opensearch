@@ -38,10 +38,6 @@
 - type: replace
   path: /instance_groups/name=ingestor/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
-# ingestor_cloudwatch_rds
-- type: replace
-  path: /instance_groups/name=ingestor_cloudwatch_rds/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
-  value: true
 
 # ingestor_cloudwatch_logs
 - type: replace
