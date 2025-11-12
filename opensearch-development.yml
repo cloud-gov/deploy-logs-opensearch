@@ -32,7 +32,7 @@ instance_groups:
   vm_type: m6i.large
 
 - name: ingestor_cloudwatch_rds
-  instances: 1
+  instances: 0
 
 - name: ingestor_cloudwatch_logs
   instances: 1

@@ -587,7 +587,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 - name: ingestor_cloudwatch_rds
-  instances: 1
+  instances: 0
   jobs:
   - name: bpm
     release: bpm
