@@ -1,0 +1,17 @@
+---
+platform: linux
+
+inputs:
+  - { name: deploy-logs-opensearch-config }
+
+
+run:
+  path: deploy-logs-opensearch-config/ci/reset-aide.sh
+
+params:
+  BOSH_CA_CERT:
+  BOSH_ENVIRONMENT:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_DEPLOYMENT_NAME:
+  BOSH_INSTANCE_NAME:

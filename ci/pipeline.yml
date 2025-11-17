@@ -66,6 +66,10 @@ groups:
       - e2e-tests-production
       - tenant-production
       - audit-to-s3-production
+  - name: reset-aide
+    jobs:
+      - reset-aide-opensearch-production
+
 
 jobs:
   - name: set-self
@@ -1221,6 +1225,35 @@ jobs:
           BOSH_ERRAND: upload-dashboards-objects
           BOSH_FLAGS: "--keep-alive"
           BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+
+  - name: reset-aide-opensearch-production
+    serial: true
+    serial_groups: [reset-aide]
+    plan:
+      - in_parallel:
+          - get: general-task
+          - get: deploy-logs-opensearch-config
+      - in_parallel:
+          - task: reset-aide-opensearch_dashboards
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: (bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: opensearch_dashboards
+          - task: reset-aide-ingestor_cloudwatch_logs
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: (bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: ingestor_cloudwatch_logs
 
 resources:
   - name: opensearch-release-git-repo
