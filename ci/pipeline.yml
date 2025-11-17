@@ -1240,7 +1240,7 @@ jobs:
             params:
               BOSH_ENVIRONMENT: ((bosh_production_environment))
               BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: (bosh_production_client_secret))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
               BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: opensearch_dashboards
@@ -1250,7 +1250,7 @@ jobs:
             params:
               BOSH_ENVIRONMENT: ((bosh_production_environment))
               BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: (bosh_production_client_secret))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
               BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: ingestor_cloudwatch_logs
