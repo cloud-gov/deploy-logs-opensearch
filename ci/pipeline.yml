@@ -544,7 +544,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -782,7 +781,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -1022,7 +1020,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
