@@ -1215,6 +1215,7 @@ jobs:
           - get: opensearch-production-deployment
             passed: [tenant-production]
             trigger: true
+          - get: general-task
       - task: upload-dashboards-objects
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
