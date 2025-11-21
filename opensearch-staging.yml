@@ -41,7 +41,7 @@ instance_groups:
   instances: 1
 
 - name: ingestor_aws_metrics_fix_1
-  instances: 
+  instances: 1
 
 - name: ingestor_aws_metrics_fix_2
   instances: 1
