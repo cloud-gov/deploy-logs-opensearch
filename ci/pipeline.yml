@@ -66,6 +66,10 @@ groups:
       - e2e-tests-production
       - tenant-production
       - audit-to-s3-production
+  - name: reset-aide
+    jobs:
+      - reset-aide-opensearch-production
+
 
 jobs:
   - name: set-self
@@ -436,7 +440,6 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
-            - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
 
@@ -540,7 +543,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -778,7 +780,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -1018,7 +1019,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -1215,6 +1215,7 @@ jobs:
           - get: opensearch-production-deployment
             passed: [tenant-production]
             trigger: true
+          - get: general-task
       - task: upload-dashboards-objects
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
@@ -1225,6 +1226,46 @@ jobs:
           BOSH_ERRAND: upload-dashboards-objects
           BOSH_FLAGS: "--keep-alive"
           BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+      # Updating the dashboards touches files on the os, reset the aide db
+      - task: reset-aide-opensearch_dashboards
+        image: general-task
+        file: deploy-logs-opensearch-config/ci/reset-aide.yml
+        params:
+          BOSH_ENVIRONMENT: ((bosh_production_environment))
+          BOSH_CLIENT: ((bosh_client))
+          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+          BOSH_DEPLOYMENT_NAME: logs-opensearch
+          BOSH_INSTANCE_NAME: opensearch_dashboards
+
+  - name: reset-aide-opensearch-production
+    serial: true
+    serial_groups: [reset-aide]
+    plan:
+      - in_parallel:
+          - get: general-task
+          - get: deploy-logs-opensearch-config
+      - in_parallel:
+          - task: reset-aide-opensearch_dashboards
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: opensearch_dashboards
+          - task: reset-aide-ingestor_cloudwatch_logs
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: ingestor_cloudwatch_logs
 
 resources:
   - name: opensearch-release-git-repo

@@ -53,8 +53,6 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 2
     max_in_flight: 1 # Only update 1 data node at a time or risk downtime
-  vm_extensions:
-  - logs-opensearch-profile
   env:
     bosh:
       swap_size: 0
@@ -107,8 +105,6 @@ instance_groups:
   update:
     max_in_flight: 1 # Only update 1 data node at a time or risk downtime
     serial: true # Block on this job to create deploy group 2
-  vm_extensions:
-  - logs-opensearch-profile
   env:
     bosh:
       swap_size: 0
@@ -122,7 +118,6 @@ instance_groups:
 - name: opensearch_manager
   instances: 3
   vm_extensions:
-  - logs-opensearch-profile
   - 15GB_ephemeral_disk
   jobs:
   - name: bpm
@@ -179,7 +174,7 @@ instance_groups:
 #########################################################
 - name: maintenance
   instances: 1
-  vm_extensions: [logs-opensearch-profile,15GB_ephemeral_disk]
+  vm_extensions: [15GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
@@ -704,7 +699,6 @@ instance_groups:
     release: opensearch
   vm_extensions:
   - 15GB_ephemeral_disk
-  - logs-opensearch-profile
   stemcell: default
   azs: [z1]
   networks:
