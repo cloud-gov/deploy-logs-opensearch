@@ -711,7 +711,7 @@ instance_groups:
 
 
 
-- name: ingestor_aws_cloudwatch_fix_1
+- name: ingestor_aws_cloudwatch_fixer_1
   instances: 0
   jobs:
   - name: bpm
@@ -740,7 +740,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -758,7 +758,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
@@ -783,7 +783,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_cloudwatch_fix_2
+- name: ingestor_aws_cloudwatch_fixer_2
   instances: 0
   jobs:
   - name: bpm
@@ -812,7 +812,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -830,7 +830,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
@@ -855,7 +855,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_cloudwatch_fix_3
+- name: ingestor_aws_cloudwatch_fixer_3
   instances: 0
   jobs:
   - name: bpm
@@ -884,7 +884,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -902,7 +902,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
@@ -927,7 +927,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_cloudwatch_fix_4
+- name: ingestor_aws_cloudwatch_fixer_4
   instances: 0
   jobs:
   - name: bpm
@@ -956,7 +956,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -974,7 +974,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
@@ -998,7 +998,7 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 6
 
-- name: ingestor_aws_cloudwatch_fix_5
+- name: ingestor_aws_cloudwatch_fixer_5
   instances: 0
   jobs:
   - name: bpm
@@ -1027,7 +1027,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -1045,7 +1045,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
@@ -1070,7 +1070,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_cloudwatch_fix_6
+- name: ingestor_aws_cloudwatch_fixer_6
   instances: 0
   jobs:
   - name: bpm
@@ -1099,7 +1099,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -1117,7 +1117,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
@@ -1142,7 +1142,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_cloudwatch_fix_7
+- name: ingestor_aws_cloudwatch_fixer_7
   instances: 0
   jobs:
   - name: bpm
@@ -1171,7 +1171,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: metric
+        type: cloudwatch
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
@@ -1189,7 +1189,7 @@ instance_groups:
         opensearch:
           data_hosts:
           - localhost
-          index: ((metric_alias))
+          index: ((alias))
           index_type: '%{@type}'
           ssl:
             ca: ((opensearch_node.ca))
