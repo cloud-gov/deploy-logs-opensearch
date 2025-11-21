@@ -986,18 +986,27 @@ jobs:
           inputs:
             - name: deploy-logs-opensearch-config
             - name: terraform-yaml
+#          run:
+#            path: sh
+#            args:
+#              - -exc
+#              - |
+#                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
+#                  --prune terraform_outputs \
+#                  deploy-logs-opensearch-config/opensearch-deployment.yml \
+#                  deploy-logs-opensearch-config/opensearch-jobs.yml \
+#                  deploy-logs-opensearch-config/opensearch-production.yml \
+#                  terraform-yaml/state.yml \
+#                  > opensearch-manifest/manifest.yml
           run:
             path: sh
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-production.yml \
-                  terraform-yaml/state.yml \
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                  -o deploy-logs-opensearch-config/opensearch-scaling-production.yml \
                   > opensearch-manifest/manifest.yml
+
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
