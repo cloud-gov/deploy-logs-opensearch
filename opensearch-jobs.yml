@@ -541,7 +541,7 @@ instance_groups:
     name: ingestor_s3
     properties:
       logstash:
-        type: cloudwatch
+        type: metric
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         queue:
