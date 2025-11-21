@@ -40,6 +40,12 @@ instance_groups:
 - name: ingestor_aws_metrics
   instances: 1
 
+- name: ingestor_aws_metrics_fix_1
+  instances: 
+
+- name: ingestor_aws_metrics_fix_2
+  instances: 1
+
 - name: ingestor_s3
   instances: 1
 
