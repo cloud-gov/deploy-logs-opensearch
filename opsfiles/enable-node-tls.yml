@@ -281,94 +281,94 @@
 
 #temporary# ingestor_aws_metrics
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties?/opensearch?/http_host?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties?/opensearch?/http_host?
   value: 127.0.0.1
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties/opensearch?/admin?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties/opensearch?/admin?
   value: *admin-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties/opensearch?/node?/ssl?
   value: *node-tls-properties
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties

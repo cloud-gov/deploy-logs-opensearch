@@ -711,7 +711,7 @@ instance_groups:
 
 
 
-- name:  ingestor_aws_cloudwatch_fixer_1
+- name: ingestor_aws_cloudwatch_fixer_1
   instances: 0
   jobs:
   - name: bpm
@@ -783,7 +783,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name:  ingestor_aws_cloudwatch_fixer_2
+- name: ingestor_aws_cloudwatch_fixer_2
   instances: 0
   jobs:
   - name: bpm
@@ -855,7 +855,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name:  ingestor_aws_cloudwatch_fixer_3
+- name: ingestor_aws_cloudwatch_fixer_3
   instances: 0
   jobs:
   - name: bpm
@@ -927,7 +927,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name:  ingestor_aws_cloudwatch_fixer_4
+- name: ingestor_aws_cloudwatch_fixer_4
   instances: 0
   jobs:
   - name: bpm
@@ -998,7 +998,7 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 6
 
-- name:  ingestor_aws_cloudwatch_fixer_5
+- name: ingestor_aws_cloudwatch_fixer_5
   instances: 0
   jobs:
   - name: bpm
@@ -1070,7 +1070,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name:  ingestor_aws_cloudwatch_fixer_6
+- name: ingestor_aws_cloudwatch_fixer_6
   instances: 0
   jobs:
   - name: bpm
@@ -1142,7 +1142,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name:  ingestor_aws_cloudwatch_fixer_7
+- name: ingestor_aws_cloudwatch_fixer_7
   instances: 0
   jobs:
   - name: bpm
