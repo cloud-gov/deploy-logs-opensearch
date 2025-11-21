@@ -135,3 +135,14 @@
   value:
     name: auth-proxy-secret-key
     type: password
+
+#temporary
+# ingestor_aws_metrics
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics_fix_1/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
+
+  # ingestor_aws_metrics
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics_fix_2/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  value: true
