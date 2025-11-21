@@ -139,26 +139,26 @@
 #temporary
 # ingestor_aws_metrics
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_1/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 
   # ingestor_aws_metrics
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_2/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_3/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_4/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_5/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_6/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name= ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fixer_7/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
