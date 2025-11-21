@@ -139,26 +139,26 @@
 #temporary
 # ingestor_aws_metrics
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_1/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_1/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 
   # ingestor_aws_metrics
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_2/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_2/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_3/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_3/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_4/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_4/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_5/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_5/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_6/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_6/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics_fix_7/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
+  path: /instance_groups/name=ingestor_aws_cloudwatch_fix_7/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
