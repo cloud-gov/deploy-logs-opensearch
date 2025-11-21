@@ -46,6 +46,21 @@ instance_groups:
 - name: ingestor_aws_metrics_fix_2
   instances: 1
 
+- name: ingestor_aws_metrics_fix_3
+  instances: 1
+
+- name: ingestor_aws_metrics_fix_4
+  instances: 1
+- name: ingestor_aws_metrics_fix_5
+  instances: 1
+
+- name: ingestor_aws_metrics_fix_6
+  instances: 1
+
+- name: ingestor_aws_metrics_fix_7
+  instances: 1
+
+
 - name: ingestor_s3
   instances: 1
 
