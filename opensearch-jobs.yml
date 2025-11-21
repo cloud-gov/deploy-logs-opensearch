@@ -711,7 +711,7 @@ instance_groups:
 
 
 
-- name: ingestor_aws_metrics_fix_1
+- name: ingestor_aws_cloudwatch_fix_1
   instances: 0
   jobs:
   - name: bpm
@@ -747,7 +747,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/14"
         syslog_tls:
@@ -783,7 +783,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_metrics_fix_2
+- name: ingestor_aws_cloudwatch_fix_2
   instances: 0
   jobs:
   - name: bpm
@@ -819,7 +819,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/15"
         syslog_tls:
@@ -855,7 +855,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_metrics_fix_3
+- name: ingestor_aws_cloudwatch_fix_3
   instances: 0
   jobs:
   - name: bpm
@@ -891,7 +891,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/16"
         syslog_tls:
@@ -927,7 +927,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_metrics_fix_4
+- name: ingestor_aws_cloudwatch_fix_4
   instances: 0
   jobs:
   - name: bpm
@@ -963,7 +963,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/17"
         syslog_tls:
@@ -998,7 +998,7 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 6
 
-- name: ingestor_aws_metrics_fix_5
+- name: ingestor_aws_cloudwatch_fix_5
   instances: 0
   jobs:
   - name: bpm
@@ -1034,7 +1034,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/18"
         syslog_tls:
@@ -1070,7 +1070,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_metrics_fix_6
+- name: ingestor_aws_cloudwatch_fix_6
   instances: 0
   jobs:
   - name: bpm
@@ -1106,7 +1106,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/19"
         syslog_tls:
@@ -1142,7 +1142,7 @@ instance_groups:
     serial: true # Block on this job to create deploy group 6
 
 
-- name: ingestor_aws_metrics_fix_7
+- name: ingestor_aws_cloudwatch_fix_7
   instances: 0
   jobs:
   - name: bpm
@@ -1178,7 +1178,7 @@ instance_groups:
           max_bytes: 30gb
       logstash_ingestor:
         s3:
-          bucket: ((metric_stream_bucket))
+          bucket: ((cloudwatch_bucket))
           region: ((region))
           prefix: "2025/11/13"
         syslog_tls:
