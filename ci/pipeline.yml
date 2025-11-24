@@ -1266,6 +1266,47 @@ jobs:
               BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: ingestor_cloudwatch_logs
+          - task: reset-aide-ingestor_s3
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: ingestor_s3
+          - task: reset-aide-ingestor_aws_metrics
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: ingestor_aws_metrics
+          - task: reset-aide-ingestor_s3
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: ingestor_s3
+          - task: reset-aide-maintenance
+            image: general-task
+            file: deploy-logs-opensearch-config/ci/reset-aide.yml
+            params:
+              BOSH_ENVIRONMENT: ((bosh_production_environment))
+              BOSH_CLIENT: ((bosh_client))
+              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_DEPLOYMENT_NAME: logs-opensearch
+              BOSH_INSTANCE_NAME: maintenance
+
 
 resources:
   - name: opensearch-release-git-repo
