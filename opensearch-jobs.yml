@@ -220,6 +220,11 @@ instance_groups:
             ca: ((opensearch_node.ca))
             certificate: ((smoketest.certificate))
             private_key: ((smoketest.private_key))
+        s3:
+          environment: development
+          region: ((region))
+          s3_metric:
+            bucket: ((metric_stream_bucket))
         tls:
           use_tls: true
           certificate: ((archiver_syslog_client_tls.certificate))
