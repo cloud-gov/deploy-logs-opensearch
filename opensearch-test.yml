@@ -42,7 +42,7 @@ instance_groups:
   vm_type: m6i.xlarge
 
 - name: ingestor
-  instances: 0
+  instances: 1
   vm_type: m6i.large
 
 - name: ingestor_s3

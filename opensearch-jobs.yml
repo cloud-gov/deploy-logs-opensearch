@@ -223,8 +223,8 @@ instance_groups:
         s3:
           environment: development
           region: ((region))
-          s3_metric:
-            bucket: ((metric_stream_bucket))
+        s3_metric:
+          bucket: ((metric_stream_bucket))
         tls:
           use_tls: true
           certificate: ((archiver_syslog_client_tls.certificate))
