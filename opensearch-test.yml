@@ -49,7 +49,7 @@ instance_groups:
   instances: 0
 
 - name: ingestor_aws_metrics
-  instances: 0
+  instances: 1
 
 - name: ingestor_cloudwatch_logs
   instances: 0
