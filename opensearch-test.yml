@@ -50,6 +50,13 @@ instance_groups:
 
 - name: ingestor_aws_metrics
   instances: 1
+  jobs:
+  - name: ingestor_s3
+    properties:
+      logstash_ingestor:
+        s3:
+          prefix: "2025/11"
+
 
 - name: ingestor_cloudwatch_logs
   instances: 0
