@@ -224,6 +224,8 @@ instance_groups:
         s3:
           environment: development
           region: ((region))
+        s3_cloudwatch:
+          bucket: ((cloudwatch_bucket))
         s3_metric:
           bucket: ((metric_stream_bucket))
         tls:
