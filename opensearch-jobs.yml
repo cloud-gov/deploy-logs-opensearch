@@ -174,7 +174,6 @@ instance_groups:
 #########################################################
 - name: maintenance
   instances: 1
-  vm_extensions: [15GB_ephemeral_disk]
   jobs:
   - name: bpm
     release: bpm
@@ -305,6 +304,7 @@ instance_groups:
   vm_type: t3.large
   vm_extensions:
   - logs-opensearch-ingestor-profile
+  - 15GB_ephemeral_disk
   networks:
   - name: services
   update:
