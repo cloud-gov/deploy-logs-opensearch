@@ -46,7 +46,13 @@ instance_groups:
   vm_type: m6i.large
 
 - name: ingestor_s3
-  instances: 0
+  instances: 1
+  jobs:
+  - name: ingestor_s3
+    properties:
+      logstash_ingestor:
+        s3:
+          prefix: "2025/12"
 
 - name: ingestor_aws_metrics
   instances: 1
