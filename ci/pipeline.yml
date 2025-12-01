@@ -440,6 +440,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
+            - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
 
