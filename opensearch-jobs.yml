@@ -220,11 +220,19 @@ instance_groups:
           time_field: '@timestamp'
           time_interval: 5m
         index: logs-app
+        metric_index: logs-metrics-
         opensearch:
           ssl:
             ca: ((opensearch_node.ca))
             certificate: ((smoketest.certificate))
             private_key: ((smoketest.private_key))
+        s3:
+          environment: development
+          region: ((region))
+        s3_cloudwatch:
+          bucket: ((cloudwatch_bucket))
+        s3_metric:
+          bucket: ((metric_stream_bucket))
         tls:
           use_tls: true
           certificate: ((archiver_syslog_client_tls.certificate))
@@ -300,6 +308,8 @@ instance_groups:
   stemcell: default
   azs: [z1,z2]
   vm_type: t3.large
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
   networks:
   - name: services
   update:

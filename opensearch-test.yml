@@ -42,21 +42,34 @@ instance_groups:
   vm_type: m6i.xlarge
 
 - name: ingestor
-  instances: 0
+  instances: 1
   vm_type: m6i.large
 
 - name: ingestor_s3
   instances: 0
 
 - name: ingestor_aws_metrics
-  instances: 0
+  instances: 1
+  jobs:
+  - name: ingestor_s3
+    properties:
+      logstash_ingestor:
+        s3:
+          prefix: "2025/12"
+
 
 - name: ingestor_cloudwatch_logs
-  instances: 0
+  instances: 1
+  jobs:
+  - name: ingestor_s3
+    properties:
+      logstash_ingestor:
+        s3:
+          prefix: "2025/12"
 
 - name: maintenance
   vm_type: t3.large
-  instances: 0
+  instances: 1
   jobs:
   - name: upload_opensearch_config
     release: opensearch
