@@ -40,26 +40,6 @@ instance_groups:
 - name: ingestor_aws_metrics
   instances: 1
 
-- name: ingestor_aws_cloudwatch_fixer_1
-  instances: 1
-
-- name: ingestor_aws_cloudwatch_fixer_2
-  instances: 1
-
-- name: ingestor_aws_cloudwatch_fixer_3
-  instances: 1
-
-- name: ingestor_aws_cloudwatch_fixer_4
-  instances: 1
-- name: ingestor_aws_cloudwatch_fixer_5
-  instances: 1
-
-- name: ingestor_aws_cloudwatch_fixer_6
-  instances: 1
-
-- name: ingestor_aws_cloudwatch_fixer_7
-  instances: 1
-
 - name: ingestor_s3
   instances: 1
 
