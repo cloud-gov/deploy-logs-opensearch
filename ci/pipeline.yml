@@ -524,7 +524,6 @@ jobs:
         file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
       - put: opensearch-development-deployment
         params:
-          dry_run: true
           manifest: opensearch-manifest/manifest.yml
           releases:
             - opensearch-release/*.tgz
