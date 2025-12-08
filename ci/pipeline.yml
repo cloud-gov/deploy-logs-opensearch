@@ -540,13 +540,13 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    on_failure:
-      put: slack
-      params:
-        <<: *slack-failure-params
-        text: |
-          :x: FAILED to deploy logs-OpenSearch in development
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    # on_failure:
+    #   put: slack
+    #   params:
+    #     <<: *slack-failure-params
+    #     text: |
+    #       :x: FAILED to deploy logs-OpenSearch in development
+    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: smoke-tests-development
     serial_groups: [bosh-development]
