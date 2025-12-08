@@ -12,7 +12,10 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
     properties:
       opensearch:
         notification:
@@ -128,10 +131,7 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+    consumes: *consumes-opensearch-manager
     provides:
       opensearch:
         as: opensearch_manager
@@ -310,7 +310,7 @@ instance_groups:
   azs: [z1,z2]
   vm_type: t3.large
   vm_extensions:
-  - logs-opensearch-ingestor-profile
+  - logs-opensearch-profile
   - 15GB_ephemeral_disk
   networks:
   - name: services
