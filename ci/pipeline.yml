@@ -501,6 +501,9 @@ jobs:
           - get: opensearch-stemcell-jammy
             trigger: true
           - get: general-task
+          - get: terraform-yaml
+            resource: terraform-yaml-development
+            trigger: true
       - task: opensearch-manifest
         image: general-task
         config:
@@ -515,6 +518,9 @@ jobs:
                 bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-development.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
+      - task: terraform-secrets
+        image: general-task
+        file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
       - put: opensearch-development-deployment
         params:
           manifest: opensearch-manifest/manifest.yml
@@ -530,6 +536,8 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
+          vars_files:
+            - terraform-secrets/terraform.yml
     # on_failure:
     #   put: slack
     #   params:
@@ -723,6 +731,9 @@ jobs:
             trigger: true
             passed: [smoke-tests-development]
           - get: general-task
+          - get: terraform-yaml
+            resource: terraform-yaml-staging
+            trigger: true
       - task: opensearch-manifest
         image: general-task
         config:
@@ -735,9 +746,11 @@ jobs:
               - -exc
               - |
                 bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-staging.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
-
           outputs:
             - name: opensearch-manifest
+      - task: terraform-secrets
+        image: general-task
+        file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
       - put: opensearch-staging-deployment
         params:
           dry_run: true
@@ -754,6 +767,8 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
+          vars_files:
+            - terraform-secrets/terraform.yml
     # on_failure:
     #   put: slack
     #   params:
