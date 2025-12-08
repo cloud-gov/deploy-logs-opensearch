@@ -1376,7 +1376,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: no-spruce
+      branch: testing
 
   - name: deploy-logs-opensearch-test-config
     type: git
