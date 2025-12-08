@@ -1342,13 +1342,6 @@ resources:
       versioned_file: ((tf-state-file-development))
       region_name: ((aws-region))
 
-  - name: terraform-yaml-staging
-    type: s3-iam
-    source:
-      bucket: ((tf-state-bucket-staging))
-      versioned_file: ((tf-state-file-staging))
-      region_name: ((aws-region))
-
   - name: terraform-yaml-production
     type: s3-iam
     source:
