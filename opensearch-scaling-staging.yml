@@ -1,10 +1,10 @@
 - type: replace
   path: /instance_groups/name=opensearch_manager?/vm_type?
-  value: t3.large
+  value: t3.medium
 
 - type: replace
   path: /instance_groups/name=opensearch_manager?/instances?
-  value: 1
+  value: 3
 
 
 - type: replace
@@ -41,7 +41,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards?/instances?
-  value: 1
+  value: 2
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards?/vm_type?
@@ -62,7 +62,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/vm_type?
-  value: m6i.xlarge
+  value: m6i.large
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
@@ -88,7 +88,7 @@
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
   value:
     index_pattern: logs-app-*
-    minimum: 1000
+    minimum: 150
     run: true
     time_field: '@timestamp'
     time_interval: 5m
@@ -103,9 +103,6 @@
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/rollover_index_age?
   value: 1d
 
-- type: replace
-  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?/run?
-  value: false
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/shard_count?
@@ -113,7 +110,7 @@
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/metrics_shard_count?
-  value: 1
+  value: 2
 
 
 
@@ -139,7 +136,7 @@
         aliases:
         - domain: nats.service.cf.internal
           targets:
-          - deployment: cf-development
+          - deployment: cf-staging
             domain: bosh
             instance_group: nats
             network: default
@@ -148,7 +145,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/jobs?/name=archiver_syslog?/properties?/logstash_ingestor?/outputs?/0/options/bucket?
-  value: ((logs-opensearch-cf-development-bucket))
+  value: ((logs-opensearch-cf-archiver-bucket))
 
 - type: replace
   path: /instance_groups/name=archiver?/jobs?/name=archiver_syslog?/properties?/logstash_ingestor?/outputs?/0/options/region?

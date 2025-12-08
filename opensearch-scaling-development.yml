@@ -1,6 +1,6 @@
 - type: replace
   path: /instance_groups/name=opensearch_manager?/vm_type?
-  value: t3.large
+  value: t3.medium
 
 - type: replace
   path: /instance_groups/name=opensearch_manager?/instances?
@@ -62,7 +62,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/vm_type?
-  value: m6i.xlarge
+  value: m6i.large
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
@@ -89,7 +89,7 @@
   value:
     index_pattern: logs-app-*
     minimum: 1000
-    run: true
+    run: false
     time_field: '@timestamp'
     time_interval: 5m
 
@@ -102,10 +102,6 @@
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/rollover_index_age?
   value: 1d
-
-- type: replace
-  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?/run?
-  value: false
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/shard_count?
@@ -148,7 +144,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/jobs?/name=archiver_syslog?/properties?/logstash_ingestor?/outputs?/0/options/bucket?
-  value: ((logs-opensearch-cf-development-bucket))
+  value: ((logs-opensearch-cf-archiver-bucket))
 
 - type: replace
   path: /instance_groups/name=archiver?/jobs?/name=archiver_syslog?/properties?/logstash_ingestor?/outputs?/0/options/region?
