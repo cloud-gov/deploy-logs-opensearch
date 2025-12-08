@@ -1,0 +1,643 @@
+features:
+  use_dns_addresses: false
+
+update:
+  serial: false
+  canaries: 1
+  canary_watch_time: 30000-600000
+  update_watch_time: 5000-6000000
+  max_in_flight: 1
+  max_errors: 1
+variables: []
+
+name: logs-opensearch
+
+releases:
+- {name: opensearch, version: latest}
+- {name: routing, version: latest}
+- {name: jammy-snort, version: latest}
+- {name: bosh-dns-aliases, version: latest}
+- {name: bpm, version: latest}
+
+stemcells:
+- alias: default
+  os: ubuntu-jammy
+  version: latest
+
+
+instance_groups:
+#######################################################
+#First deploy group - opensearch_data
+# Data nodes are updated first as they are the most flexible with ingestors and need to be complete before managers.
+# we run 2 at a time to cut down on collisions. Data nodes can be updated 1 at a time or 2 at a time
+# DO NOT DO 3
+#######################################################
+- name: opensearch_old_data
+  instances: 11
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    properties:
+      opensearch:
+        node:
+          attributes:
+            box_type: warm
+          allow_cluster_manager: false
+          allow_data: true
+        limits:
+          fd: 131072  # 2 ** 17
+        health:
+          timeout: 900
+          disable_post_start: false
+        recovery:
+          delay_allocation_restart: "15m"
+        config_options:
+          indices.query.bool.max_clause_count: 2048
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        cf:
+          client_id: opensearch_client_id
+  persistent_disk_type: logs_opensearch_os_old_data
+  stemcell: default
+  azs: [z1,z2]
+  vm_type: t3.large
+  networks:
+  - name: services
+  update:
+    serial: true # Block on this job to create deploy group 2
+    max_in_flight: 1 # Only update 1 data node at a time or risk downtime
+  env:
+    bosh:
+      swap_size: 0
+
+- name: opensearch_data
+  instances: 11
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        node:
+          attributes:
+            box_type: hot
+          allow_cluster_manager: false
+          allow_data: true
+        limits:
+          fd: 131072  # 2 ** 17
+        health:
+          timeout: 900
+          disable_post_start: false
+        recovery:
+          delay_allocation_restart: "10m"
+        config_options:
+          indices.query.bool.max_clause_count: 2048
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        cf:
+          client_id: opensearch_client_id
+  persistent_disk_type: logs_opensearch_os_data
+  stemcell: default
+  azs: [z1,z2]
+  vm_type: t3.large
+  networks:
+  - name: services
+  update:
+    max_in_flight: 1 # Only update 1 data node at a time or risk downtime
+    serial: true # Block on this job to create deploy group 2
+  env:
+    bosh:
+      swap_size: 0
+
+#########################################################
+#2nd deploy group - opensearch_manager
+# manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
+# They are updated so one is always up as opensearch can survive on one manager in a disaster
+#########################################################
+
+- name: opensearch_manager
+  instances: 3
+  vm_extensions:
+  - 15GB_ephemeral_disk
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    consumes: *consumes-opensearch-manager
+    provides:
+      opensearch:
+        as: opensearch_manager
+    properties:
+      opensearch:
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_cluster_manager: true
+          allow_data: false
+    release: opensearch
+  - name: snort-config
+    properties:
+      snort:
+        rules:
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
+    release: jammy-snort
+  azs: [z1,z2]
+  persistent_disk_type: logs_opensearch_os_master
+  stemcell: default
+  vm_type: t3.large
+  networks:
+   - name: services
+  update:
+    serial: true # Block on this job to create deploy group 2
+
+#########################################################
+#3rd deploy group - maintenance
+# maintenance is ran after data and manager as it interacts with both.
+#########################################################
+- name: maintenance
+  instances: 1
+  vm_extensions: [15GB_ephemeral_disk, logs-opensearch-ingestor-profile]
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+  - consumes:
+      ingestor_link:
+        from: ingestor_syslog
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: smoke_tests
+    properties:
+      smoke_tests:
+        count_test:
+          index_pattern: logs-app-*
+          minimum: 150
+          run: true
+          time_field: '@timestamp'
+          time_interval: 5m
+        index: logs-app
+        metric_index: logs-metrics-
+        opensearch:
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((smoketest.certificate))
+            private_key: ((smoketest.private_key))
+        s3:
+          environment: development
+          region: ((region))
+        s3_audit:
+          bucket: ((audit_bucket))
+        s3_cloudwatch:
+          bucket: ((cloudwatch_bucket))
+        s3_metric:
+          bucket: ((metric_stream_bucket))
+        tls:
+          use_tls: true
+          certificate: ((archiver_syslog_client_tls.certificate))
+          private_key: ((archiver_syslog_client_tls.private_key))
+    release: opensearch
+  - name: upload_opensearch_config
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch_config:
+        alias: ((alias))
+        metric_alias: ((metric_alias))
+        component_templates:
+        - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
+        - metric-shards-and-replica: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas-metrics.json
+        - index-settings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-settings.json
+        - index-mappings: /var/vcap/jobs/upload_opensearch_config/index-templates/index-mappings.json
+        - component-index-mappings-base: /var/vcap/jobs/opensearch_templates/component-index-mappings-base.json
+        - component-index-mappings-app-cf: /var/vcap/jobs/opensearch_templates/component-index-mappings-app.json
+        - component-index-mappings-metrics: /var/vcap/jobs/opensearch_templates/component-index-mappings-metrics.json
+        index_templates:
+        - index-template: /var/vcap/jobs/opensearch_templates/index-template.json
+        - index-template-app-cf: /var/vcap/jobs/opensearch_templates/index-template-app.json
+        - index-template-metrics: /var/vcap/jobs/opensearch_templates/index-template-metrics.json
+    release: opensearch
+  - name: upload_tenant
+    consumes: *consumes-opensearch-manager
+    properties:
+      upload_tenant:
+        cf:
+          client_id: opensearch_client_id
+    release: opensearch
+  - name: opensearch_templates
+    properties:
+      opensearch_config:
+        app_index_component_name: component-index-mappings-app-cf
+        app_index_settings:
+          index.mapping.total_fields.limit: 2000
+          index.queries.cache.enabled: "false"
+        metric_index_settings:
+          index.mapping.total_fields.limit: 100
+          index.queries.cache.enabled: "false"
+        base_index_component_name: component-index-mappings-base
+        index_mappings_component_name: index-mappings
+        index_settings_component_name: index-settings
+        platform_index_component_name: index-mappings-platform
+        metric_index_component_name: component-index-mappings-metrics
+        shards_and_replicas_component_name: shards-and-replicas
+        metrics_shards_and_replicas_component_name: metric-shards-and-replica
+    release: opensearch
+  - name: upload-dashboards-objects
+    release: opensearch
+    consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    properties:
+      cloudfoundry:
+        event_types:
+        - HttpStartStop
+        - LogMessage
+        - ContainerMetric
+        - Audit
+        - Metrics
+        client_id: opensearch_client_id
+      dashboards_objects:
+        upload_patterns:
+        - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/index-pattern/logs-app*.json"}
+        - {type: search, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/search/app-*.json"}
+        - {type: visualization, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/visualization/App-*.json"}
+        - {type: dashboard, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/dashboard/App-*.json"}
+      opensearch_dashboards:
+        host: opensearch_dashboards.opensearch.internal
+  stemcell: default
+  azs: [z1,z2]
+  vm_type: t3.large
+  networks:
+  - name: services
+  update:
+    serial: true # Block on this job to create deploy group 3
+
+#########################################################
+#4th deploy group - archiver
+#########################################################
+- name: archiver
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        migrate_data_path: true
+    release: opensearch
+  - consumes:
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
+    name: archiver_syslog
+    properties:
+      logstash:
+        queue:
+          max_bytes: 30gb
+      logstash_archiver:
+        files: 16384
+      logstash_ingestor:
+        outputs:
+        - options:
+            bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
+            encoding: gzip
+            prefix: '%{+yyyy/MM/dd/HH/mm}'
+            region: (( grab terraform_outputs.vpc_region ))
+            server_side_encryption: true
+            time_file: 5
+            validate_credentials_on_root_bucket: false
+          plugin: s3
+        syslog_tls:
+          port: 7891
+          ssl_cert: ((archiver_syslog_server_tls.certificate))
+          ssl_key: ((archiver_syslog_server_tls.private_key))
+    release: opensearch
+  azs: [z1,z2]
+  networks:
+  - name: services
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  vm_type: t3.medium
+  update:
+    serial: true # Block on this job to create deploy group 4
+
+#########################################################
+#5th deploy group ingestors
+# Ingestors are run second to last and updated one at a time to avoid collisions
+#########################################################
+- name: ingestor
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - name: ingestor_syslog
+    consumes: *consumes-opensearch-manager
+    properties:
+      logstash:
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_ingestor:
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
+      logstash_parser:
+        deployment_dictionary:
+        - /var/vcap/packages/base-logstash-filters/deployment_lookup.yml
+        - /var/vcap/jobs/deployment_lookup_config/config/deployment_lookup.yml
+        filters:
+        - logs-for-cf: /var/vcap/packages/cf-logstash-filters/logstash-filters-default.conf
+        opensearch:
+          data_hosts:
+          - localhost
+          index: ((alias))
+          index_type: '%{@type}'
+          index_metrics: ((metric_alias))
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_link
+    release: opensearch
+  - name: deployment_lookup_config
+    release: opensearch
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  azs: [z1,z2]
+  vm_type: t3.medium
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  networks:
+  - name: services
+  update:
+    serial: true # Block on this job to create deploy group 5
+
+- name: ingestor_s3
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - consumes: *consumes-opensearch-manager
+    name: ingestor_s3
+    properties:
+      logstash:
+        type: audit
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_ingestor:
+        s3:
+          bucket: ((audit_bucket))
+          region: ((region))
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
+      logstash_parser:
+        opensearch:
+          data_hosts:
+          - localhost
+          index: ((alias))
+          index_type: '%{@type}'
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_s3
+    release: opensearch
+  - name: deployment_lookup_config
+    release: opensearch
+  azs: [z1,z2]
+  networks:
+  - name: services
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  vm_type: t3.large
+  update:
+    serial: true # Block on this job to create deploy group 6
+
+- name: ingestor_aws_metrics
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - consumes: *consumes-opensearch-manager
+    name: ingestor_s3
+    properties:
+      logstash:
+        type: metric
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_ingestor:
+        s3:
+          bucket: ((metric_stream_bucket))
+          region: ((region))
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
+      logstash_parser:
+        opensearch:
+          data_hosts:
+          - localhost
+          index: ((metric_alias))
+          index_type: '%{@type}'
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_s3
+    release: opensearch
+  - name: deployment_lookup_config
+    release: opensearch
+  azs: [z1,z2]
+  networks:
+  - name: services
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  vm_type: t3.large
+  update:
+    serial: true # Block on this job to create deploy group 6
+
+- name: ingestor_cloudwatch_logs
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - consumes: *consumes-opensearch-manager
+    name: ingestor_s3
+    properties:
+      logstash:
+        type: cloudwatch
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+        queue:
+          max_bytes: 30gb
+      logstash_ingestor:
+        s3:
+          bucket: ((cloudwatch_bucket))
+          region: ((region))
+        syslog_tls:
+          port: 6972
+          ssl_cert: ((ingestor_syslog_server_tls.certificate))
+          ssl_key: ((ingestor_syslog_server_tls.private_key))
+      logstash_parser:
+        opensearch:
+          data_hosts:
+          - localhost
+          index: ((alias))
+          index_type: '%{@type}'
+          ssl:
+            ca: ((opensearch_node.ca))
+            certificate: ((logstash.certificate))
+            private_key: ((logstash.private_key))
+    provides:
+      ingestor:
+        as: ingestor_s3
+    release: opensearch
+  - name: deployment_lookup_config
+    release: opensearch
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  azs: [z1,z2]
+  vm_type: t3.large
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 50GB_ephemeral_disk
+  networks:
+  - name: services
+  update:
+    serial: true # Block on this job to create deploy group 7
+
+#########################################################
+# 8th deploy group - dashboards
+# Dashboard is ran last as it checks the types of other instances when restarting. all dashboard nodes must either be updated at the same
+# time or have instances not ran yet turned off for opensearch.
+# IF DASHBOARD IS UPDATING WITH A OLD VERSION BOTH WILL ERROR
+#########################################################
+- name: opensearch_dashboards
+  instances: 2
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    release: opensearch
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch:
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
+  - name: opensearch_dashboards
+    consumes: *consumes-opensearch-manager
+    properties:
+      opensearch_dashboards:
+        config_options:
+          server.maxPayloadBytes: 4194304
+        console.enabled: false
+        defaultAppId: dashboard/App-Overview
+        env:
+        - NODE_ENV: production
+        health:
+          timeout: 600
+        index: ((dashboard_index))
+        memory_limit: 75
+        multitenancy:
+          tenants:
+            enable_private: false
+    release: opensearch
+  vm_extensions:
+  - 15GB_ephemeral_disk
+  stemcell: default
+  azs: [z1]
+  networks:
+   - name: services
+  env:
+    bosh:
+      swap_size: 0
+  update:
+    canaries: 100%
+    max_in_flight: 100%
+    serial: true

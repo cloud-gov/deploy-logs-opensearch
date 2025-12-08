@@ -501,29 +501,22 @@ jobs:
             trigger: true
           - get: opensearch-stemcell-jammy
             trigger: true
+          - get: general-task
           - get: terraform-yaml
             resource: terraform-yaml-development
             trigger: true
-          - get: general-task
       - task: opensearch-manifest
         image: general-task
         config:
           platform: linux
           inputs:
             - name: deploy-logs-opensearch-config
-            - name: terraform-yaml
           run:
             path: sh
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-development.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-development.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -546,13 +539,13 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    on_failure:
-      put: slack
-      params:
-        <<: *slack-failure-params
-        text: |
-          :x: FAILED to deploy logs-OpenSearch in development
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    # on_failure:
+    #   put: slack
+    #   params:
+    #     <<: *slack-failure-params
+    #     text: |
+    #       :x: FAILED to deploy logs-OpenSearch in development
+    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: smoke-tests-development
     serial_groups: [bosh-development]
@@ -738,29 +731,22 @@ jobs:
           - get: opensearch-stemcell-jammy
             trigger: true
             passed: [smoke-tests-development]
+          - get: general-task
           - get: terraform-yaml
             resource: terraform-yaml-staging
             trigger: true
-          - get: general-task
       - task: opensearch-manifest
         image: general-task
         config:
           platform: linux
           inputs:
             - name: deploy-logs-opensearch-config
-            - name: terraform-yaml
           run:
             path: sh
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-staging.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-staging.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -768,6 +754,7 @@ jobs:
         file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
       - put: opensearch-staging-deployment
         params:
+          dry_run: true
           manifest: opensearch-manifest/manifest.yml
           releases:
             - opensearch-release/*.tgz
@@ -783,13 +770,13 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    on_failure:
-      put: slack
-      params:
-        <<: *slack-failure-params
-        text: |
-          :x: FAILED to deploy logs-OpenSearch in staging
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    # on_failure:
+    #   put: slack
+    #   params:
+    #     <<: *slack-failure-params
+    #     text: |
+    #       :x: FAILED to deploy logs-OpenSearch in staging
+    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: smoke-tests-staging
     serial_groups: [bosh-staging]
@@ -987,18 +974,27 @@ jobs:
           inputs:
             - name: deploy-logs-opensearch-config
             - name: terraform-yaml
+#          run:
+#            path: sh
+#            args:
+#              - -exc
+#              - |
+#                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
+#                  --prune terraform_outputs \
+#                  deploy-logs-opensearch-config/opensearch-deployment.yml \
+#                  deploy-logs-opensearch-config/opensearch-jobs.yml \
+#                  deploy-logs-opensearch-config/opensearch-production.yml \
+#                  terraform-yaml/state.yml \
+#                  > opensearch-manifest/manifest.yml
           run:
             path: sh
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-production.yml \
-                  terraform-yaml/state.yml \
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                  -o deploy-logs-opensearch-config/opensearch-scaling-production.yml \
                   > opensearch-manifest/manifest.yml
+
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -1361,7 +1357,7 @@ resources:
       bucket: ((tf-state-bucket-development))
       versioned_file: ((tf-state-file-development))
       region_name: ((aws-region))
-
+  
   - name: terraform-yaml-staging
     type: s3-iam
     source:
@@ -1381,7 +1377,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: testing
 
   - name: deploy-logs-opensearch-test-config
     type: git
