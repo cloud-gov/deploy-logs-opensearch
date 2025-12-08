@@ -515,7 +515,9 @@ jobs:
             args:
               - -exc
               - |
-                bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-development.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-config/opensearch-scaling-development.yml \
+                > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -536,15 +538,16 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    # on_failure:
-    #   put: slack
-    #   params:
-    #     <<: *slack-failure-params
-    #     text: |
-    #       :x: FAILED to deploy logs-OpenSearch in development
-    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: FAILED to deploy logs-OpenSearch in development
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: smoke-tests-development
     serial_groups: [bosh-development]
@@ -745,7 +748,9 @@ jobs:
             args:
               - -exc
               - |
-                bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-staging.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-config/opensearch-scaling-staging.yml \
+                > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -766,15 +771,16 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    # on_failure:
-    #   put: slack
-    #   params:
-    #     <<: *slack-failure-params
-    #     text: |
-    #       :x: FAILED to deploy logs-OpenSearch in staging
-    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: FAILED to deploy logs-OpenSearch in staging
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: smoke-tests-staging
     serial_groups: [bosh-staging]
@@ -972,18 +978,6 @@ jobs:
           inputs:
             - name: deploy-logs-opensearch-config
             - name: terraform-yaml
-#          run:
-#            path: sh
-#            args:
-#              - -exc
-#              - |
-#                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-#                  --prune terraform_outputs \
-#                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-#                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-#                  deploy-logs-opensearch-config/opensearch-production.yml \
-#                  terraform-yaml/state.yml \
-#                  > opensearch-manifest/manifest.yml
           run:
             path: sh
             args:
@@ -992,7 +986,6 @@ jobs:
                 bosh int deploy-logs-opensearch-config/opensearch-base.yml \
                   -o deploy-logs-opensearch-config/opensearch-scaling-production.yml \
                   > opensearch-manifest/manifest.yml
-
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -1017,13 +1010,13 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    # on_failure:
-    #   put: slack
-    #   params:
-    #     <<: *slack-failure-params
-    #     text: |
-    #       :x: FAILED to plan deployment of logs-OpenSearch in production
-    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    on_failure:
+      put: slack
+      params:
+        <<: *slack-failure-params
+        text: |
+          :x: FAILED to plan deployment of logs-OpenSearch in production
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: deploy-opensearch-production
     serial_groups: [bosh-production]
