@@ -62,7 +62,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/vm_type?
-  value: r6i.xlarge
+  value: m6i.xlarge
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
