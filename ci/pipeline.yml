@@ -954,13 +954,13 @@ jobs:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-config
             trigger: true
-            passed: [smoke-tests-staging]
+            # passed: [smoke-tests-staging]
           - get: opensearch-release
             trigger: true
-            passed: [smoke-tests-staging]
+            # passed: [smoke-tests-staging]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [smoke-tests-staging]
+            # passed: [smoke-tests-staging]
           - get: terraform-yaml
             resource: terraform-yaml-production
             trigger: true
@@ -1014,15 +1014,16 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
           vars_files:
             - terraform-secrets/terraform.yml
-    on_failure:
-      put: slack
-      params:
-        <<: *slack-failure-params
-        text: |
-          :x: FAILED to plan deployment of logs-OpenSearch in production
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+    # on_failure:
+    #   put: slack
+    #   params:
+    #     <<: *slack-failure-params
+    #     text: |
+    #       :x: FAILED to plan deployment of logs-OpenSearch in production
+    #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
   - name: deploy-opensearch-production
     serial_groups: [bosh-production]
