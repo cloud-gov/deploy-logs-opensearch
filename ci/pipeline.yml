@@ -516,13 +516,7 @@ jobs:
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-development.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh interpolate deploy-logs-opensearch-config/opensearch-base.yml -o deploy-logs-opensearch-config/opensearch-scaling-development.yml -o deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -530,6 +524,7 @@ jobs:
         file: deploy-logs-opensearch-config/ci/terraform-secrets.yml
       - put: opensearch-development-deployment
         params:
+          dry_run: true
           manifest: opensearch-manifest/manifest.yml
           releases:
             - opensearch-release/*.tgz

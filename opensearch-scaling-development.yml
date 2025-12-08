@@ -1,0 +1,156 @@
+- type: replace
+  path: /instance_groups/name=opensearch_manager?/vm_type?
+  value: t3.large
+
+- type: replace
+  path: /instance_groups/name=opensearch_manager?/instances?
+  value: 1
+
+
+- type: replace
+  path: /instance_groups/name=opensearch_data?/instances?
+  value: 3
+
+- type: replace
+  path: /instance_groups/name=opensearch_data?/vm_type?
+  value: r6i.large
+
+- type: replace
+  path: /instance_groups/name=opensearch_data?/update?
+  value: 
+    max_in_flight: 1
+    canaries: 1
+    serial: true
+
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data?/instances?
+  value: 3
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data?/vm_type?
+  value: r6i.large
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data?/update?
+  value: 
+    max_in_flight: 1
+    canaries: 1
+    serial: true
+
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards?/vm_type?
+  value: t3.xlarge
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/update?
+  value: 
+    max_in_flight: 100%
+    canaries: 100%
+    serial: true
+
+
+
+- type: replace
+  path: /instance_groups/name=archiver?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=archiver?/vm_type?
+  value: r6i.xlarge
+
+- type: replace
+  path: /instance_groups/name=ingestor?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=ingestor?/vm_type?
+  value: m6i.large
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
+  value:
+    index_pattern: logs-app-*
+    minimum: 1000
+    run: true
+    time_field: '@timestamp'
+    time_interval: 5m
+
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/rollover_document_size?
+  value: 3gb
+
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/rollover_index_age?
+  value: 1d
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?/run?
+  value: false
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/shard_count?
+  value: 2
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/metrics_shard_count?
+  value: 1
+
+
+
+- type: replace
+  path: /instance_groups/name=maintenance?/instances?
+  value: 1
+
+- type: replace
+  path: /instance_groups/name=maintenance?/vm_type?
+  value: t3.large
+
+
+
+
+- type: replace
+  path: /addons?
+  value:
+  - name: bosh-dns-aliases
+    jobs:
+    - name: bosh-dns-aliases
+      release: bosh-dns-aliases
+      properties:
+        aliases:
+        - domain: nats.service.cf.internal
+          targets:
+          - deployment: cf-development
+            domain: bosh
+            instance_group: nats
+            network: default
+            query: '*'
+
+
+- type: replace
+  path: /instance_groups/name=archiver?/jobs?/name=archiver_syslog?/properties?/logstash_ingestor?/outputs?/0/options/bucket?
+  value: ((logs-opensearch-cf-development-bucket))
+
+- type: replace
+  path: /instance_groups/name=archiver?/jobs?/name=archiver_syslog?/properties?/logstash_ingestor?/outputs?/0/options/region?
+  value: us-gov-west-1
+

@@ -45,17 +45,6 @@ instance_groups:
         ip_addresses: true
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         node:
           attributes:
             box_type: warm
@@ -97,17 +86,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         node:
           attributes:
             box_type: hot
@@ -152,23 +130,13 @@ instance_groups:
   jobs:
   - name: bpm
     release: bpm
+  - name: opensearch
     consumes: *consumes-opensearch-manager
     provides:
       opensearch:
         as: opensearch_manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -200,7 +168,7 @@ instance_groups:
 #########################################################
 - name: maintenance
   instances: 1
-  vm_extensions: [15GB_ephemeral_disk]
+  vm_extensions: [15GB_ephemeral_disk, logs-opensearch-ingestor-profile]
   jobs:
   - name: bpm
     release: bpm
@@ -209,17 +177,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -241,11 +198,21 @@ instance_groups:
           time_field: '@timestamp'
           time_interval: 5m
         index: logs-app
+        metric_index: logs-metrics-
         opensearch:
           ssl:
             ca: ((opensearch_node.ca))
             certificate: ((smoketest.certificate))
             private_key: ((smoketest.private_key))
+        s3:
+          environment: development
+          region: ((region))
+        s3_audit:
+          bucket: ((audit_bucket))
+        s3_cloudwatch:
+          bucket: ((cloudwatch_bucket))
+        s3_metric:
+          bucket: ((metric_stream_bucket))
         tls:
           use_tls: true
           certificate: ((archiver_syslog_client_tls.certificate))
@@ -338,17 +305,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
@@ -406,17 +362,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -478,17 +423,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -548,17 +482,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -618,17 +541,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -694,17 +606,10 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
   - name: opensearch_dashboards
     consumes: *consumes-opensearch-manager
     properties:
@@ -732,510 +637,7 @@ instance_groups:
   env:
     bosh:
       swap_size: 0
-
-
-
-
-
-- name: ingestor_aws_cloudwatch_fixer_1
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/14"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
   update:
-    serial: true # Block on this job to create deploy group 6
-
-
-- name: ingestor_aws_cloudwatch_fixer_2
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/15"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
-  update:
-    serial: true # Block on this job to create deploy group 6
-
-
-- name: ingestor_aws_cloudwatch_fixer_3
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/16"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
-  update:
-    serial: true # Block on this job to create deploy group 6
-
-
-- name: ingestor_aws_cloudwatch_fixer_4
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/17"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
-  update:
-    serial: true # Block on this job to create deploy group 6
-
-- name: ingestor_aws_cloudwatch_fixer_5
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/18"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
-  update:
-    serial: true # Block on this job to create deploy group 6
-
-
-- name: ingestor_aws_cloudwatch_fixer_6
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/19"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
-  update:
-    serial: true # Block on this job to create deploy group 6
-
-
-- name: ingestor_aws_cloudwatch_fixer_7
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((cloudwatch_bucket))
-          region: ((region))
-          prefix: "2025/11/13"
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 50GB_ephemeral_disk
-  vm_type: t3.large
-  update:
-    serial: true # Block on this job to create deploy group 6
-
+    canaries: 100%
+    max_in_flight: 100%
+    serial: true
