@@ -11,6 +11,8 @@ from .utils import (
     wait_for_loading_finished,
 )
 
+from . import SMTP_SENDER_HOST, SMTP_SENDER_PORT, SMTP_SENDER_FROM
+
 
 def wait_for_channels_header(page):
     wait_for_header(page, re.compile(r"^Channels\s\([0-9]+\)$"))
@@ -58,7 +60,55 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
     expect(page.get_by_text(email_recipient_group_name, exact=True)).to_be_visible()
 
 
-def create_notifications_channel(page, email_recipient_group_name, channel_name):
+def create_email_smtp_sender(page, user, email_sender_name):
+    create_group_button = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Create SMTP sender$"))
+        .get_by_role("link")
+    )
+    create_group_button.wait_for()
+    create_group_button.click()
+
+    sender_name_input = page.get_by_placeholder("Enter sender name")
+    sender_name_input.wait_for()
+    sender_name_input.fill(email_sender_name)
+
+    sender_email_input = page.get_by_label("Email address")
+    sender_email_input.wait_for()
+    sender_email_input.fill(SMTP_SENDER_FROM)
+
+    sender_host_input = page.get_by_label("Host")
+    sender_host_input.wait_for()
+    sender_host_input.fill(SMTP_SENDER_HOST)
+
+    sender_host_input = page.get_by_label("Port")
+    sender_host_input.wait_for()
+    sender_host_input.fill(SMTP_SENDER_PORT)
+
+    create_group_button = page.get_by_role("button", name="Create")
+    create_group_button.wait_for()
+    create_group_button.click()
+
+    wait_for_header(page, "Email senders")
+
+    rows_per_page_button = page.get_by_role(
+        "button", name=re.compile(r"^Rows per page: [0-9]+$")
+    )
+    rows_per_page_button.wait_for()
+    rows_per_page_button.click()
+
+    fifty_rows_button = page.get_by_role("button", name="50 rows", exact=True)
+    fifty_rows_button.wait_for()
+    fifty_rows_button.click()
+
+    wait_for_loading_finished(page)
+
+    expect(page.get_by_text(email_sender_name, exact=True)).to_be_visible()
+
+
+def create_notifications_channel(
+    page, email_recipient_group_name, email_sender_name, channel_name
+):
     create_channel_button = (
         page.locator("div")
         .filter(has_text=re.compile(r"^Create channel$"))
@@ -88,7 +138,7 @@ def create_notifications_channel(page, email_recipient_group_name, channel_name)
     choose_sender_placeholder.wait_for()
     choose_sender_placeholder.click()
 
-    cloud_smtp_sender = page.get_by_role("option", name="cloudgovemail")
+    cloud_smtp_sender = page.get_by_role("option", name=email_sender_name)
     cloud_smtp_sender.wait_for()
     cloud_smtp_sender.click()
 
@@ -238,6 +288,26 @@ def delete_email_recipient_group(page, recipient_group_name):
     wait_for_header(page, re.compile(r"^Email recipient groups$"))
 
     expect(page.get_by_text(recipient_group_name, exact=True)).not_to_be_visible()
+
+
+def delete_email_smtp_sender(page, email_sender_name):
+    expect(page.get_by_text(email_sender_name, exact=True)).to_be_visible()
+
+    select_table_item_checkbox(page, email_sender_name)
+
+    delete_email_smtp_sender_button = page.get_by_role(
+        "button", name="Delete", exact=True
+    ).first
+    delete_email_smtp_sender_button.wait_for()
+    delete_email_smtp_sender_button.click()
+
+    fill_delete_confirm_placeholder(page)
+
+    click_delete_button(page)
+
+    wait_for_header(page, re.compile(r"^Email senders$"))
+
+    expect(page.get_by_text(email_sender_name, exact=True)).not_to_be_visible()
 
 
 def delete_alert_monitor(page, monitor_name):
