@@ -6,10 +6,6 @@
   path: /instance_groups/name=opensearch_manager?/instances?
   value: 1
 
-- type: add
-  path: /instance_groups/name=opensearch_manager/vm_extensions/-
-  value:
-  - logs-opensearch-profile
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/instances?
@@ -29,10 +25,6 @@
     max_in_flight: 1
     canaries: 1
     serial: true
-- type: replace
-  path: /instance_groups/name=opensearch_data/vm_extensions
-  value:
-  - logs-opensearch-profile
 
 
 - type: replace
@@ -53,10 +45,6 @@
     max_in_flight: 1
     canaries: 1
     serial: true
-- type: replace
-  path: /instance_groups/name=opensearch_old_data/vm_extensions
-  value:
-  - logs-opensearch-profile
 
 
 - type: replace
@@ -74,10 +62,6 @@
     canaries: 100%
     serial: true
 
-- type: add
-  path: /instance_groups/name=opensearch_dashboards/vm_extensions/-
-  value:
-  - logs-opensearch-profile
 
 
 
@@ -134,11 +118,6 @@
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/metrics_shard_count?
   value: 1
-
-- type: add
-  path: /instance_groups/name=maintenance/vm_extensions/-
-  value:
-  - logs-opensearch-profile
 
 - type: replace
   path: /instance_groups/name=maintenance?/instances?
