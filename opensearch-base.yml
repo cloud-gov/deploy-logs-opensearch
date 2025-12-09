@@ -158,7 +158,6 @@ instance_groups:
   azs: [z1,z2]
   persistent_disk_type: logs_opensearch_os_master
   stemcell: default
-  vm_extensions: []
   vm_type: t3.large
   networks:
    - name: services
@@ -290,7 +289,6 @@ instance_groups:
         host: opensearch_dashboards.opensearch.internal
   stemcell: default
   azs: [z1,z2]
-  vm_extensions: []
   vm_type: t3.large
   networks:
   - name: services
