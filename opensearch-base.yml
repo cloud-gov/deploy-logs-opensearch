@@ -173,7 +173,7 @@ instance_groups:
 #########################################################
 - name: maintenance
   instances: 1
-  vm_extensions: [15GB_ephemeral_disk, logs-opensearch-ingestor-profile, logs-opensearch-profile]
+  vm_extensions: [15GB_ephemeral_disk, logs-opensearch-ingestor-profile]
   jobs:
   - name: bpm
     release: bpm
