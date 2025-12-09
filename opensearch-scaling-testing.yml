@@ -16,6 +16,10 @@
   value: r6i.large
 
 - type: replace
+  path: /instance_groups/name=opensearch_data?/jobs?/name=opensearch?/properties?/opensearch?/health?/disable_post_start?
+  value: true
+
+- type: replace
   path: /instance_groups/name=opensearch_data?/update?
   value: 
     max_in_flight: 1
@@ -30,6 +34,10 @@
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/vm_type?
   value: r6i.large
+
+- type: replace
+  path: /instance_groups/name=opensearch_old_data?/jobs?/name=opensearch?/properties?/opensearch?/health?/disable_post_start?
+  value: true
 
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/update?
