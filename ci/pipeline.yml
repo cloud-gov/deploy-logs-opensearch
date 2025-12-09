@@ -410,13 +410,9 @@ jobs:
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-test-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-test-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-test-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-test-config/opensearch-test.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-config/opensearch-scaling-testing.yml \
+                > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -426,6 +422,7 @@ jobs:
         file: deploy-logs-opensearch-test-config/ci/terraform-secrets.yml
       - put: opensearch-test-deployment
         params:
+          dry_run: true
           manifest: opensearch-manifest/manifest.yml
           releases:
             - opensearch-test-release/*.tgz
@@ -441,6 +438,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
             - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
           vars_files:
             - terraform-secrets/terraform.yml
 
