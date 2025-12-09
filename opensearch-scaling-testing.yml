@@ -6,6 +6,10 @@
   path: /instance_groups/name=opensearch_manager?/instances?
   value: 1
 
+- type: replace
+  path: /instance_groups/name=opensearch_manager/vm_extensions
+  value:
+  - logs-opensearch-profile
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/instances?
@@ -25,6 +29,10 @@
     max_in_flight: 1
     canaries: 1
     serial: true
+- type: replace
+  path: /instance_groups/name=opensearch_data/vm_extensions
+  value:
+  - logs-opensearch-profile
 
 
 - type: replace
@@ -45,6 +53,10 @@
     max_in_flight: 1
     canaries: 1
     serial: true
+- type: replace
+  path: /instance_groups/name=opensearch_old_data/vm_extensions
+  value:
+  - logs-opensearch-profile
 
 
 - type: replace
@@ -61,6 +73,11 @@
     max_in_flight: 100%
     canaries: 100%
     serial: true
+
+- type: replace
+  path: /instance_groups/name=opensearch_dashboards/vm_extensions
+  value:
+  - logs-opensearch-profile
 
 
 
@@ -96,7 +113,7 @@
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
   value:
     index_pattern: logs-app-*
-    minimum: 1000
+    minimum: 100
     run: false
     time_field: '@timestamp'
     time_interval: 5m
