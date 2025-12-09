@@ -410,13 +410,9 @@ jobs:
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-test-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-test-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-test-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-test-config/opensearch-test.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh int deploy-logs-opensearch-test-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-test-config/opensearch-scaling-testing.yml \
+                > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -439,6 +435,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/enable-auth-proxy-route-test.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
+            - deploy-logs-opensearch-test-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
             - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
@@ -501,29 +498,24 @@ jobs:
             trigger: true
           - get: opensearch-stemcell-jammy
             trigger: true
+          - get: general-task
           - get: terraform-yaml
             resource: terraform-yaml-development
             trigger: true
-          - get: general-task
       - task: opensearch-manifest
         image: general-task
         config:
           platform: linux
           inputs:
             - name: deploy-logs-opensearch-config
-            - name: terraform-yaml
           run:
             path: sh
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-development.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-config/opensearch-scaling-development.yml \
+                > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -544,6 +536,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-dev.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
@@ -744,29 +737,24 @@ jobs:
           - get: opensearch-stemcell-jammy
             trigger: true
             passed: [smoke-tests-development]
+          - get: general-task
           - get: terraform-yaml
             resource: terraform-yaml-staging
             trigger: true
-          - get: general-task
       - task: opensearch-manifest
         image: general-task
         config:
           platform: linux
           inputs:
             - name: deploy-logs-opensearch-config
-            - name: terraform-yaml
           run:
             path: sh
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-staging.yml \
-                  terraform-yaml/state.yml \
-                  > opensearch-manifest/manifest.yml
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-config/opensearch-scaling-staging.yml \
+                > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
       - task: terraform-secrets
@@ -787,6 +775,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-staging.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
@@ -1004,12 +993,8 @@ jobs:
             args:
               - -exc
               - |
-                SPRUCE_FILE_BASE_PATH=deploy-logs-opensearch-config spruce merge \
-                  --prune terraform_outputs \
-                  deploy-logs-opensearch-config/opensearch-deployment.yml \
-                  deploy-logs-opensearch-config/opensearch-jobs.yml \
-                  deploy-logs-opensearch-config/opensearch-production.yml \
-                  terraform-yaml/state.yml \
+                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
+                  -o deploy-logs-opensearch-config/opensearch-scaling-production.yml \
                   > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
@@ -1032,6 +1017,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-auth-proxy-route-production.yml
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
+            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml

@@ -1,3 +1,30 @@
+features:
+  use_dns_addresses: false
+
+update:
+  serial: false
+  canaries: 1
+  canary_watch_time: 30000-600000
+  update_watch_time: 5000-6000000
+  max_in_flight: 1
+  max_errors: 1
+variables: []
+
+name: logs-opensearch
+
+releases:
+- {name: opensearch, version: latest}
+- {name: routing, version: latest}
+- {name: jammy-snort, version: latest}
+- {name: bosh-dns-aliases, version: latest}
+- {name: bpm, version: latest}
+
+stemcells:
+- alias: default
+  os: ubuntu-jammy
+  version: latest
+
+
 instance_groups:
 #######################################################
 #First deploy group - opensearch_data
@@ -18,17 +45,6 @@ instance_groups:
         ip_addresses: true
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         node:
           attributes:
             box_type: warm
@@ -50,14 +66,14 @@ instance_groups:
   persistent_disk_type: logs_opensearch_os_old_data
   stemcell: default
   azs: [z1,z2]
-  vm_type: t3.large
+  vm_type: t3.large\
+  vm_extensions:
+  - logs-opensearch-profile
   networks:
   - name: services
   update:
     serial: true # Block on this job to create deploy group 2
     max_in_flight: 1 # Only update 1 data node at a time or risk downtime
-  vm_extensions:
-  - logs-opensearch-profile
   env:
     bosh:
       swap_size: 0
@@ -72,17 +88,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         node:
           attributes:
             box_type: hot
@@ -104,14 +109,14 @@ instance_groups:
   persistent_disk_type: logs_opensearch_os_data
   stemcell: default
   azs: [z1,z2]
+  vm_extensions:
+  - logs-opensearch-profile
   vm_type: t3.large
   networks:
   - name: services
   update:
     max_in_flight: 1 # Only update 1 data node at a time or risk downtime
     serial: true # Block on this job to create deploy group 2
-  vm_extensions:
-  - logs-opensearch-profile
   env:
     bosh:
       swap_size: 0
@@ -127,6 +132,7 @@ instance_groups:
   vm_extensions:
   - logs-opensearch-profile
   - 15GB_ephemeral_disk
+  - logs-opensearch-profile
   jobs:
   - name: bpm
     release: bpm
@@ -137,17 +143,6 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -179,6 +174,9 @@ instance_groups:
 #########################################################
 - name: maintenance
   instances: 1
+  vm_extensions:
+    - 15GB_ephemeral_disk
+    - logs-opensearch-ingestor-profile
   jobs:
   - name: bpm
     release: bpm
@@ -187,17 +185,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -229,7 +216,7 @@ instance_groups:
           environment: development
           region: ((region))
         s3_audit:
-          bucket:  ((audit_bucket))
+          bucket: ((audit_bucket))
         s3_cloudwatch:
           bucket: ((cloudwatch_bucket))
         s3_metric:
@@ -309,9 +296,6 @@ instance_groups:
   stemcell: default
   azs: [z1,z2]
   vm_type: t3.large
-  vm_extensions:
-  - logs-opensearch-profile
-  - 15GB_ephemeral_disk
   networks:
   - name: services
   update:
@@ -329,17 +313,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
@@ -397,17 +370,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -469,17 +431,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -539,17 +490,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -609,17 +549,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -685,17 +614,10 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        notification:
-          ca: ((notification_ca.ca))
-          certificate: ((notification_ca.certificate))
-          from: ((notification_from))
-          host: ((notification_host))
-          keystorepass: ((keystore_password))
-          defaultkeystorepass: ((default_keystore_password))
-          password: ((notification_password))
-          port: ((notification_port))
-          privatekey: ((notification_ca.private_key))
-          username: ((notification_username))
+        heap_size: 1G
+        http_host: 127.0.0.1
+        jvm_options:
+        - -Dlog4j2.formatMsgNoLookups=true
   - name: opensearch_dashboards
     consumes: *consumes-opensearch-manager
     properties:
@@ -724,3 +646,7 @@ instance_groups:
   env:
     bosh:
       swap_size: 0
+  update:
+    canaries: 100%
+    max_in_flight: 100%
+    serial: true
