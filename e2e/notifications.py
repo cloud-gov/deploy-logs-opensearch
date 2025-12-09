@@ -295,11 +295,11 @@ def delete_email_smtp_sender(page, email_sender_name):
 
     select_table_item_checkbox(page, email_sender_name)
 
-    delete_recipient_group_button = page.get_by_role(
+    delete_email_smtp_sender_button = page.get_by_role(
         "button", name="Delete", exact=True
-    )
-    delete_recipient_group_button.wait_for()
-    delete_recipient_group_button.click()
+    ).first
+    delete_email_smtp_sender_button.wait_for()
+    delete_email_smtp_sender_button.click()
 
     fill_delete_confirm_placeholder(page)
 

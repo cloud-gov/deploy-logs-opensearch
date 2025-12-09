@@ -72,31 +72,31 @@ def test_user_can_create_alerts(user_1, page):
     )
 
 
-# def test_user_cannot_see_alert_objects(user_2, page):
-#     log_in(user_2, page, AUTH_PROXY_URL)
+def test_user_cannot_see_alert_objects(user_2, page):
+    log_in(user_2, page, AUTH_PROXY_URL)
 
-#     switch_tenants(page, CF_ORG_2_NAME)
+    switch_tenants(page, CF_ORG_2_NAME)
 
-#     open_primary_menu_link(page, "Notifications")
+    open_primary_menu_link(page, "Notifications")
 
-#     click_contextual_menu_link(page, "Email recipient groups")
+    click_contextual_menu_link(page, "Email recipient groups")
 
-#     wait_for_loading_finished(page)
-#     expect(
-#         page.get_by_text(test_email_recipient_group_name, exact=True)
-#     ).not_to_be_visible()
+    wait_for_loading_finished(page)
+    expect(
+        page.get_by_text(test_email_recipient_group_name, exact=True)
+    ).not_to_be_visible()
 
-#     click_contextual_menu_link(page, "Channels")
+    click_contextual_menu_link(page, "Channels")
 
-#     wait_for_loading_finished(page)
-#     expect(page.get_by_text(test_channel_name, exact=True)).not_to_be_visible()
+    wait_for_loading_finished(page)
+    expect(page.get_by_text(test_channel_name, exact=True)).not_to_be_visible()
 
-#     open_primary_menu_link(page, "Alerting")
+    open_primary_menu_link(page, "Alerting")
 
-#     click_tab_link(page, "Monitors")
+    click_tab_link(page, "Monitors")
 
-#     wait_for_loading_finished(page)
-#     expect(page.get_by_text(test_monitor_name, exact=True)).not_to_be_visible()
+    wait_for_loading_finished(page)
+    expect(page.get_by_text(test_monitor_name, exact=True)).not_to_be_visible()
 
 
 def test_user_can_see_but_not_edit_alert_objects(user_3, page):
