@@ -410,8 +410,8 @@ jobs:
             args:
               - -exc
               - |
-                bosh int deploy-logs-opensearch-config/opensearch-base.yml \
-                -o deploy-logs-opensearch-config/opensearch-scaling-testing.yml \
+                bosh int deploy-logs-opensearch-test-config/opensearch-base.yml \
+                -o deploy-logs-opensearch-test-config/opensearch-scaling-testing.yml \
                 > opensearch-manifest/manifest.yml
           outputs:
             - name: opensearch-manifest
@@ -438,7 +438,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
             - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
-            - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
+            - deploy-logs-opensearch-test-config/opsfiles/opensearch-notification.yml
           vars_files:
             - terraform-secrets/terraform.yml
 
