@@ -67,7 +67,7 @@ instance_groups:
   stemcell: default
   azs: [z1,z2]
   vm_type: t3.large\
-  vm_extensions:
+  vm_extensions: 
   - logs-opensearch-profile
   networks:
   - name: services
@@ -109,7 +109,7 @@ instance_groups:
   persistent_disk_type: logs_opensearch_os_data
   stemcell: default
   azs: [z1,z2]
-  vm_extensions:
+  vm_extensions: 
   - logs-opensearch-profile
   vm_type: t3.large
   networks:
@@ -130,8 +130,8 @@ instance_groups:
 - name: opensearch_manager
   instances: 3
   vm_extensions:
-  - logs-opensearch-profile
   - 15GB_ephemeral_disk
+  - logs-opensearch-profile
   jobs:
   - name: bpm
     release: bpm
@@ -173,9 +173,7 @@ instance_groups:
 #########################################################
 - name: maintenance
   instances: 1
-  vm_extensions:
-    - 15GB_ephemeral_disk
-    - logs-opensearch-ingestor-profile
+  vm_extensions: [15GB_ephemeral_disk, logs-opensearch-ingestor-profile]
   jobs:
   - name: bpm
     release: bpm
