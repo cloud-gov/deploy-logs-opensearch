@@ -2,8 +2,7 @@ import os
 import sys
 
 required_env_vars = [
-    "AUTH_PROXY_URL",
-    "UAA_BASE_URL",
+    "CF_SYSTEM_DOMAIN",
     "CF_ORG_1_NAME",
     "CF_ORG_2_NAME",
     "CF_ORG_3_NAME",
@@ -19,9 +18,6 @@ required_env_vars = [
     "TEST_USER_4_USERNAME",
     "TEST_USER_4_PASSWORD",
     "TEST_USER_4_TOTP_SEED",
-    "SMTP_SENDER_HOST",
-    "SMTP_SENDER_PORT",
-    "SMTP_SENDER_FROM",
 ]
 
 for env_var in required_env_vars:
@@ -29,11 +25,8 @@ for env_var in required_env_vars:
         print(f"{env_var} is a required environment variable, exiting")
         sys.exit(1)
 
-AUTH_PROXY_URL = os.environ["AUTH_PROXY_URL"]
-UAA_BASE_URL = os.environ["AUTH_PROXY_URL"]
+AUTH_PROXY_URL = "https://logs.{}".format(os.environ["CF_SYSTEM_DOMAIN"])
+UAA_BASE_URL = "https://login.{}".format(os.environ["CF_SYSTEM_DOMAIN"])
 CF_ORG_1_NAME = os.environ["CF_ORG_1_NAME"]
 CF_ORG_2_NAME = os.environ["CF_ORG_2_NAME"]
 CF_ORG_3_NAME = os.environ["CF_ORG_3_NAME"]
-SMTP_SENDER_HOST = os.environ["SMTP_SENDER_HOST"]
-SMTP_SENDER_PORT = os.environ["SMTP_SENDER_PORT"]
-SMTP_SENDER_FROM = os.environ["SMTP_SENDER_FROM"]

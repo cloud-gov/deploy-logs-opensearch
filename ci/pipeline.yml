@@ -437,7 +437,6 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-test-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
-            - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
 
@@ -537,7 +536,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -629,8 +627,7 @@ jobs:
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
-          AUTH_PROXY_URL: ((development-auth-proxy-url))
-          UAA_BASE_URL: ((development-uaa-base-url))
+          CF_SYSTEM_DOMAIN: ((cf-system-domain-development))
           CF_ORG_1_NAME: ((test-org-1))
           CF_ORG_2_NAME: ((test-org-2))
           CF_ORG_3_NAME: ((test-org-3))
@@ -650,10 +647,6 @@ jobs:
           TEST_USER_4_USERNAME: ((development-test-user-4-username))
           TEST_USER_4_PASSWORD: ((development-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((development-test-user-4-totp-seed))
-
-          SMTP_SENDER_HOST: ((log-alerts-smtp-sender-host))
-          SMTP_SENDER_PORT: ((log-alerts-smtp-sender-port))
-          SMTP_SENDER_FROM: ((development-log-alerts-smtp-sender-from))
     on_failure:
       put: slack
       params:
@@ -776,7 +769,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -868,8 +860,7 @@ jobs:
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
-          AUTH_PROXY_URL: ((staging-auth-proxy-url))
-          UAA_BASE_URL: ((staging-uaa-base-url))
+          CF_SYSTEM_DOMAIN: ((cf-system-domain-staging))
 
           CF_ORG_1_NAME: ((test-org-1))
           CF_ORG_2_NAME: ((test-org-2))
@@ -890,10 +881,6 @@ jobs:
           TEST_USER_4_USERNAME: ((staging-test-user-4-username))
           TEST_USER_4_PASSWORD: ((staging-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((staging-test-user-4-totp-seed))
-
-          SMTP_SENDER_HOST: ((log-alerts-smtp-sender-host))
-          SMTP_SENDER_PORT: ((log-alerts-smtp-sender-port))
-          SMTP_SENDER_FROM: ((staging-log-alerts-smtp-sender-from))
     on_failure:
       put: slack
       params:
@@ -1018,7 +1005,6 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -1143,8 +1129,7 @@ jobs:
         image: playwright-python
         file: deploy-logs-opensearch-config/ci/e2e-tests.yml
         params:
-          AUTH_PROXY_URL: ((production-auth-proxy-url))
-          UAA_BASE_URL: ((production-uaa-base-url))
+          CF_SYSTEM_DOMAIN: ((cf-system-domain-production))
 
           CF_ORG_1_NAME: ((test-org-1))
           CF_ORG_2_NAME: ((test-org-2))
@@ -1165,10 +1150,6 @@ jobs:
           TEST_USER_4_USERNAME: ((production-test-user-4-username))
           TEST_USER_4_PASSWORD: ((production-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((production-test-user-4-totp-seed))
-
-          SMTP_SENDER_HOST: ((log-alerts-smtp-sender-host))
-          SMTP_SENDER_PORT: ((log-alerts-smtp-sender-port))
-          SMTP_SENDER_FROM: ((production-log-alerts-smtp-sender-from))
     on_failure:
       put: slack
       params:
@@ -1365,7 +1346,7 @@ resources:
       bucket: ((tf-state-bucket-development))
       versioned_file: ((tf-state-file-development))
       region_name: ((aws-region))
-
+  
   - name: terraform-yaml-staging
     type: s3-iam
     source:
