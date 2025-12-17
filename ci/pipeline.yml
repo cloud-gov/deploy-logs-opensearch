@@ -437,7 +437,6 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-test-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
-            - deploy-logs-opensearch-test-config/opsfiles/cf-test.yml
             - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
@@ -538,7 +537,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
+            # - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -777,7 +776,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
+            # - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -1019,7 +1018,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
+            # - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
