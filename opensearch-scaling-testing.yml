@@ -21,6 +21,9 @@
     max_in_flight: 1
     canaries: 1
     serial: true
+- type: replace
+  path: /instance_groups/name=opensearch_data?/jobs?/name=opensearch?/properties?/opensearch?/health?/disable_post_start?
+  value: true
 
 
 - type: replace
@@ -38,6 +41,9 @@
     canaries: 1
     serial: true
 
+- type: replace
+  path: /instance_groups/name=opensearch_old_data?/jobs?/name=opensearch?/properties?/opensearch?/health?/disable_post_start?
+  value: true
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards?/instances?
