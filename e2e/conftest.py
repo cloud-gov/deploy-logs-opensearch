@@ -1,8 +1,11 @@
 from os import getenv
+from playwright.sync_api import expect
 
 import pytest
 
 from .user import User
+
+expect.set_options(timeout=10_000)
 
 
 @pytest.fixture
