@@ -47,7 +47,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards?/vm_type?
-  value: m6i.xlarge
+  value: t3.xlarge
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards/update?
