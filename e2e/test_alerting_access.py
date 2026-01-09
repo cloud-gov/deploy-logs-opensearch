@@ -91,6 +91,17 @@ def test_user_cannot_see_alert_objects(user_2, page):
         page.get_by_text(test_email_recipient_group_name, exact=True)
     ).not_to_be_visible()
 
+    click_contextual_menu_link(page, "Email senders")
+
+    wait_for_loading_finished(page)
+
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
+    expect(
+        page.get_by_text(test_email_smtp_sender_name, exact=True)
+    ).not_to_be_visible()
+
     click_contextual_menu_link(page, "Channels")
 
     wait_for_loading_finished(page)
@@ -127,6 +138,15 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     expect(
         page.get_by_text(test_email_recipient_group_name, exact=True)
     ).to_be_visible()
+
+    click_contextual_menu_link(page, "Email senders")
+
+    wait_for_loading_finished(page)
+
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
+    expect(page.get_by_text(test_email_smtp_sender_name, exact=True)).to_be_visible()
 
     click_contextual_menu_link(page, "Channels")
 
