@@ -90,10 +90,26 @@
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
   value:
     index_pattern: logs-app-*
+    long_time_interval: 10m
     minimum: 1000
     run: true
     time_field: '@timestamp'
     time_interval: 5m
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/cloudwatch_count_test?
+  value:
+    minimum: 100
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/metric_count_test?
+  value:
+    minimum: 100
+
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/audit_count_test?
+  value:
+    minimum: 100
 
 
 - type: replace
