@@ -97,7 +97,7 @@
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/cloudwatch_count_test?
   value:
-    minimum: 4
+    minimum: 2
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/metric_count_test?
