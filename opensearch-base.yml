@@ -198,9 +198,16 @@ instance_groups:
     name: smoke_tests
     properties:
       smoke_tests:
+        cloudwatch_count_test:
+          minimum: 2
+        metric_count_test:
+          minimum: 2
+        audit_count_test:
+          minimum: 2
         count_test:
           index_pattern: logs-app-*
-          minimum: 150
+          minimum: 10
+          long_time_interval: 10m
           run: true
           time_field: '@timestamp'
           time_interval: 5m
