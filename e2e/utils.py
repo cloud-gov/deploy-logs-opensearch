@@ -147,9 +147,11 @@ def update_rows_per_table(page, rows_option="50 rows"):
     rows_per_page_button = page.get_by_role(
         "button", name=re.compile(r"^Rows per page: [0-9]+$")
     )
-    rows_per_page_button.wait_for()
-    rows_per_page_button.click()
 
-    fifty_rows_button = page.get_by_role("button", name=rows_option, exact=True)
-    fifty_rows_button.wait_for()
-    fifty_rows_button.click()
+    if rows_per_page_button.is_visible():
+        rows_per_page_button.wait_for()
+        rows_per_page_button.click()
+
+        fifty_rows_button = page.get_by_role("button", name=rows_option, exact=True)
+        fifty_rows_button.wait_for()
+        fifty_rows_button.click()
