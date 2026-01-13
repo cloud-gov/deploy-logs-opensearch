@@ -149,7 +149,7 @@ def create_notifications_channel(
 
 
 def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_name):
-    create_monitor_button = page.get_by_role("link", name="Create monitor")
+    create_monitor_button = page.get_by_role("link", name="Create monitor").first
     create_monitor_button.wait_for()
     create_monitor_button.click()
 

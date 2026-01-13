@@ -133,6 +133,13 @@ def select_table_item_checkbox(page, item_text):
     checkbox.click()
 
 
+def click_table_edit_button(page):
+    edit_button = page.get_by_role("button", name="Edit", exact=True)
+    expect(edit_button).to_be_visible()
+    expect(edit_button).to_be_enabled()
+    edit_button.click()
+
+
 def click_tab_link(page, link_text):
     link = page.get_by_role("tab", name=link_text)
     link.wait_for()
