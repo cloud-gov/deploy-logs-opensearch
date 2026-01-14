@@ -323,6 +323,9 @@ def delete_alert_monitor(page, monitor_name):
 def failure_on_edit_save(page, expected_failure_message):
     save_button = page.get_by_role("button", name="Save")
     save_button.wait_for()
+
+    dismiss_toast_notifications(page)
+
     save_button.click()
 
     failure_message = page.get_by_text(expected_failure_message)
