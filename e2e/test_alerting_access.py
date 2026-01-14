@@ -214,7 +214,9 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     monitor_link = page.get_by_text(test_monitor_name, exact=True)
     expect(monitor_link).to_be_visible()
-    monitor_link_href = monitor_link.get_attribute("href")
+
+    monitor_link_href = re.sub(r"\?.*$", "", monitor_link.get_attribute("href"))
+
     monitor_link.click()
 
     page.wait_for_url(f"**/app/alerting{monitor_link_href}*")
@@ -226,9 +228,8 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     select_table_item_checkbox(page, test_monitor_name)
     click_actions_edit_link(page)
 
-    monitor_link_href.replace("type=monitor", "action=edit-monitor")
-    # page.wait_for_url(f"**/app/alerting{monitor_link_href}*")
-    # page.wait_for_url(re.compile(r".*/app/alerting#/monitors\?.*"))
+    page.wait_for_url(f"**/app/alerting{monitor_link_href}*")
+    page.wait_for_url(re.compile(r".*/app/alerting#/monitors\?.*"))
 
     # should redirect back to main monitors page
     expect(page).to_have_url(re.compile(r"app/alerting#/monitors\?.*"))
