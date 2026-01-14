@@ -134,7 +134,7 @@ def select_table_item_checkbox(page, item_text):
 
 
 def click_table_edit_button(page):
-    edit_button = page.get_by_role("button", name="Edit", exact=True)
+    edit_button = page.get_by_role("button", name="Edit", exact=True).first
     expect(edit_button).to_be_visible()
     expect(edit_button).to_be_enabled()
     edit_button.click()

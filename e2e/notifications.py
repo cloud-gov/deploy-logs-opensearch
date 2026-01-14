@@ -19,15 +19,7 @@ def wait_for_channels_header(page):
     wait_for_header(page, re.compile(r"^Channels\s\([0-9]+\)$"))
 
 
-def create_email_recipient_group(page, user, email_recipient_group_name):
-    create_group_button = (
-        page.locator("div")
-        .filter(has_text=re.compile(r"^Create recipient group$"))
-        .get_by_role("link")
-    )
-    create_group_button.wait_for()
-    create_group_button.click()
-
+def fill_email_recipient_group_details(page, user, email_recipient_group_name):
     group_name_input = page.get_by_placeholder("Enter recipient group name")
     group_name_input.wait_for()
     group_name_input.fill(email_recipient_group_name)
@@ -39,6 +31,18 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
     )
     email_address_input.fill(user.username)
     page.keyboard.press("Enter")
+
+
+def create_email_recipient_group(page, user, email_recipient_group_name):
+    create_group_button = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Create recipient group$"))
+        .get_by_role("link")
+    )
+    create_group_button.wait_for()
+    create_group_button.click()
+
+    fill_email_recipient_group_details(page, user, email_recipient_group_name)
 
     create_group_button = page.get_by_role("button", name="Create")
     create_group_button.wait_for()
@@ -53,15 +57,7 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
     expect(page.get_by_text(email_recipient_group_name, exact=True)).to_be_visible()
 
 
-def create_email_smtp_sender(page, user, email_sender_name):
-    create_group_button = (
-        page.locator("div")
-        .filter(has_text=re.compile(r"^Create SMTP sender$"))
-        .get_by_role("link")
-    )
-    create_group_button.wait_for()
-    create_group_button.click()
-
+def fill_email_smtp_sender_details(page, email_sender_name):
     sender_name_input = page.get_by_placeholder("Enter sender name")
     sender_name_input.wait_for()
     sender_name_input.fill(email_sender_name)
@@ -77,6 +73,18 @@ def create_email_smtp_sender(page, user, email_sender_name):
     sender_host_input = page.get_by_label("Port")
     sender_host_input.wait_for()
     sender_host_input.fill(SMTP_SENDER_PORT)
+
+
+def create_email_smtp_sender(page, email_sender_name):
+    create_group_button = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Create SMTP sender$"))
+        .get_by_role("link")
+    )
+    create_group_button.wait_for()
+    create_group_button.click()
+
+    fill_email_smtp_sender_details(page, email_sender_name)
 
     create_group_button = page.get_by_role("button", name="Create")
     create_group_button.wait_for()
@@ -309,3 +317,20 @@ def delete_alert_monitor(page, monitor_name):
     wait_for_header(page, "Monitors")
 
     expect(page.get_by_text(monitor_name, exact=True)).not_to_be_visible()
+
+
+def failure_on_edit_save(page, expected_failure_message):
+    save_button = page.get_by_role("button", name="Save")
+    save_button.wait_for()
+    save_button.click()
+
+    failure_message = page.get_by_text(expected_failure_message)
+    expect(failure_message).to_be_visible()
+
+    dismiss_toast_buttons = page.get_by_label("Dismiss toast")
+    for i in range(dismiss_toast_buttons.count()):
+        dismiss_toast_buttons.nth(i).click()
+
+    cancel_button = page.get_by_role("link", name="Cancel")
+    cancel_button.wait_for()
+    cancel_button.click()
