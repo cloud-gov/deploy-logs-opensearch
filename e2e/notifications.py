@@ -10,6 +10,7 @@ from .utils import (
     open_actions_menu,
     wait_for_loading_finished,
     update_rows_per_table,
+    dismiss_toast_notifications,
 )
 
 from . import SMTP_SENDER_HOST, SMTP_SENDER_PORT, SMTP_SENDER_FROM
@@ -327,9 +328,7 @@ def failure_on_edit_save(page, expected_failure_message):
     failure_message = page.get_by_text(expected_failure_message)
     expect(failure_message).to_be_visible()
 
-    dismiss_toast_buttons = page.get_by_label("Dismiss toast")
-    for i in range(dismiss_toast_buttons.count()):
-        dismiss_toast_buttons.nth(i).click()
+    dismiss_toast_notifications(page)
 
     cancel_button = page.get_by_role("link", name="Cancel")
     cancel_button.wait_for()

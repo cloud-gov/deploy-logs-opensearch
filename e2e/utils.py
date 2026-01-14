@@ -121,6 +121,13 @@ def open_actions_menu(page):
     actions_button.click()
 
 
+def click_actions_edit_link(page):
+    open_actions_menu(page)
+    actions_edit_button = page.get_by_role("button", name="Edit", exact=True)
+    actions_edit_button.wait_for()
+    actions_edit_button.click()
+
+
 def click_delete_button(page):
     delete_button = page.get_by_role("button", name="Delete", exact=True)
     delete_button.wait_for()
@@ -162,3 +169,10 @@ def update_rows_per_table(page, rows_option="50 rows"):
         fifty_rows_button = page.get_by_role("button", name=rows_option, exact=True)
         fifty_rows_button.wait_for()
         fifty_rows_button.click()
+
+
+def dismiss_toast_notifications(page):
+    dismiss_toast_buttons = page.get_by_label("Dismiss toast")
+    dismiss_toast_buttons.wait_for()
+    for i in range(dismiss_toast_buttons.count()):
+        dismiss_toast_buttons.nth(i).click()

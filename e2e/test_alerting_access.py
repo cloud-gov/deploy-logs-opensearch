@@ -27,6 +27,8 @@ from .utils import (
     select_table_item_checkbox,
     update_rows_per_table,
     click_table_edit_button,
+    click_actions_edit_link,
+    dismiss_toast_notifications,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
@@ -155,11 +157,10 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     expect(page.get_by_role("heading", name="Edit recipient group")).to_be_visible()
 
     fill_email_recipient_group_details(page, user_3, test_email_recipient_group_name)
-
+    dismiss_toast_notifications(page)
     failure_on_edit_save(page, "Failed to update recipient group")
 
     click_contextual_menu_link(page, "Email senders")
-
     wait_for_loading_finished(page)
 
     update_rows_per_table(page)
@@ -174,7 +175,6 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
     fill_email_smtp_sender_details(page, test_email_smtp_sender_name)
-
     failure_on_edit_save(page, "Failed to update sender")
 
     click_contextual_menu_link(page, "Channels")
@@ -188,12 +188,12 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="-")).to_be_visible()
 
-    channel_breadcrumb_link = page.get_by_role("link", name="Channels")
+    channel_breadcrumb_link = page.get_by_role("link", name="Channels", exact=True)
     channel_breadcrumb_link.wait_for()
     channel_breadcrumb_link.click()
 
     select_table_item_checkbox(page, test_channel_name)
-    click_table_edit_button(page)
+    click_actions_edit_link(page)
     wait_for_loading_finished(page)
 
     channel_name_input = page.get_by_label("Name")
@@ -204,25 +204,34 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     slack_webhook_input.wait_for()
     slack_webhook_input.fill("https://hooks.slack.com/services/foo/bar")
 
-    failure_on_edit_save(page, "Failed to update sender")
+    failure_on_edit_save(page, "Failed to update channel")
 
-    # open_primary_menu_link(page, "Alerting")
+    open_primary_menu_link(page, "Alerting")
+    click_tab_link(page, "Monitors")
 
-    # click_tab_link(page, "Monitors")
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
 
-    # update_rows_per_table(page)
-    # wait_for_loading_finished(page)
+    monitor_link = page.get_by_text(test_monitor_name, exact=True)
+    expect(monitor_link).to_be_visible()
+    monitor_link_href = monitor_link.get_attribute("href")
+    monitor_link.click()
 
-    # monitor_link = page.get_by_text(test_monitor_name, exact=True)
-    # expect(monitor_link).to_be_visible()
-    # monitor_link_href = monitor_link.get_attribute("href")
-    # monitor_link.click()
+    page.wait_for_url(f"**/app/alerting{monitor_link_href}*")
+    page.wait_for_url(re.compile(r".*/app/alerting#/monitors\?.*"))
 
+    # should redirect back to main monitors page
+    expect(page).to_have_url(re.compile(r"app/alerting#/monitors\?.*"))
+
+    select_table_item_checkbox(page, test_monitor_name)
+    click_actions_edit_link(page)
+
+    monitor_link_href.replace("type=monitor", "action=edit-monitor")
     # page.wait_for_url(f"**/app/alerting{monitor_link_href}*")
     # page.wait_for_url(re.compile(r".*/app/alerting#/monitors\?.*"))
 
-    # # should redirect back to main monitors page
-    # expect(page).to_have_url(re.compile(r"app/alerting#/monitors\?.*"))
+    # should redirect back to main monitors page
+    expect(page).to_have_url(re.compile(r"app/alerting#/monitors\?.*"))
 
 
 def test_user_can_see_and_edit_alert_objects(user_4, page):
