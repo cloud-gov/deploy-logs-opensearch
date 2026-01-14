@@ -175,3 +175,9 @@ def dismiss_toast_notifications(page):
     dismiss_toast_buttons = page.get_by_label("Dismiss toast")
     for i in range(dismiss_toast_buttons.count()):
         dismiss_toast_buttons.nth(i).click()
+
+
+def click_save_button(page):
+    save_button = page.get_by_role("button", name="Save")
+    save_button.wait_for()
+    save_button.click()

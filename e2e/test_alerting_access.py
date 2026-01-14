@@ -29,6 +29,7 @@ from .utils import (
     click_table_edit_button,
     click_actions_edit_link,
     dismiss_toast_notifications,
+    click_save_button,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
@@ -243,6 +244,8 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
     open_primary_menu_link(page, "Notifications")
 
+    # Email recipient groups
+
     # Verify we can view and edit the email recipient group
     click_contextual_menu_link(page, "Email recipient groups")
 
@@ -254,10 +257,45 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
     ).to_be_visible()
 
     select_table_item_checkbox(page, test_email_recipient_group_name)
+    click_table_edit_button(page)
+    wait_for_loading_finished(page)
 
-    recipient_group_edit_button = page.get_by_role("button", name="Edit", exact=True)
-    expect(recipient_group_edit_button).to_be_visible()
-    expect(recipient_group_edit_button).to_be_enabled()
+    expect(page.get_by_role("heading", name="Edit recipient group")).to_be_visible()
+
+    click_save_button(page)
+    wait_for_loading_finished(page)
+
+    expect(
+        page.get_by_role("heading", name="Email recipient groups", exact=True)
+    ).to_be_visible()
+    expect(
+        page.get_by_text(test_email_recipient_group_name, exact=True)
+    ).to_be_visible()
+
+    # Email senders
+    click_contextual_menu_link(page, "Email senders")
+    wait_for_loading_finished(page)
+
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
+    expect(page.get_by_text(test_email_smtp_sender_name, exact=True)).to_be_visible()
+
+    select_table_item_checkbox(page, test_email_smtp_sender_name)
+    click_table_edit_button(page)
+    wait_for_loading_finished(page)
+
+    expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
+
+    click_save_button(page)
+    wait_for_loading_finished(page)
+
+    expect(
+        page.get_by_role("heading", name="Email senders", exact=True)
+    ).to_be_visible()
+    expect(page.get_by_text(test_email_smtp_sender_name, exact=True)).to_be_visible()
+
+    # Channels
 
     # Verify we can view and edit the notification channel
     click_contextual_menu_link(page, "Channels")
@@ -273,9 +311,17 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
         page.get_by_role("heading", name=test_channel_name, exact=True)
     ).to_be_visible()
 
-    open_actions_menu(page)
+    click_actions_edit_link(page)
+    wait_for_loading_finished(page)
 
-    expect(page.get_by_text("Edit", exact=True)).to_be_visible()
+    expect(page.get_by_role("heading", name="Edit channel")).to_be_visible()
+
+    click_save_button(page)
+    wait_for_loading_finished(page)
+
+    expect(
+        page.get_by_role("heading", name=test_channel_name, exact=True)
+    ).to_be_visible()
 
     # Verify we can view and edit the alert monitor
     open_primary_menu_link(page, "Alerting")
@@ -292,9 +338,18 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
     expect(
         page.get_by_role("heading", name=test_monitor_name, exact=True)
     ).to_be_visible()
-    channel_edit_button = page.get_by_role("button", name="Edit", exact=True)
-    expect(channel_edit_button).to_be_visible()
-    expect(channel_edit_button).to_be_enabled()
+
+    monitor_edit_button = page.get_by_role("button", name="Edit", exact=True)
+    expect(monitor_edit_button).to_be_visible()
+    expect(monitor_edit_button).to_be_enabled()
+    monitor_edit_button.click()
+
+    click_save_button(page)
+    wait_for_loading_finished(page)
+
+    expect(
+        page.get_by_role("heading", name=test_monitor_name, exact=True)
+    ).to_be_visible()
 
 
 def test_user_can_delete_alerts(user_1, page):

@@ -11,6 +11,7 @@ from .utils import (
     wait_for_loading_finished,
     update_rows_per_table,
     dismiss_toast_notifications,
+    click_save_button,
 )
 
 from . import SMTP_SENDER_HOST, SMTP_SENDER_PORT, SMTP_SENDER_FROM
@@ -321,12 +322,9 @@ def delete_alert_monitor(page, monitor_name):
 
 
 def failure_on_edit_save(page, expected_failure_message):
-    save_button = page.get_by_role("button", name="Save")
-    save_button.wait_for()
-
     dismiss_toast_notifications(page)
 
-    save_button.click()
+    click_save_button(page)
 
     failure_message = page.get_by_text(expected_failure_message)
     expect(failure_message).to_be_visible()
