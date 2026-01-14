@@ -191,6 +191,23 @@
   path: /instance_groups/name=ingestor_aws_metrics/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
   value: *http-tls-properties
 
+# ingestor_falco
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties?/opensearch?/http_host?
+  value: 127.0.0.1
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties/opensearch?/admin?
+  value: *admin-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties/opensearch?/node?/ssl?
+  value: *node-tls-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties?/opensearch?/http?/ssl?
+  value: *http-tls-properties
+
 # smoke_tests
 # - type: replace
 #   path: /instance_groups/name=maintenance/jobs/name=smoke_tests/properties?/smoke_tests?/opensearch?/ssl?
