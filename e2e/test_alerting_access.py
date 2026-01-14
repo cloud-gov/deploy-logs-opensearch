@@ -23,13 +23,12 @@ from .utils import (
     click_contextual_menu_link,
     click_tab_link,
     wait_for_loading_finished,
-    open_actions_menu,
     select_table_item_checkbox,
     update_rows_per_table,
     click_table_edit_button,
     click_actions_edit_link,
-    dismiss_toast_notifications,
     click_save_button,
+    dismiss_toast_notification,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
@@ -157,8 +156,8 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit recipient group")).to_be_visible()
 
+    dismiss_toast_notification(page)
     fill_email_recipient_group_details(page, user_3, test_email_recipient_group_name)
-    dismiss_toast_notifications(page)
     failure_on_edit_save(page, "Failed to update recipient group")
 
     click_contextual_menu_link(page, "Email senders")
@@ -175,6 +174,7 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
+    dismiss_toast_notification(page)
     fill_email_smtp_sender_details(page, test_email_smtp_sender_name)
     failure_on_edit_save(page, "Failed to update sender")
 
@@ -196,6 +196,8 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     select_table_item_checkbox(page, test_channel_name)
     click_actions_edit_link(page)
     wait_for_loading_finished(page)
+
+    dismiss_toast_notification(page)
 
     channel_name_input = page.get_by_label("Name")
     channel_name_input.wait_for()

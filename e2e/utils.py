@@ -171,6 +171,12 @@ def update_rows_per_table(page, rows_option="50 rows"):
         fifty_rows_button.click()
 
 
+def dismiss_toast_notification(page):
+    toast = page.get_by_label("Dismiss toast")
+    toast.wait_for()
+    toast.click()
+
+
 def dismiss_toast_notifications(page):
     dismiss_toast_buttons = page.get_by_label("Dismiss toast")
     for i in range(dismiss_toast_buttons.count()):
