@@ -127,15 +127,10 @@ def create_notifications_channel(
     email_option.wait_for()
     email_option.click()
 
-    choose_sender_placeholder = (
-        page.locator("div").filter(has_text=re.compile(r"^Sender name$")).first
-    )
-    choose_sender_placeholder.wait_for()
-    choose_sender_placeholder.click()
-
-    cloud_smtp_sender = page.get_by_role("option", name=email_sender_name)
+    cloud_smtp_sender = page.get_by_role("textbox", name="SMTP sender")
     cloud_smtp_sender.wait_for()
-    cloud_smtp_sender.click()
+    cloud_smtp_sender.fill(email_sender_name)
+    page.keyboard.press("Enter")
 
     enter_recipient_group_div = page.locator("div").filter(
         has_text=re.compile(r"^Email address, recipient group name$")
@@ -248,6 +243,9 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
 
 
 def delete_notifications_channel(page, channel_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(channel_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, channel_name)
@@ -266,6 +264,9 @@ def delete_notifications_channel(page, channel_name):
 
 
 def delete_email_recipient_group(page, recipient_group_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(recipient_group_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, recipient_group_name)
@@ -286,6 +287,9 @@ def delete_email_recipient_group(page, recipient_group_name):
 
 
 def delete_email_smtp_sender(page, email_sender_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(email_sender_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, email_sender_name)
@@ -306,6 +310,9 @@ def delete_email_smtp_sender(page, email_sender_name):
 
 
 def delete_alert_monitor(page, monitor_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(monitor_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, monitor_name)

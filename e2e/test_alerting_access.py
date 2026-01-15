@@ -45,6 +45,11 @@ test_monitor_name = f"{test_object_prefix}Monitor-{test_run_timestamp}"
 test_trigger_name = f"{test_object_prefix}Trigger-{test_run_timestamp}"
 test_action_name = f"{test_object_prefix}Action-{test_run_timestamp}"
 
+# test_email_recipient_group_name = "E2E-TestEmailRecipientGroup-1768494967"
+# test_email_smtp_sender_name = "E2E-TestEmailSmtpSender-1768494967".lower()
+# test_channel_name = "E2E-TestChannel-1768494967"
+# test_monitor_name = "E2E-TestMonitor-1768494967"
+
 
 def test_user_can_create_alerts(user_1, page):
     log_in(user_1, page, AUTH_PROXY_URL)
@@ -90,18 +95,12 @@ def test_user_cannot_see_alert_objects(user_2, page):
 
     wait_for_loading_finished(page)
 
-    update_rows_per_table(page)
-    wait_for_loading_finished(page)
-
     expect(
         page.get_by_text(test_email_recipient_group_name, exact=True)
     ).not_to_be_visible()
 
     click_contextual_menu_link(page, "Email senders")
 
-    wait_for_loading_finished(page)
-
-    update_rows_per_table(page)
     wait_for_loading_finished(page)
 
     expect(
@@ -112,18 +111,12 @@ def test_user_cannot_see_alert_objects(user_2, page):
 
     wait_for_loading_finished(page)
 
-    update_rows_per_table(page)
-    wait_for_loading_finished(page)
-
     expect(page.get_by_text(test_channel_name, exact=True)).not_to_be_visible()
 
     open_primary_menu_link(page, "Alerting")
 
     click_tab_link(page, "Monitors")
 
-    wait_for_loading_finished(page)
-
-    update_rows_per_table(page)
     wait_for_loading_finished(page)
 
     expect(page.get_by_text(test_monitor_name, exact=True)).not_to_be_visible()
@@ -261,6 +254,8 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
     click_save_button(page)
     wait_for_loading_finished(page)
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
 
     expect(
         page.get_by_role("heading", name="Email recipient groups", exact=True)
@@ -285,6 +280,8 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
     click_save_button(page)
+    wait_for_loading_finished(page)
+    update_rows_per_table(page)
     wait_for_loading_finished(page)
 
     expect(
