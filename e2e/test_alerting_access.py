@@ -45,11 +45,6 @@ test_monitor_name = f"{test_object_prefix}Monitor-{test_run_timestamp}"
 test_trigger_name = f"{test_object_prefix}Trigger-{test_run_timestamp}"
 test_action_name = f"{test_object_prefix}Action-{test_run_timestamp}"
 
-# test_email_recipient_group_name = "E2E-TestEmailRecipientGroup-1768494967"
-# test_email_smtp_sender_name = "E2E-TestEmailSmtpSender-1768494967".lower()
-# test_channel_name = "E2E-TestChannel-1768494967"
-# test_monitor_name = "E2E-TestMonitor-1768494967"
-
 
 def test_user_can_create_alerts(user_1, page):
     log_in(user_1, page, AUTH_PROXY_URL)
