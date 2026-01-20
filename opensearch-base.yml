@@ -576,6 +576,7 @@ instance_groups:
         s3:
           bucket: ((cloudwatch_bucket))
           region: ((region))
+          prefix: 2026/01/20
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
