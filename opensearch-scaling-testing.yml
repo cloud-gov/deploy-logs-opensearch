@@ -80,15 +80,15 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/instances?
-  value: 0
+  value: 1
   
 - type: replace
   path: /instance_groups/name=ingestor_falco?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor_s3?/instances?
