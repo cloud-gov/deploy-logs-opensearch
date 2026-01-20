@@ -213,6 +213,9 @@ instance_groups:
           time_interval: 5m
         index: logs-app
         metric_index: logs-metrics-
+        org_guid: ((smoketest_org_guid))
+        space_guid: ((smoketest_space_guid))
+        rds_instance: ((smoketest_rds))
         opensearch:
           ssl:
             ca: ((opensearch_node.ca))
