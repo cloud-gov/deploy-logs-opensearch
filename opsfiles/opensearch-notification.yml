@@ -112,20 +112,6 @@
     username: ((notification_username))
 
 - type: replace
-  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties/opensearch/notification?
-  value:
-    ca: ((notification_ca.ca))
-    certificate: ((notification_ca.certificate))
-    from: ((notification_from))
-    host: ((notification_host))
-    keystorepass: ((keystore_password))
-    defaultkeystorepass: ((default_keystore_password))
-    password: ((notification_password))
-    port: ((notification_port))
-    privatekey: ((notification_ca.private_key))
-    username: ((notification_username))
-
-- type: replace
   path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties/opensearch/notification?
   value:
     ca: ((notification_ca.ca))

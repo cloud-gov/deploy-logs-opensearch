@@ -53,11 +53,6 @@
   path: /instance_groups/name=ingestor_aws_metrics/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
   value: true
 
-# ingestor_falco
-- type: replace
-  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties?/opensearch?/enable_proxy_auth
-  value: true
-
 # add variable for auth proxy certs
 - type: replace
   path: /variables/name=auth_proxy?
