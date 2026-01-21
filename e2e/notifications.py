@@ -9,6 +9,9 @@ from .utils import (
     select_table_item_checkbox,
     open_actions_menu,
     wait_for_loading_finished,
+    update_rows_per_table,
+    dismiss_toast_notifications,
+    click_save_button,
 )
 
 from . import SMTP_SENDER_HOST, SMTP_SENDER_PORT, SMTP_SENDER_FROM
@@ -18,15 +21,7 @@ def wait_for_channels_header(page):
     wait_for_header(page, re.compile(r"^Channels\s\([0-9]+\)$"))
 
 
-def create_email_recipient_group(page, user, email_recipient_group_name):
-    create_group_button = (
-        page.locator("div")
-        .filter(has_text=re.compile(r"^Create recipient group$"))
-        .get_by_role("link")
-    )
-    create_group_button.wait_for()
-    create_group_button.click()
-
+def fill_email_recipient_group_details(page, user, email_recipient_group_name):
     group_name_input = page.get_by_placeholder("Enter recipient group name")
     group_name_input.wait_for()
     group_name_input.fill(email_recipient_group_name)
@@ -39,36 +34,32 @@ def create_email_recipient_group(page, user, email_recipient_group_name):
     email_address_input.fill(user.username)
     page.keyboard.press("Enter")
 
+
+def create_email_recipient_group(page, user, email_recipient_group_name):
+    create_group_button = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Create recipient group$"))
+        .get_by_role("link")
+    )
+    create_group_button.wait_for()
+    create_group_button.click()
+
+    fill_email_recipient_group_details(page, user, email_recipient_group_name)
+
     create_group_button = page.get_by_role("button", name="Create")
     create_group_button.wait_for()
     create_group_button.click()
 
     wait_for_header(page, "Email recipient groups")
 
-    rows_per_page_button = page.get_by_role(
-        "button", name=re.compile(r"^Rows per page: [0-9]+$")
-    )
-    rows_per_page_button.wait_for()
-    rows_per_page_button.click()
-
-    fifty_rows_button = page.get_by_role("button", name="50 rows", exact=True)
-    fifty_rows_button.wait_for()
-    fifty_rows_button.click()
+    update_rows_per_table(page)
 
     wait_for_loading_finished(page)
 
     expect(page.get_by_text(email_recipient_group_name, exact=True)).to_be_visible()
 
 
-def create_email_smtp_sender(page, user, email_sender_name):
-    create_group_button = (
-        page.locator("div")
-        .filter(has_text=re.compile(r"^Create SMTP sender$"))
-        .get_by_role("link")
-    )
-    create_group_button.wait_for()
-    create_group_button.click()
-
+def fill_email_smtp_sender_details(page, email_sender_name):
     sender_name_input = page.get_by_placeholder("Enter sender name")
     sender_name_input.wait_for()
     sender_name_input.fill(email_sender_name)
@@ -85,21 +76,25 @@ def create_email_smtp_sender(page, user, email_sender_name):
     sender_host_input.wait_for()
     sender_host_input.fill(SMTP_SENDER_PORT)
 
+
+def create_email_smtp_sender(page, email_sender_name):
+    create_group_button = (
+        page.locator("div")
+        .filter(has_text=re.compile(r"^Create SMTP sender$"))
+        .get_by_role("link")
+    )
+    create_group_button.wait_for()
+    create_group_button.click()
+
+    fill_email_smtp_sender_details(page, email_sender_name)
+
     create_group_button = page.get_by_role("button", name="Create")
     create_group_button.wait_for()
     create_group_button.click()
 
     wait_for_header(page, "Email senders")
 
-    rows_per_page_button = page.get_by_role(
-        "button", name=re.compile(r"^Rows per page: [0-9]+$")
-    )
-    rows_per_page_button.wait_for()
-    rows_per_page_button.click()
-
-    fifty_rows_button = page.get_by_role("button", name="50 rows", exact=True)
-    fifty_rows_button.wait_for()
-    fifty_rows_button.click()
+    update_rows_per_table(page)
 
     wait_for_loading_finished(page)
 
@@ -132,15 +127,10 @@ def create_notifications_channel(
     email_option.wait_for()
     email_option.click()
 
-    choose_sender_placeholder = (
-        page.locator("div").filter(has_text=re.compile(r"^Sender name$")).first
-    )
-    choose_sender_placeholder.wait_for()
-    choose_sender_placeholder.click()
-
-    cloud_smtp_sender = page.get_by_role("option", name=email_sender_name)
+    cloud_smtp_sender = page.get_by_role("textbox", name="SMTP sender")
     cloud_smtp_sender.wait_for()
-    cloud_smtp_sender.click()
+    cloud_smtp_sender.fill(email_sender_name)
+    page.keyboard.press("Enter")
 
     enter_recipient_group_div = page.locator("div").filter(
         has_text=re.compile(r"^Email address, recipient group name$")
@@ -164,7 +154,7 @@ def create_notifications_channel(
 
 
 def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_name):
-    create_monitor_button = page.get_by_role("link", name="Create monitor")
+    create_monitor_button = page.get_by_role("link", name="Create monitor").first
     create_monitor_button.wait_for()
     create_monitor_button.click()
 
@@ -253,6 +243,9 @@ def create_alert_monitor(page, monitor_name, trigger_name, action_name, channel_
 
 
 def delete_notifications_channel(page, channel_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(channel_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, channel_name)
@@ -271,6 +264,9 @@ def delete_notifications_channel(page, channel_name):
 
 
 def delete_email_recipient_group(page, recipient_group_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(recipient_group_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, recipient_group_name)
@@ -291,6 +287,9 @@ def delete_email_recipient_group(page, recipient_group_name):
 
 
 def delete_email_smtp_sender(page, email_sender_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(email_sender_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, email_sender_name)
@@ -311,6 +310,9 @@ def delete_email_smtp_sender(page, email_sender_name):
 
 
 def delete_alert_monitor(page, monitor_name):
+    update_rows_per_table(page)
+    wait_for_loading_finished(page)
+
     expect(page.get_by_text(monitor_name, exact=True)).to_be_visible()
 
     select_table_item_checkbox(page, monitor_name)
@@ -324,3 +326,16 @@ def delete_alert_monitor(page, monitor_name):
     wait_for_header(page, "Monitors")
 
     expect(page.get_by_text(monitor_name, exact=True)).not_to_be_visible()
+
+
+def failure_on_edit_save(page, expected_failure_message):
+    click_save_button(page)
+
+    failure_message = page.get_by_text(expected_failure_message)
+    expect(failure_message).to_be_visible()
+
+    dismiss_toast_notifications(page)
+
+    cancel_button = page.get_by_role("link", name="Cancel")
+    cancel_button.wait_for()
+    cancel_button.click()
