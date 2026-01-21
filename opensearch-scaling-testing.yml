@@ -88,7 +88,7 @@
   
 - type: replace
   path: /instance_groups/name=ingestor_falco?/instances?
-  value: 0
+  value: 1
 
 - type: replace
   path: /instance_groups/name=ingestor_s3?/instances?
