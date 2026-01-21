@@ -84,6 +84,7 @@
   path: /instance_groups/name=ingestor_s3?/instances?
   value: 1
 
+
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
   value:
