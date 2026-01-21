@@ -328,10 +328,14 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
         page.get_by_role("heading", name=test_monitor_name, exact=True)
     ).to_be_visible()
 
+    wait_for_loading_finished(page)
+
     monitor_edit_button = page.get_by_role("button", name="Edit", exact=True)
     expect(monitor_edit_button).to_be_visible()
     expect(monitor_edit_button).to_be_enabled()
     monitor_edit_button.click()
+
+    wait_for_loading_finished(page)
 
     click_save_button(page)
     wait_for_loading_finished(page)
