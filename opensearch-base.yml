@@ -516,7 +516,6 @@ instance_groups:
         s3:
           bucket: ((metric_stream_bucket))
           region: ((region))
-          prefix: 2026/01/20
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
@@ -576,7 +575,6 @@ instance_groups:
         s3:
           bucket: ((cloudwatch_bucket))
           region: ((region))
-          prefix: 2026/01/20
         syslog_tls:
           port: 6972
           ssl_cert: ((ingestor_syslog_server_tls.certificate))
@@ -609,68 +607,9 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 7
 
-- name: ingestor_falco
-  instances: 0
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    release: opensearch
-    consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-  - consumes: *consumes-opensearch-manager
-    name: ingestor_s3
-    properties:
-      logstash:
-        type: falco
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
-      logstash_ingestor:
-        s3:
-          bucket: ((falco_bucket))
-          region: ((region))
-          prefix: falco
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
-      logstash_parser:
-        opensearch:
-          data_hosts:
-          - localhost
-          index: ((alias))
-          index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
-    provides:
-      ingestor:
-        as: ingestor_s3
-    release: opensearch
-  - name: deployment_lookup_config
-    release: opensearch
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  azs: [z1,z2]
-  vm_type: t3.large
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 20GB_ephemeral_disk
-  networks:
-  - name: services
-  update:
-    serial: true # Block on this job to create deploy group 8
 
 #########################################################
-# 9th deploy group - dashboards
+# 8th deploy group - dashboards
 # Dashboard is ran last as it checks the types of other instances when restarting. all dashboard nodes must either be updated at the same
 # time or have instances not ran yet turned off for opensearch.
 # IF DASHBOARD IS UPDATING WITH A OLD VERSION BOTH WILL ERROR
