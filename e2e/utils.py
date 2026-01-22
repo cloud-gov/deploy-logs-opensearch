@@ -121,6 +121,13 @@ def open_actions_menu(page):
     actions_button.click()
 
 
+def click_actions_edit_link(page):
+    open_actions_menu(page)
+    actions_edit_button = page.get_by_role("button", name="Edit", exact=True)
+    actions_edit_button.wait_for()
+    actions_edit_button.click()
+
+
 def click_delete_button(page):
     delete_button = page.get_by_role("button", name="Delete", exact=True)
     delete_button.wait_for()
@@ -133,6 +140,13 @@ def select_table_item_checkbox(page, item_text):
     checkbox.click()
 
 
+def click_table_edit_button(page):
+    edit_button = page.get_by_role("button", name="Edit", exact=True).first
+    expect(edit_button).to_be_visible()
+    expect(edit_button).to_be_enabled()
+    edit_button.click()
+
+
 def click_tab_link(page, link_text):
     link = page.get_by_role("tab", name=link_text)
     link.wait_for()
@@ -141,3 +155,33 @@ def click_tab_link(page, link_text):
 
 def wait_for_loading_finished(page):
     expect(page.get_by_label("Loading content")).not_to_be_visible()
+
+
+def update_rows_per_table(page, rows_option="50 rows"):
+    rows_per_page_button = page.get_by_role(
+        "button", name=re.compile(r"^Rows per page: [0-9]+$")
+    )
+    rows_per_page_button.wait_for()
+    rows_per_page_button.click()
+
+    fifty_rows_button = page.get_by_role("button", name=rows_option, exact=True)
+    fifty_rows_button.wait_for()
+    fifty_rows_button.click()
+
+
+def dismiss_toast_notification(page):
+    toast = page.get_by_label("Dismiss toast")
+    toast.wait_for()
+    toast.click()
+
+
+def dismiss_toast_notifications(page):
+    dismiss_toast_buttons = page.get_by_label("Dismiss toast")
+    for i in range(dismiss_toast_buttons.count()):
+        dismiss_toast_buttons.nth(i).click()
+
+
+def click_save_button(page):
+    save_button = page.get_by_role("button", name="Save")
+    save_button.wait_for()
+    save_button.click()

@@ -85,7 +85,7 @@
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/instances?
   value: 1
-  
+
 - type: replace
   path: /instance_groups/name=ingestor_falco?/instances?
   value: 1
