@@ -212,6 +212,7 @@ instance_groups:
           time_field: '@timestamp'
           time_interval: 5m
         index: logs-app
+        log_group: ((smoketest_log_group))
         metric_index: logs-metrics-
         org_guid: ((smoketest_org_guid))
         space_guid: ((smoketest_space_guid))
