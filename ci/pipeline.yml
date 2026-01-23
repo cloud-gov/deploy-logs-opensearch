@@ -602,7 +602,7 @@ jobs:
           - get: opensearch-development-deployment
             trigger: true
             passed: [deploy-opensearch-development]
-          - get: tests-timer
+          - get: one-hour-timer
             trigger: true
           - get: playwright-python
           - get: general-task
@@ -841,7 +841,7 @@ jobs:
           - get: opensearch-staging-deployment
             trigger: true
             passed: [deploy-opensearch-staging]
-          - get: tests-timer
+          - get: one-hour-timer
             trigger: true
           - get: playwright-python
           - get: general-task
@@ -1116,7 +1116,7 @@ jobs:
           - get: opensearch-production-deployment
             trigger: true
             passed: [deploy-opensearch-production]
-          - get: tests-timer
+          - get: one-hour-timer
             trigger: true
           - get: playwright-python
           - get: general-task
@@ -1410,6 +1410,11 @@ resources:
     type: time
     source:
       interval: 30m
+
+  - name: one-hour-timer
+    type: time
+    source:
+      interval: 1h
 
   - name: fifteen-minute-timer
     type: time
