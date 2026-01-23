@@ -88,7 +88,7 @@
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
   value:
     index_pattern: logs-app-*
-    long_time_interval: 10m
+    long_time_interval: 20m
     minimum: 150
     run: true
     time_field: '@timestamp'
