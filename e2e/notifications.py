@@ -323,6 +323,8 @@ def delete_alert_monitor(page, monitor_name):
 
     click_delete_button(page)
 
+    wait_for_loading_finished(page)
+
     wait_for_header(page, "Monitors")
 
     expect(page.get_by_text(monitor_name, exact=True)).not_to_be_visible()
