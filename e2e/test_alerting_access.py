@@ -28,7 +28,7 @@ from .utils import (
     click_table_edit_button,
     click_actions_edit_link,
     click_save_button,
-    dismiss_toast_notification,
+    wait_and_dismiss_toast_notification,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
@@ -139,8 +139,9 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit recipient group")).to_be_visible()
 
-    dismiss_toast_notification(page)
+    wait_and_dismiss_toast_notification(page)
     fill_email_recipient_group_details(page, user_3, test_email_recipient_group_name)
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update recipient group")
 
     click_contextual_menu_link(page, "Email senders")
@@ -157,8 +158,9 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
-    dismiss_toast_notification(page)
+    wait_and_dismiss_toast_notification(page)
     fill_email_smtp_sender_details(page, test_email_smtp_sender_name)
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update sender")
 
     click_contextual_menu_link(page, "Channels")
@@ -180,7 +182,7 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     click_actions_edit_link(page)
     wait_for_loading_finished(page)
 
-    dismiss_toast_notification(page)
+    wait_and_dismiss_toast_notification(page)
 
     channel_name_input = page.get_by_label("Name")
     channel_name_input.wait_for()
@@ -190,6 +192,7 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     slack_webhook_input.wait_for()
     slack_webhook_input.fill("https://hooks.slack.com/services/foo/bar")
 
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update channel")
 
     open_primary_menu_link(page, "Alerting")
