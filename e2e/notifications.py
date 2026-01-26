@@ -332,9 +332,7 @@ def delete_alert_monitor(page, monitor_name):
 
 
 def failure_on_edit_save(page, expected_failure_message):
-    toast = get_dismiss_toast_notification_buttons(page)
-    if toast.is_visible():
-        toast.click()
+    dismiss_toast_notifications(page)
 
     click_save_button(page)
 
