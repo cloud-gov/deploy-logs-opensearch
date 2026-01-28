@@ -11,7 +11,6 @@ from .utils import (
     wait_for_loading_finished,
     update_rows_per_table,
     click_save_button,
-    # get_dismiss_toast_notification_button,
     dismiss_toast_notification_button,
 )
 
