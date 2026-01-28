@@ -28,11 +28,12 @@ from .utils import (
     click_table_edit_button,
     click_actions_edit_link,
     click_save_button,
-    wait_and_dismiss_toast_notification,
+    dismiss_toast_notification_button,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
-test_run_timestamp = int(time.time())
+# test_run_timestamp = int(time.time())
+test_run_timestamp = 1769628625
 test_object_prefix = "E2E-Test"
 test_email_recipient_group_name = (
     f"{test_object_prefix}EmailRecipientGroup-{test_run_timestamp}"
@@ -118,6 +119,14 @@ def test_user_cannot_see_alert_objects(user_2, page):
 
 
 def test_user_can_see_but_not_edit_alert_objects(user_3, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(re.compile(r"^There was a problem loading.*")),
+        handler,
+    )
+
     log_in(user_3, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
@@ -139,7 +148,6 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit recipient group")).to_be_visible()
 
-    wait_and_dismiss_toast_notification(page)
     fill_email_recipient_group_details(page, user_3, test_email_recipient_group_name)
     wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update recipient group")
@@ -158,7 +166,6 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
-    wait_and_dismiss_toast_notification(page)
     fill_email_smtp_sender_details(page, test_email_smtp_sender_name)
     wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update sender")
@@ -181,8 +188,6 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     select_table_item_checkbox(page, test_channel_name)
     click_actions_edit_link(page)
     wait_for_loading_finished(page)
-
-    wait_and_dismiss_toast_notification(page)
 
     channel_name_input = page.get_by_label("Name")
     channel_name_input.wait_for()
