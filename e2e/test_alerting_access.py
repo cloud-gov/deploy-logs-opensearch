@@ -32,8 +32,7 @@ from .utils import (
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
-# test_run_timestamp = int(time.time())
-test_run_timestamp = 1769628625
+test_run_timestamp = int(time.time())
 test_object_prefix = "E2E-Test"
 test_email_recipient_group_name = (
     f"{test_object_prefix}EmailRecipientGroup-{test_run_timestamp}"
