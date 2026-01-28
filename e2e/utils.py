@@ -182,7 +182,8 @@ def wait_and_dismiss_toast_notification(page):
 def dismiss_toast_notifications(page):
     dismiss_toast_buttons = get_dismiss_toast_notification_buttons(page)
     for i in range(dismiss_toast_buttons.count()):
-        dismiss_toast_buttons.nth(i).click()
+        if dismiss_toast_buttons.nth(i).is_visible():
+            dismiss_toast_buttons.nth(i).click()
 
 
 def click_save_button(page):
