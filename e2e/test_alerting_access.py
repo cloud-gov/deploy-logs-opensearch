@@ -347,6 +347,8 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
     expect(monitor_link).to_be_visible()
     monitor_link.click()
 
+    wait_for_loading_finished(page)
+
     expect(
         page.get_by_role("heading", name=test_monitor_name, exact=True)
     ).to_be_visible()
