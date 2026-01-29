@@ -154,6 +154,7 @@ def click_tab_link(page, link_text):
 
 
 def wait_for_loading_finished(page):
+    page.get_by_label("Loading content").wait_for()
     expect(page.get_by_label("Loading content")).not_to_be_visible()
 
 
