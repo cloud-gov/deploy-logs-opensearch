@@ -315,6 +315,8 @@ def delete_alert_monitor(page, monitor_name):
 
     expect(page.get_by_text(monitor_name, exact=True)).to_be_visible()
 
+    wait_for_loading_finished(page)
+
     select_table_item_checkbox(page, monitor_name)
 
     open_actions_menu(page)
