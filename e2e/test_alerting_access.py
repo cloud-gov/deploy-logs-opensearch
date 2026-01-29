@@ -174,6 +174,7 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
     fill_email_smtp_sender_details(page, test_email_smtp_sender_name)
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update sender")
 
     click_contextual_menu_link(page, "Channels")
@@ -203,6 +204,7 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     slack_webhook_input.wait_for()
     slack_webhook_input.fill("https://hooks.slack.com/services/foo/bar")
 
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update channel")
 
     open_primary_menu_link(page, "Alerting")
