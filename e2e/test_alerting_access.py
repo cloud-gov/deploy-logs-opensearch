@@ -47,6 +47,14 @@ test_action_name = f"{test_object_prefix}Action-{test_run_timestamp}"
 
 
 def test_user_can_create_alerts(user_1, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(re.compile(r"^.*successfully created.$")),
+        handler,
+    )
+
     log_in(user_1, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
@@ -229,6 +237,14 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
 
 def test_user_can_see_and_edit_alert_objects(user_4, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(re.compile(r"^.*successfully updated.$")),
+        handler,
+    )
+
     log_in(user_4, page, AUTH_PROXY_URL)
 
     # using this tenant should not affect access to alerting objects
@@ -353,6 +369,16 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
 
 def test_user_can_delete_alerts(user_1, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(
+            re.compile(r"^.*(successfully deleted|deleted successfully).$")
+        ),
+        handler,
+    )
+
     log_in(user_1, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
