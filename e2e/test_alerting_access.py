@@ -362,6 +362,14 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
     wait_for_loading_finished(page)
 
+    time_field_input = page.get_by_text("@timestamp").first
+    time_field_input.wait_for()
+    time_field_input.click()
+
+    timestamp_option_button = page.get_by_role("option", name="@timestamp", exact=True)
+    expect(timestamp_option_button).to_be_visible()
+    timestamp_option_button.click()
+
     click_save_button(page)
     wait_for_loading_finished(page)
 
