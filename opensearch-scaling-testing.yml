@@ -72,7 +72,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor?/vm_type?
@@ -80,12 +80,16 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/instances?
   value: 1
   
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics?/jobs?/name=ingestor_s3?/properties?/logstash_ingestor?/s3?/prefix?
+  value: 2026/02
+
 - type: replace
   path: /instance_groups/name=ingestor_s3?/instances?
   value: 0
@@ -119,7 +123,7 @@
 
 - type: replace
   path: /instance_groups/name=maintenance?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=maintenance?/vm_type?
