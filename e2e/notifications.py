@@ -310,6 +310,10 @@ def delete_email_smtp_sender(page, email_sender_name):
 
 
 def delete_alert_monitor(page, monitor_name):
+    monitors_loading_message = page.get_by_text("Loading monitors")
+    monitors_loading_message.wait_for()
+    expect(monitors_loading_message).not_to_be_visible()
+
     update_rows_per_table(page)
     wait_for_loading_finished(page)
 
