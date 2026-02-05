@@ -87,9 +87,8 @@
   value: 1
   
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics?/jobs?/name=ingestor_s3?/properties?/logstash_ingestor?/s3?
-  value: 
-    prefix: 2026/02
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=ingestor_s3/properties/logstash_ingestor/s3/prefix
+  value: "2026/02"
 
 - type: replace
   path: /instance_groups/name=ingestor_s3?/instances?
