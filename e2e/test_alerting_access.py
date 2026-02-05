@@ -340,6 +340,10 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
     click_tab_link(page, "Monitors")
 
+    monitors_loading_message = page.get_by_text("Loading monitors")
+    monitors_loading_message.wait_for()
+    expect(monitors_loading_message).not_to_be_visible()
+
     update_rows_per_table(page)
     wait_for_loading_finished(page)
 
