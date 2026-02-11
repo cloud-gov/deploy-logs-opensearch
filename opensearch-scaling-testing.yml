@@ -72,7 +72,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
-  value: 0
+  value: 1
 
 - type: replace
   path: /instance_groups/name=ingestor?/vm_type?
@@ -119,7 +119,7 @@
 
 - type: replace
   path: /instance_groups/name=maintenance?/instances?
-  value: 0
+  value: 1
 
 - type: replace
   path: /instance_groups/name=maintenance?/vm_type?
