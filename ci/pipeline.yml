@@ -206,7 +206,7 @@ jobs:
   - name: audit-to-s3-development
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -222,6 +222,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -233,7 +234,7 @@ jobs:
   - name: audit-to-s3-staging
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -249,6 +250,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_staging))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_staging))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -260,7 +262,7 @@ jobs:
   - name: audit-to-s3-production
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -276,6 +278,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_production))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_production))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -1416,10 +1419,10 @@ resources:
     source:
       interval: 1h
 
-  - name: fifteen-minute-timer
+  - name: ten-minute-timer
     type: time
     source:
-      interval: 15m
+      interval: 10m
 
   - name: slack
     type: slack-notification
