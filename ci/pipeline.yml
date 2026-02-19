@@ -206,7 +206,7 @@ jobs:
   - name: audit-to-s3-development
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -233,7 +233,7 @@ jobs:
   - name: audit-to-s3-staging
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -260,7 +260,7 @@ jobs:
   - name: audit-to-s3-production
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -1416,10 +1416,10 @@ resources:
     source:
       interval: 1h
 
-  - name: fifteen-minute-timer
+  - name: ten-minute-timer
     type: time
     source:
-      interval: 15m
+      interval: 10m
 
   - name: slack
     type: slack-notification
