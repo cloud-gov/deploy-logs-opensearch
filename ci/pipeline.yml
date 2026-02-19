@@ -222,6 +222,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -249,6 +250,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_staging))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_staging))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -276,6 +278,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_production))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_production))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
