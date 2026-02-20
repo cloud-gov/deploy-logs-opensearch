@@ -22,6 +22,7 @@ class AuditEventsS3Uploader:
         self.UAA_CLIENT_ID = os.environ.get("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = os.environ.get("UAA_CLIENT_SECRET")
         self.bucket_name = "{}".format(os.environ["BUCKET"])
+        self.default_time = os.environ.get("DEFAULT_TIME")
         self.token = self.get_client_credentials_token()
 
     def get_client_credentials_token(self):
@@ -128,8 +129,8 @@ class AuditEventsS3Uploader:
         )
 
     def get_start_end_time(self, now):
-        fifteen_minutes_ago = now - timedelta(minutes=15)
-        start_time = fifteen_minutes_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
+        time_ago = now - timedelta(minutes=int(self.default_time))
+        start_time = time_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
         end_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         try:

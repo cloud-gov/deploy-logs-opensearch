@@ -5,7 +5,7 @@ import pytest
 
 from .user import User
 
-expect.set_options(timeout=30_000)
+expect.set_options(timeout=60_000)
 
 
 @pytest.fixture

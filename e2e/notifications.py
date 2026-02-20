@@ -10,8 +10,8 @@ from .utils import (
     open_actions_menu,
     wait_for_loading_finished,
     update_rows_per_table,
-    dismiss_toast_notifications,
     click_save_button,
+    dismiss_toast_notification_button,
 )
 
 from . import SMTP_SENDER_HOST, SMTP_SENDER_PORT, SMTP_SENDER_FROM
@@ -310,10 +310,16 @@ def delete_email_smtp_sender(page, email_sender_name):
 
 
 def delete_alert_monitor(page, monitor_name):
+    monitors_loading_message = page.get_by_text("Loading monitors")
+    monitors_loading_message.wait_for()
+    expect(monitors_loading_message).not_to_be_visible()
+
     update_rows_per_table(page)
     wait_for_loading_finished(page)
 
     expect(page.get_by_text(monitor_name, exact=True)).to_be_visible()
+
+    wait_for_loading_finished(page)
 
     select_table_item_checkbox(page, monitor_name)
 
@@ -322,6 +328,8 @@ def delete_alert_monitor(page, monitor_name):
     click_delete_button(page)
 
     click_delete_button(page)
+
+    wait_for_loading_finished(page)
 
     wait_for_header(page, "Monitors")
 
@@ -334,7 +342,7 @@ def failure_on_edit_save(page, expected_failure_message):
     failure_message = page.get_by_text(expected_failure_message)
     expect(failure_message).to_be_visible()
 
-    dismiss_toast_notifications(page)
+    dismiss_toast_notification_button(page)
 
     cancel_button = page.get_by_role("link", name="Cancel")
     cancel_button.wait_for()

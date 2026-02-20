@@ -206,7 +206,7 @@ jobs:
   - name: audit-to-s3-development
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -222,6 +222,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_development))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_development))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -233,7 +234,7 @@ jobs:
   - name: audit-to-s3-staging
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -249,6 +250,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_staging))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_staging))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -260,7 +262,7 @@ jobs:
   - name: audit-to-s3-production
     plan:
     - get: general-task
-    - get: fifteen-minute-timer
+    - get: ten-minute-timer
       trigger: true
     - get: deploy-logs-opensearch-config
     - get: pipeline-tasks
@@ -276,6 +278,7 @@ jobs:
         AWS_DEFAULT_REGION: ((aws-region))
         AWS_ACCESS_KEY_ID: ((s3_ingestor_aws_access_key_id_production))
         AWS_SECRET_ACCESS_KEY: ((s3_ingestor_aws_secret_access_key_production))
+        DEFAULT_TIME: 10
     on_failure:
       put: slack
       params:
@@ -602,7 +605,7 @@ jobs:
           - get: opensearch-development-deployment
             trigger: true
             passed: [deploy-opensearch-development]
-          - get: tests-timer
+          - get: one-hour-timer
             trigger: true
           - get: playwright-python
           - get: general-task
@@ -841,7 +844,7 @@ jobs:
           - get: opensearch-staging-deployment
             trigger: true
             passed: [deploy-opensearch-staging]
-          - get: tests-timer
+          - get: one-hour-timer
             trigger: true
           - get: playwright-python
           - get: general-task
@@ -1018,7 +1021,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-production.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
-            # - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
+            - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
@@ -1116,7 +1119,7 @@ jobs:
           - get: opensearch-production-deployment
             trigger: true
             passed: [deploy-opensearch-production]
-          - get: tests-timer
+          - get: one-hour-timer
             trigger: true
           - get: playwright-python
           - get: general-task
@@ -1411,10 +1414,15 @@ resources:
     source:
       interval: 30m
 
-  - name: fifteen-minute-timer
+  - name: one-hour-timer
     type: time
     source:
-      interval: 15m
+      interval: 1h
+
+  - name: ten-minute-timer
+    type: time
+    source:
+      interval: 10m
 
   - name: slack
     type: slack-notification

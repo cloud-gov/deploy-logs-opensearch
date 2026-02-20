@@ -13,7 +13,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/vm_type?
-  value: r6i.large
+  value: r6i.xlarge
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/update?
@@ -29,7 +29,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/vm_type?
-  value: r6i.large
+  value: r6i.xlarge
 
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/update?

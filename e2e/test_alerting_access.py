@@ -28,7 +28,7 @@ from .utils import (
     click_table_edit_button,
     click_actions_edit_link,
     click_save_button,
-    dismiss_toast_notification,
+    dismiss_toast_notification_button,
 )
 from . import AUTH_PROXY_URL, CF_ORG_1_NAME, CF_ORG_2_NAME, CF_ORG_3_NAME
 
@@ -47,6 +47,14 @@ test_action_name = f"{test_object_prefix}Action-{test_run_timestamp}"
 
 
 def test_user_can_create_alerts(user_1, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(re.compile(r"^.*successfully created.$")),
+        handler,
+    )
+
     log_in(user_1, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
@@ -118,6 +126,14 @@ def test_user_cannot_see_alert_objects(user_2, page):
 
 
 def test_user_can_see_but_not_edit_alert_objects(user_3, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(re.compile(r"^There was a problem loading.*")),
+        handler,
+    )
+
     log_in(user_3, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
@@ -139,8 +155,8 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit recipient group")).to_be_visible()
 
-    dismiss_toast_notification(page)
     fill_email_recipient_group_details(page, user_3, test_email_recipient_group_name)
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update recipient group")
 
     click_contextual_menu_link(page, "Email senders")
@@ -157,8 +173,8 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
     expect(page.get_by_role("heading", name="Edit SMTP sender")).to_be_visible()
 
-    dismiss_toast_notification(page)
     fill_email_smtp_sender_details(page, test_email_smtp_sender_name)
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update sender")
 
     click_contextual_menu_link(page, "Channels")
@@ -180,8 +196,6 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     click_actions_edit_link(page)
     wait_for_loading_finished(page)
 
-    dismiss_toast_notification(page)
-
     channel_name_input = page.get_by_label("Name")
     channel_name_input.wait_for()
     channel_name_input.fill(test_channel_name)
@@ -190,6 +204,7 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
     slack_webhook_input.wait_for()
     slack_webhook_input.fill("https://hooks.slack.com/services/foo/bar")
 
+    wait_for_loading_finished(page)
     failure_on_edit_save(page, "Failed to update channel")
 
     open_primary_menu_link(page, "Alerting")
@@ -222,6 +237,14 @@ def test_user_can_see_but_not_edit_alert_objects(user_3, page):
 
 
 def test_user_can_see_and_edit_alert_objects(user_4, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(re.compile(r"^.*successfully updated.$")),
+        handler,
+    )
+
     log_in(user_4, page, AUTH_PROXY_URL)
 
     # using this tenant should not affect access to alerting objects
@@ -317,12 +340,18 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
     click_tab_link(page, "Monitors")
 
+    monitors_loading_message = page.get_by_text("Loading monitors")
+    monitors_loading_message.wait_for()
+    expect(monitors_loading_message).not_to_be_visible()
+
     update_rows_per_table(page)
     wait_for_loading_finished(page)
 
     monitor_link = page.get_by_text(test_monitor_name, exact=True)
     expect(monitor_link).to_be_visible()
     monitor_link.click()
+
+    wait_for_loading_finished(page)
 
     expect(
         page.get_by_role("heading", name=test_monitor_name, exact=True)
@@ -337,6 +366,14 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
     wait_for_loading_finished(page)
 
+    time_field_input = page.get_by_text("@timestamp").first
+    time_field_input.wait_for()
+    time_field_input.click()
+
+    timestamp_option_button = page.get_by_role("option", name="@timestamp", exact=True)
+    expect(timestamp_option_button).to_be_visible()
+    timestamp_option_button.click()
+
     click_save_button(page)
     wait_for_loading_finished(page)
 
@@ -346,6 +383,16 @@ def test_user_can_see_and_edit_alert_objects(user_4, page):
 
 
 def test_user_can_delete_alerts(user_1, page):
+    def handler():
+        dismiss_toast_notification_button(page)
+
+    page.add_locator_handler(
+        page.get_by_text(
+            re.compile(r"^.*(successfully deleted|deleted successfully).$")
+        ),
+        handler,
+    )
+
     log_in(user_1, page, AUTH_PROXY_URL)
 
     switch_tenants(page, CF_ORG_1_NAME)
