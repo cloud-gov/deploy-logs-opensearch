@@ -294,6 +294,7 @@ instance_groups:
         - ContainerMetric
         - Audit
         - Metrics
+        - Falco
         client_id: opensearch_client_id
       dashboards_objects:
         upload_patterns:
