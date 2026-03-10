@@ -297,6 +297,7 @@ instance_groups:
         - Falco
         client_id: opensearch_client_id
       dashboards_objects:
+        delete_list_dashboard: ((delete_list_dashboard))
         upload_patterns:
         - {type: index-pattern, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/index-pattern/logs-app*.json"}
         - {type: search, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/search/app-*.json"}
