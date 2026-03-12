@@ -733,13 +733,13 @@ jobs:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-config
             trigger: true
-            passed: [smoke-tests-development]
+            passed: [smoke-tests-development, e2e-tests-development]
           - get: opensearch-release
             trigger: true
-            passed: [smoke-tests-development]
+            passed: [smoke-tests-development, e2e-tests-development]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [smoke-tests-development]
+            passed: [smoke-tests-development, e2e-tests-development]
           - get: general-task
           - get: terraform-yaml
             resource: terraform-yaml-staging
@@ -973,13 +973,13 @@ jobs:
           - get: pipeline-tasks
           - get: deploy-logs-opensearch-config
             trigger: true
-            passed: [smoke-tests-staging]
+            passed: [smoke-tests-staging, e2e-tests-staging]
           - get: opensearch-release
             trigger: true
-            passed: [smoke-tests-staging]
+            passed: [smoke-tests-staging, e2e-tests-staging]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [smoke-tests-staging]
+            passed: [smoke-tests-staging, e2e-tests-staging]
           - get: terraform-yaml
             resource: terraform-yaml-production
             trigger: true
