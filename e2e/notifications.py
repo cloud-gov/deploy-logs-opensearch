@@ -27,8 +27,8 @@ def fill_email_recipient_group_details(page, user, email_recipient_group_name):
     group_name_input.fill(email_recipient_group_name)
 
     email_address_input = (
-        page.locator("div")
-        .filter(has_text=re.compile(r"^Email addresses$"))
+        page.locator("css=.euiFormRow")
+        .filter(has=page.get_by_text("Emails"))
         .get_by_role("textbox")
     )
     email_address_input.fill(user.username)
