@@ -222,6 +222,12 @@ instance_groups:
             ca: ((opensearch_node.ca))
             certificate: ((smoketest.certificate))
             private_key: ((smoketest.private_key))
+        s3_audit:
+          bucket: ((audit_bucket))
+        s3_cloudwatch:
+          bucket: ((cloudwatch_bucket))
+        s3_metric:
+          bucket: ((metric_stream_bucket))
         s3:
           environment: development
           region: ((region))
