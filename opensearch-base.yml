@@ -47,7 +47,10 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
     provides:
       opensearch:
         as: opensearch_manager
@@ -89,10 +92,7 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch:
         deployment_type:
