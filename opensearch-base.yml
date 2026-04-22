@@ -528,7 +528,7 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        deployment_type
+        deployment_type:
         - app
         - metric
         heap_size: 1G
