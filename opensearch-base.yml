@@ -32,6 +32,56 @@ instance_groups:
 # we run 2 at a time to cut down on collisions. Data nodes can be updated 1 at a time or 2 at a time
 # DO NOT DO 3
 #######################################################
+#########################################################
+#2nd deploy group - opensearch_manager
+# manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
+# They are updated so one is always up as opensearch can survive on one manager in a disaster
+#########################################################
+
+- name: opensearch_manager
+  instances: 3
+  vm_extensions:
+  - logs-opensearch-profile
+  - 15GB_ephemeral_disk
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: opensearch
+    consumes: *consumes-opensearch-manager
+    provides:
+      opensearch:
+        as: opensearch_manager
+    properties:
+      opensearch:
+        deployment_type:
+        - app
+        - metric
+        clustername: opensearch
+        limits:
+          fd: 131072 # 2 ** 17
+        jvm_options:
+          - "-Dlog4j2.formatMsgNoLookups=true"
+        node:
+          allow_cluster_manager: true
+          allow_data: false
+    release: opensearch
+  - name: snort-config
+    properties:
+      snort:
+        rules:
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
+        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
+    release: jammy-snort
+  azs: [z1,z2]
+  persistent_disk_type: logs_opensearch_os_master
+  stemcell: default
+  vm_type: t3.large
+  networks:
+   - name: services
+  update:
+    serial: true # Block on this job to create deploy group 2
+
+
 - name: opensearch_old_data
   instances: 11
   jobs:
@@ -45,6 +95,9 @@ instance_groups:
         ip_addresses: true
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         node:
           attributes:
             box_type: warm
@@ -88,6 +141,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         node:
           attributes:
             box_type: hot
@@ -121,51 +177,6 @@ instance_groups:
     bosh:
       swap_size: 0
 
-#########################################################
-#2nd deploy group - opensearch_manager
-# manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
-# They are updated so one is always up as opensearch can survive on one manager in a disaster
-#########################################################
-
-- name: opensearch_manager
-  instances: 3
-  vm_extensions:
-  - logs-opensearch-profile
-  - 15GB_ephemeral_disk
-  jobs:
-  - name: bpm
-    release: bpm
-  - name: opensearch
-    consumes: *consumes-opensearch-manager
-    provides:
-      opensearch:
-        as: opensearch_manager
-    properties:
-      opensearch:
-        clustername: opensearch
-        limits:
-          fd: 131072 # 2 ** 17
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
-        node:
-          allow_cluster_manager: true
-          allow_data: false
-    release: opensearch
-  - name: snort-config
-    properties:
-      snort:
-        rules:
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"POST"; http_method; content: "logs-opensearch-app"; http_uri; content:"/_update"; http_uri; classtype:web-application-attack; sid:343080002; rev:1;)'
-        - 'alert tcp any any -> any 9200 (msg:"Unexpected opensearch action"; content:"DELETE"; http_method; content: "logs-opensearch-app"; http_uri; classtype:web-application-attack; sid:343080004; rev:1;)'
-    release: jammy-snort
-  azs: [z1,z2]
-  persistent_disk_type: logs_opensearch_os_master
-  stemcell: default
-  vm_type: t3.large
-  networks:
-   - name: services
-  update:
-    serial: true # Block on this job to create deploy group 2
 
 #########################################################
 #3rd deploy group - maintenance
@@ -184,6 +195,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -263,6 +277,7 @@ instance_groups:
           client_id: opensearch_client_id
     release: opensearch
   - name: opensearch_templates
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_config:
         app_index_component_name: component-index-mappings-app-cf
@@ -327,6 +342,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
@@ -384,6 +402,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -445,6 +466,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -504,6 +528,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -563,6 +590,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -622,6 +652,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -688,6 +721,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:

@@ -1329,7 +1329,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/opensearch-boshrelease
-      branch: ((test-opensearch-release-branch))
+      branch:  platform-change
 
 
   - name: opensearch-final-builds-dir-tarball
