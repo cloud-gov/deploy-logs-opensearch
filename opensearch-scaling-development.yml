@@ -4,7 +4,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_manager?/instances?
-  value: 2
+  value: 1
 
 
 - type: replace
@@ -41,7 +41,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards?/instances?
-  value: 2
+  value: 1
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards?/vm_type?
