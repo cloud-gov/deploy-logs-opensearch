@@ -39,7 +39,10 @@ instance_groups:
     release: bpm
   - name: opensearch
     release: opensearch
-    consumes: *consumes-opensearch-manager
+    consumes: &consumes-opensearch-manager
+      opensearch:
+        from: opensearch_manager
+        ip_addresses: true
     properties:
       opensearch:
         deployment_type:
@@ -140,10 +143,7 @@ instance_groups:
   - name: bpm
     release: bpm
   - name: opensearch
-    consumes: &consumes-opensearch-manager
-      opensearch:
-        from: opensearch_manager
-        ip_addresses: true
+    consumes: *consumes-opensearch-manager
     provides:
       opensearch:
         as: opensearch_manager
@@ -176,7 +176,7 @@ instance_groups:
    - name: services
   update:
     serial: true # Block on this job to create deploy group 2
-    
+
 #########################################################
 #3rd deploy group - maintenance
 # maintenance is ran after data and manager as it interacts with both.
