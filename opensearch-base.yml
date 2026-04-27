@@ -45,6 +45,9 @@ instance_groups:
         ip_addresses: true
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         node:
           attributes:
             box_type: warm
@@ -88,6 +91,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         node:
           attributes:
             box_type: hot
@@ -121,6 +127,7 @@ instance_groups:
     bosh:
       swap_size: 0
 
+
 #########################################################
 #2nd deploy group - opensearch_manager
 # manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
@@ -142,6 +149,9 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -184,6 +194,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
@@ -263,6 +276,7 @@ instance_groups:
           client_id: opensearch_client_id
     release: opensearch
   - name: opensearch_templates
+    consumes: *consumes-opensearch-manager
     properties:
       opensearch_config:
         app_index_component_name: component-index-mappings-app-cf
@@ -327,6 +341,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         jvm_options:
         - -Dlog4j2.formatMsgNoLookups=true
         migrate_data_path: true
@@ -384,6 +401,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -445,6 +465,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -504,6 +527,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -563,6 +589,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -622,6 +651,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
@@ -688,6 +720,9 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        deployment_type:
+        - app
+        - metric
         heap_size: 1G
         http_host: 127.0.0.1
         jvm_options:
