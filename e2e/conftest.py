@@ -8,6 +8,14 @@ from .user import User
 expect.set_options(timeout=60_000)
 
 
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args):
+    browser_context_args["locale"] = "en-US"
+    return {
+        **browser_context_args,
+    }
+
+
 @pytest.fixture
 def user_1():
     user_1_username = getenv(f"TEST_USER_1_USERNAME")
