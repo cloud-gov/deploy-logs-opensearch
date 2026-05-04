@@ -101,6 +101,10 @@
     time_interval: 5m
 
 - type: replace
+  path: /instance_groups/name=ingestor_falco?/instances?
+  value: 1
+
+- type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/cloudwatch_count_test?
   value:
     minimum: 100
