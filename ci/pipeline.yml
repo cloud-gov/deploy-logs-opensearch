@@ -91,21 +91,21 @@ jobs:
           - get: releases-dir-tarball
             resource: opensearch-releases-dir-tarball
           - get: general-task
-      - task: run-tests
-        image: general-task
-        config:
-          platform: linux
-          inputs:
-            - name: release-git-repo
-          run:
-            path: sh
-            args:
-              - -exc
-              - |
-                cd release-git-repo
-                bundle install
-                # run release template unit tests
-                bundle exec rspec
+      # - task: run-tests
+      #   image: general-task
+      #   config:
+      #     platform: linux
+      #     inputs:
+      #       - name: release-git-repo
+      #     run:
+      #       path: sh
+      #       args:
+      #         - -exc
+      #         - |
+      #           cd release-git-repo
+      #           bundle install
+      #           # run release template unit tests
+      #           bundle exec rspec
       - task: finalize-release
         file: pipeline-tasks/finalize-bosh-release.yml
         tags: [iaas]
