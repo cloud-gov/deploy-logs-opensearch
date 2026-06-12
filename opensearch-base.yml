@@ -91,6 +91,10 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        fips:
+          enabled: true
+          keystore_password: ((fips_keystore_password))
+          ca_certificate: ((opensearch_node.ca))
         deployment_type:
         - app
         - metric
@@ -149,6 +153,10 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        fips:
+          enabled: true
+          keystore_password: ((fips_keystore_password))
+          ca_certificate: ((opensearch_node.ca))
         deployment_type:
         - app
         - metric
