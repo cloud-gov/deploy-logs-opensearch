@@ -9,7 +9,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/instances?
-  value: 2
+  value: 0
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/vm_type?
@@ -21,6 +21,7 @@
     max_in_flight: 2
     canaries: 2
     serial: true
+    
 - type: replace
   path: /instance_groups/name=opensearch_data?/jobs?/name=opensearch?/properties?/opensearch?/health?/disable_post_start?
   value: true
