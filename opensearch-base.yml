@@ -94,7 +94,7 @@ instance_groups:
         repository:
           s3:
             region: ((region)) 
-            access_key: (repository_access_key))
+            access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
         fips:
           enabled: true
@@ -161,7 +161,7 @@ instance_groups:
         repository:
           s3:
             region: ((region)) 
-            access_key: (repository_access_key))
+            access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
         fips:
           enabled: true
@@ -741,7 +741,7 @@ instance_groups:
         repository:
           s3:
             region: ((region)) 
-            access_key: (repository_access_key))
+            access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
         deployment_type:
         - app
