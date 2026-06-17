@@ -158,6 +158,11 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        repository:
+          s3:
+            region: ((region)) 
+            access_key: (repository_access_key))
+            secret_key: ((repository_secret_key))
         fips:
           enabled: true
           keystore_password: ((fips_keystore_password))
@@ -733,6 +738,11 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        repository:
+          s3:
+            region: ((region)) 
+            access_key: (repository_access_key))
+            secret_key: ((repository_secret_key))
         deployment_type:
         - app
         - metric
