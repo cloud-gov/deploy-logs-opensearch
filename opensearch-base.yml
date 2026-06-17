@@ -93,6 +93,7 @@ instance_groups:
       opensearch:
         repository:
           s3:
+            bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
             region: ((region)) 
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
@@ -161,6 +162,7 @@ instance_groups:
         repository:
           s3:
             region: ((region)) 
+            bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
         fips:
