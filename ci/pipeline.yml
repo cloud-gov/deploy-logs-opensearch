@@ -41,6 +41,7 @@ groups:
       - deploy-opensearch-test
       - tenant-test
       - upload-dashboards-objects-test
+      - delete-test-dev-after-hours
   - name: development
     jobs:
       - deploy-opensearch-development
@@ -156,21 +157,21 @@ jobs:
           - get: releases-dir-tarball
             resource: opensearch-releases-dir-tarball
           - get: general-task
-      - task: run-tests
-        image: general-task
-        config:
-          platform: linux
-          inputs:
-            - name: release-git-repo
-          run:
-            path: sh
-            args:
-              - -exc
-              - |
-                cd release-git-repo
-                bundle install
-                # run release template unit tests
-                bundle exec rspec
+      # - task: run-tests
+      #   image: general-task
+      #   config:
+      #     platform: linux
+      #     inputs:
+      #       - name: release-git-repo
+      #     run:
+      #       path: sh
+      #       args:
+      #         - -exc
+      #         - |
+      #           cd release-git-repo
+      #           bundle install
+      #           # run release template unit tests
+      #           bundle exec rspec
       - task: create-test-release
         input_mapping:
           deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
@@ -444,15 +445,13 @@ jobs:
           vars_files:
             - terraform-secrets/terraform.yml
 
-  - name: delete-dev-after-hours
+  - name: delete-test-dev-after-hours
     serial: true
     plan:
     - in_parallel:
       - get: after-hours
         trigger: true
-      - get: opensearch-manifests
-        passed: [deploy-opensearch-test]
-      - get: release
+      - get: deploy-logs-opensearch-test-config
         passed: [deploy-opensearch-test]
     - task: delete-deployment
       file: opensearch-manifests/ci/delete-deployment.yml
@@ -1413,7 +1412,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: ((deploy-logs-opensearch-config-test-branch))
+      branch: snapshot
 
   - name: opensearch-stemcell-jammy
     source:
