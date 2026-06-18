@@ -444,6 +444,25 @@ jobs:
           vars_files:
             - terraform-secrets/terraform.yml
 
+  - name: delete-dev-after-hours
+    serial: true
+    plan:
+    - in_parallel:
+      - get: after-hours
+        trigger: true
+      - get: opensearch-manifests
+        passed: [deploy-opensearch-test]
+      - get: release
+        passed: [deploy-opensearch-test]
+    - task: delete-deployment
+      file: opensearch-manifests/ci/delete-deployment.yml
+      params:
+        BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+        BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
+        BOSH_CLIENT: ((bosh-director-info.development.client))
+        BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+        BOSH_ENV_NAME: development
+        
   - name: tenant-test
     plan:
       - in_parallel:
@@ -1490,6 +1509,13 @@ resources:
       location: America/New_York
       days: [Thursday]
       initial_version: true
+  
+  - name: after-hours
+    type: time
+    source:
+      start: 6:00 PM
+      stop: 7:00 PM
+      location: America/Los_Angeles
 
 resource_types:
   - name: registry-image
