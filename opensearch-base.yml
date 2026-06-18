@@ -92,9 +92,9 @@ instance_groups:
     properties:
       opensearch:
         repository:
-          name: snapshot-backup
           s3:
             bucket: logs-opensearch-cf-development
+            name: snapshot-backup
             region: ((region)) 
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
@@ -161,9 +161,9 @@ instance_groups:
     properties:
       opensearch:
         repository:
-          name: snapshot-backup
           s3:
             region: ((region)) 
+            name: snapshot-backup
             bucket: logs-opensearch-cf-development
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
