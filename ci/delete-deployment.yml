@@ -11,12 +11,11 @@ image_resource:
     tag: latest   
 
 inputs:
-- name: opensearch-manifests
-- name: release
+- name: deploy-logs-opensearch-test-config
 
 
 run:
-  path: opensearch-manifests/ci/delete-deployment.sh
+  path: deploy-logs-opensearch-test-config/ci/delete-deployment.sh
 
 params:
   BOSH_CA_CERT:
