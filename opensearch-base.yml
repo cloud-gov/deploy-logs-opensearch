@@ -93,7 +93,8 @@ instance_groups:
       opensearch:
         repository:
           s3:
-            bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
+            name: snapshot-backup
+            bucket: (( logs-opensearch-cf-development ))
             region: ((region)) 
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
@@ -161,8 +162,9 @@ instance_groups:
       opensearch:
         repository:
           s3:
+            name: snapshot-backup
             region: ((region)) 
-            bucket: (( grab terraform_outputs.logs_opensearch_archive_bucket_name ))
+            bucket: (( logs-opensearch-cf-development ))
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
         fips:
