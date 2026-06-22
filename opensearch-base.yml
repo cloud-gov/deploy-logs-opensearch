@@ -58,6 +58,7 @@ instance_groups:
             name: repository-test
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
+            path: snapshot
         deployment_type:
         - app
         - metric
