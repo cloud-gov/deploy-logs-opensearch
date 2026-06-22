@@ -53,7 +53,7 @@ instance_groups:
       opensearch:
         repository:
           s3: 
-            bucket: logs-opensearch-development
+            bucket: logs-opensearch-cf-development
             region: ((region))
             name: repository-test
             access_key: ((repository_access_key))
