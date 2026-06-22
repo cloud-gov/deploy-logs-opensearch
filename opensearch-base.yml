@@ -53,12 +53,12 @@ instance_groups:
       opensearch:
         repository:
           s3: 
-            bucket: logs-opensearch-cf-development
+            bucket: logs-platform-opensearch-development
             region: ((region))
             name: repository-test
             access_key: ((repository_access_key))
             secret_key: ((repository_secret_key))
-            path: snapshot
+            path: logs/snapshot
         deployment_type:
         - app
         - metric
