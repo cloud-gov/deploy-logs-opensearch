@@ -53,11 +53,11 @@ instance_groups:
       opensearch:
         repository:
           s3: 
-            bucket: logs-platform-opensearch-development
+            bucket: ((snapshot_bucket))
             region: ((region))
             name: repository-test
-            access_key: ((repository_access_key))
-            secret_key: ((repository_secret_key))
+            enabled: true
+            secret_key: ((snapshot_key))
             path: logs/snapshot
         deployment_type:
         - app
@@ -153,11 +153,11 @@ instance_groups:
       opensearch:
         repository:
           s3: 
-            bucket: logs-platform-opensearch-development
+            bucket: ((snapshot_bucket))
             region: ((region))
             name: repository-test
-            access_key: ((repository_access_key))
-            secret_key: ((repository_secret_key))
+            enabled: true
+            secret_key: ((snapshot_key))
             path: logs/snapshot
         deployment_type:
         - app
@@ -740,11 +740,11 @@ instance_groups:
       opensearch:
         repository:
           s3: 
-            bucket: logs-platform-opensearch-development
+            bucket: ((snapshot_bucket))
             region: ((region))
             name: repository-test
-            access_key: ((repository_access_key))
-            secret_key: ((repository_secret_key))
+            enabled: true
+            secret_key: ((snapshot_key))
             path: logs/snapshot
         deployment_type:
         - app
