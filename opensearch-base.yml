@@ -52,6 +52,10 @@ instance_groups:
     properties:
       opensearch:
         repository:
+          fips:
+            enabled: true
+            keystore_password: ((fips_keystore_password))
+            ca_certificate: ((opensearch_node.ca))
           s3: 
             bucket: ((snapshot_bucket))
             region: ((region))
@@ -171,7 +175,7 @@ instance_groups:
           fd: 131072  # 2 ** 17
         health:
           timeout: 900
-          disable_post_start: false
+          disable_post_start: true
         recovery:
           delay_allocation_restart: "10m"
         config_options:
