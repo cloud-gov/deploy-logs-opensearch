@@ -157,21 +157,21 @@ jobs:
           - get: releases-dir-tarball
             resource: opensearch-releases-dir-tarball
           - get: general-task
-      # - task: run-tests
-      #   image: general-task
-      #   config:
-      #     platform: linux
-      #     inputs:
-      #       - name: release-git-repo
-      #     run:
-      #       path: sh
-      #       args:
-      #         - -exc
-      #         - |
-      #           cd release-git-repo
-      #           bundle install
-      #           # run release template unit tests
-      #           bundle exec rspec
+      - task: run-tests
+        image: general-task
+        config:
+          platform: linux
+          inputs:
+            - name: release-git-repo
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                cd release-git-repo
+                bundle install
+                # run release template unit tests
+                bundle exec rspec
       - task: create-test-release
         input_mapping:
           deploy-logs-opensearch-config: deploy-logs-opensearch-test-config
@@ -414,7 +414,7 @@ jobs:
             args:
               - -exc
               - |
-                bosh int deploy-logs-opensearch-test-config/opensearch-base.yml \
+                bosh int deploy-logs-opensearch-test-config/opensearch-test-base.yml \
                 -o deploy-logs-opensearch-test-config/opensearch-scaling-testing.yml \
                 > opensearch-manifest/manifest.yml
           outputs:
@@ -454,7 +454,7 @@ jobs:
       - get: deploy-logs-opensearch-test-config
         passed: [deploy-opensearch-test]
     - task: delete-deployment
-      file: opensearch-manifests/ci/delete-deployment.yml
+      file: deploy-logs-opensearch-test-config/ci/delete-deployment.yml
       params:
         BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
         BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
@@ -558,6 +558,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
+            - deploy-logs-opensearch-config/opsfiles/enable-snapshot.yml
             - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
@@ -1092,16 +1093,12 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: deploy-logs-opensearch-config
-            passed: [deploy-opensearch-production]
             trigger: true
           - get: opensearch-production-deployment
             trigger: true
-            passed: [deploy-opensearch-production]
       - task: smoke-tests
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
@@ -1127,16 +1124,12 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: deploy-logs-opensearch-config
-            passed: [deploy-opensearch-production]
             trigger: true
           - get: opensearch-production-deployment
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: one-hour-timer
             trigger: true
           - get: playwright-python
@@ -1412,7 +1405,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: snapshot
+      branch: ((deploy-logs-opensearch-config-test-branch))
 
   - name: opensearch-stemcell-jammy
     source:
