@@ -92,14 +92,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        repository:
-          s3: 
-            bucket: ((snapshot_bucket))
-            region: ((region))
-            name: repository-test
-            enabled: true
-            secret_name: ((snapshot_key))
-            path: logs/snapshot
         deployment_type:
         - app
         - metric
@@ -112,7 +104,7 @@ instance_groups:
           fd: 131072  # 2 ** 17
         health:
           timeout: 900
-          disable_post_start: true
+          disable_post_start: false
         recovery:
           delay_allocation_restart: "10m"
         config_options:
@@ -136,7 +128,7 @@ instance_groups:
     bosh:
       swap_size: 0
 
-
+#########################################################
 #2nd deploy group - opensearch_manager
 # manager is run after data nodes because old managers can talk to new data nodes but not vice versa.
 # They are updated so one is always up as opensearch can survive on one manager in a disaster
@@ -159,14 +151,6 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
-        repository:
-          s3: 
-            bucket: ((snapshot_bucket))
-            region: ((region))
-            name: repository-test
-            enabled: true
-            secret_name: ((snapshot_key))
-            path: logs/snapshot
         deployment_type:
         - app
         - metric
@@ -738,14 +722,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        repository:
-          s3: 
-            bucket: ((snapshot_bucket))
-            region: ((region))
-            name: repository-test
-            enabled: true
-            secret_name: ((snapshot_key))
-            path: logs/snapshot
         deployment_type:
         - app
         - metric
