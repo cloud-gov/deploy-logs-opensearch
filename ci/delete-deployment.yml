@@ -1,0 +1,16 @@
+---
+platform: linux
+
+inputs:
+- name: deploy-logs-opensearch-test-config
+
+
+run:
+  path: deploy-logs-opensearch-test-config/ci/delete-deployment.sh
+
+params:
+  BOSH_CA_CERT:
+  BOSH_ENVIRONMENT:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_ENV_NAME:

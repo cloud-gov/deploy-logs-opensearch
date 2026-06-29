@@ -41,6 +41,7 @@ groups:
       - deploy-opensearch-test
       - tenant-test
       - upload-dashboards-objects-test
+      - delete-test-dev-after-hours
   - name: development
     jobs:
       - deploy-opensearch-development
@@ -413,7 +414,7 @@ jobs:
             args:
               - -exc
               - |
-                bosh int deploy-logs-opensearch-test-config/opensearch-base.yml \
+                bosh int deploy-logs-opensearch-test-config/opensearch-test-base.yml \
                 -o deploy-logs-opensearch-test-config/opensearch-scaling-testing.yml \
                 > opensearch-manifest/manifest.yml
           outputs:
@@ -444,6 +445,24 @@ jobs:
           vars_files:
             - terraform-secrets/terraform.yml
 
+  - name: delete-test-dev-after-hours
+    serial: true
+    plan:
+    - in_parallel:
+      - get: after-hours
+        trigger: true
+      - get: deploy-logs-opensearch-test-config
+        passed: [deploy-opensearch-test]
+    - task: delete-deployment
+      image: general-task
+      file: deploy-logs-opensearch-test-config/ci/delete-deployment.yml
+      params:
+        BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+        BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
+        BOSH_CLIENT: ((bosh-director-info.development.client))
+        BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+        BOSH_ENV_NAME: development
+        
   - name: tenant-test
     plan:
       - in_parallel:
@@ -540,6 +559,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/enable-syslog.yml
             - deploy-logs-opensearch-config/opsfiles/cf-development.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
+            - deploy-logs-opensearch-config/opsfiles/enable-snapshot.yml
             - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
           vars_files:
             - terraform-secrets/terraform.yml
@@ -1074,16 +1094,12 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: deploy-logs-opensearch-config
-            passed: [deploy-opensearch-production]
             trigger: true
           - get: opensearch-production-deployment
             trigger: true
-            passed: [deploy-opensearch-production]
       - task: smoke-tests
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
@@ -1109,16 +1125,12 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: opensearch-stemcell-jammy
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: deploy-logs-opensearch-config
-            passed: [deploy-opensearch-production]
             trigger: true
           - get: opensearch-production-deployment
             trigger: true
-            passed: [deploy-opensearch-production]
           - get: one-hour-timer
             trigger: true
           - get: playwright-python
@@ -1490,6 +1502,13 @@ resources:
       location: America/New_York
       days: [Thursday]
       initial_version: true
+  
+  - name: after-hours
+    type: time
+    source:
+      start: 6:00 PM
+      stop: 7:00 PM
+      location: America/Los_Angeles
 
 resource_types:
   - name: registry-image
