@@ -454,6 +454,7 @@ jobs:
       - get: deploy-logs-opensearch-test-config
         passed: [deploy-opensearch-test]
     - task: delete-deployment
+      image: general-task
       file: deploy-logs-opensearch-test-config/ci/delete-deployment.yml
       params:
         BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
