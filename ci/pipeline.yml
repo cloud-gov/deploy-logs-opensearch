@@ -1340,7 +1340,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/opensearch-boshrelease
-      branch:  ((test-opensearch-release-branch))
+      branch: main
 
   - name: opensearch-final-builds-dir-tarball
     type: s3-iam
@@ -1405,7 +1405,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: ((deploy-logs-opensearch-config-test-branch))
+      branch: main
 
   - name: opensearch-stemcell-jammy
     source:
