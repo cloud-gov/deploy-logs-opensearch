@@ -55,7 +55,7 @@ instance_groups:
           use_dns: true
         transport:
           ssl:
-            enforce_hostname_verification: true
+            enforce_hostname_verification: false
         repository:
           s3: 
             bucket: ((snapshot_bucket))
@@ -160,7 +160,7 @@ instance_groups:
           use_dns: true
         transport:
           ssl:
-            enforce_hostname_verification: true
+            enforce_hostname_verification: false
         repository:
           s3: 
             bucket: ((snapshot_bucket))
@@ -752,7 +752,7 @@ instance_groups:
           use_dns: true
         transport:
           ssl:
-            enforce_hostname_verification: true
+            enforce_hostname_verification: false
         repository:
           s3: 
             bucket: ((snapshot_bucket))
