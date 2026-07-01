@@ -52,7 +52,7 @@ instance_groups:
     properties:
       opensearch:
         discovery:
-          use_dns: false
+          use_dns: true
         transport:
           ssl:
             enforce_hostname_verification: false
@@ -157,7 +157,7 @@ instance_groups:
     properties:
       opensearch:
         discovery:
-          use_dns: false
+          use_dns: true
         transport:
           ssl:
             enforce_hostname_verification: false
@@ -749,7 +749,7 @@ instance_groups:
     properties:
       opensearch:
         discovery:
-          use_dns: false
+          use_dns: true
         transport:
           ssl:
             enforce_hostname_verification: false
