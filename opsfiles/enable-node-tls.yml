@@ -253,9 +253,9 @@
       common_name: node.opensearch.internal
       alternative_names: 
       - "localhost"
-      - "*.opensearch-data.default.logs-opensearch.bosh"
-      - "*.opensearch-manager.default.logs-opensearch.bosh"
-      - "*.opensearch-dashboards.default.logs-opensearch.bosh"
+      - "*.opensearch-data.services.logs-opensearch-test.bosh"
+      - "*.opensearch-manager.services.logs-opensearch-test.bosh"
+      - "*.opensearch-dashboards.services.logs-opensearch-test.bosh"
       extended_key_usage:
       - server_auth
       - client_auth
