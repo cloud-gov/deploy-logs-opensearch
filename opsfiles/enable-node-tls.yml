@@ -251,7 +251,11 @@
     options:
       ca: opensearch_ca
       common_name: node.opensearch.internal
-      alternative_names: ["localhost"]
+      alternative_names: 
+      - "localhost"
+      - "*.opensearch_data.default.logs_opensearch.bosh"
+      - "*.opensearch_manager.default.logs_opensearch.bosh"
+      - "*.opensearch_dashboards.default.logs_opensearch.bosh"
       extended_key_usage:
       - server_auth
       - client_auth

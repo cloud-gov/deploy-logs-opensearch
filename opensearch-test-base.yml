@@ -51,6 +51,11 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
+        discovery:
+          use_dns: true
+        transport:
+          ssl:
+            enforce_hostname_verification: true
         repository:
           s3: 
             bucket: ((snapshot_bucket))
@@ -151,6 +156,11 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        discovery:
+          use_dns: true
+        transport:
+          ssl:
+            enforce_hostname_verification: true
         repository:
           s3: 
             bucket: ((snapshot_bucket))
@@ -738,6 +748,11 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
+        discovery:
+          use_dns: true
+        transport:
+          ssl:
+            enforce_hostname_verification: true
         repository:
           s3: 
             bucket: ((snapshot_bucket))
