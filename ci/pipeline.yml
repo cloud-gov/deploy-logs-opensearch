@@ -800,6 +800,7 @@ jobs:
             - deploy-logs-opensearch-config/opsfiles/cf-staging.yml
             - deploy-logs-opensearch-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-config/opsfiles/add-keystore-credentials-errand.yml
+            - deploy-logs-opensearch-config/opsfiles/enable-snapshot.yml
           vars_files:
             - terraform-secrets/terraform.yml
     on_failure:
