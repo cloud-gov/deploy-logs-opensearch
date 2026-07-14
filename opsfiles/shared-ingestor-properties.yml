@@ -1,0 +1,240 @@
+---
+# OPS file to consolidate the properties shared by every S3-backed ingestor
+# instance group (ingestor_s3, ingestor_aws_metrics, ingestor_cloudwatch_logs,
+# ingestor_falco). These groups are ~95% identical in opensearch-base.yml; the
+# only per-group differences are logstash.type, the s3 bucket, the parser index,
+# the s3 prefix and the "provides" name. Everything below is common to all of
+# them and is applied here via replace ops so the base manifest stays DRY.
+#
+# NOTE: this ops file only touches properties that are identical across the
+# groups. Differentiating fields (type/bucket/index/prefix/provides) remain in
+# opensearch-base.yml.
+
+# ---------------------------------------------------------------------------
+# Shared "opensearch" sidecar job properties (identical for all ingestors)
+# ---------------------------------------------------------------------------
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties/opensearch?
+  value: &ingestor-opensearch-properties
+    anomaly_detection:
+      enabled: true
+    deployment_type:
+    - app
+    - metric
+    heap_size: 1G
+    http_host: 127.0.0.1
+    jvm_options:
+    - -Dlog4j2.formatMsgNoLookups=true
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=opensearch/properties/opensearch?
+  value: *ingestor-opensearch-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=opensearch/properties/opensearch?
+  value: *ingestor-opensearch-properties
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties/opensearch?
+  value: *ingestor-opensearch-properties
+
+# ---------------------------------------------------------------------------
+# Shared logstash jvm_options + queue tuning
+# ---------------------------------------------------------------------------
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=ingestor_s3/properties/logstash/jvm_options?
+  value: &ingestor-logstash-jvm-options
+  - -Dlog4j2.formatMsgNoLookups=true
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=ingestor_s3/properties/logstash/queue?
+  value: &ingestor-logstash-queue
+    max_bytes: 30gb
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=ingestor_s3/properties/logstash/jvm_options?
+  value: *ingestor-logstash-jvm-options
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=ingestor_s3/properties/logstash/queue?
+  value: *ingestor-logstash-queue
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=ingestor_s3/properties/logstash/jvm_options?
+  value: *ingestor-logstash-jvm-options
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=ingestor_s3/properties/logstash/queue?
+  value: *ingestor-logstash-queue
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=ingestor_s3/properties/logstash/jvm_options?
+  value: *ingestor-logstash-jvm-options
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=ingestor_s3/properties/logstash/queue?
+  value: *ingestor-logstash-queue
+
+# ---------------------------------------------------------------------------
+# Shared syslog_tls listener config
+# ---------------------------------------------------------------------------
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=ingestor_s3/properties/logstash_ingestor/syslog_tls?
+  value: &ingestor-syslog-tls
+    port: 6972
+    ssl_cert: ((ingestor_syslog_server_tls.certificate))
+    ssl_key: ((ingestor_syslog_server_tls.private_key))
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=ingestor_s3/properties/logstash_ingestor/syslog_tls?
+  value: *ingestor-syslog-tls
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=ingestor_s3/properties/logstash_ingestor/syslog_tls?
+  value: *ingestor-syslog-tls
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=ingestor_s3/properties/logstash_ingestor/syslog_tls?
+  value: *ingestor-syslog-tls
+
+# ---------------------------------------------------------------------------
+# Shared logstash_parser opensearch data_hosts + ssl
+# (index / index_type stay per-group in the base manifest)
+# ---------------------------------------------------------------------------
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/data_hosts?
+  value: &ingestor-parser-data-hosts
+  - localhost
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/ssl?
+  value: &ingestor-parser-ssl
+    ca: ((opensearch_node.ca))
+    certificate: ((logstash.certificate))
+    private_key: ((logstash.private_key))
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/data_hosts?
+  value: *ingestor-parser-data-hosts
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/ssl?
+  value: *ingestor-parser-ssl
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/data_hosts?
+  value: *ingestor-parser-data-hosts
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/ssl?
+  value: *ingestor-parser-ssl
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/data_hosts?
+  value: *ingestor-parser-data-hosts
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/jobs/name=ingestor_s3/properties/logstash_parser/opensearch/ssl?
+  value: *ingestor-parser-ssl
+
+# ---------------------------------------------------------------------------
+# Shared instance-group level infrastructure settings
+# ---------------------------------------------------------------------------
+- type: replace
+  path: /instance_groups/name=ingestor_s3/azs?
+  value: &ingestor-azs [z1, z2]
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/networks?
+  value: &ingestor-networks
+  - name: services
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/persistent_disk_type?
+  value: &ingestor-disk logs_opensearch_ingestor
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/stemcell?
+  value: &ingestor-stemcell default
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/vm_extensions?
+  value: &ingestor-vm-extensions
+  - logs-opensearch-ingestor-profile
+  - 20GB_ephemeral_disk
+
+- type: replace
+  path: /instance_groups/name=ingestor_s3/vm_type?
+  value: &ingestor-vm-type t3.large
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/azs?
+  value: *ingestor-azs
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/networks?
+  value: *ingestor-networks
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/persistent_disk_type?
+  value: *ingestor-disk
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/stemcell?
+  value: *ingestor-stemcell
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/vm_extensions?
+  value: *ingestor-vm-extensions
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics/vm_type?
+  value: *ingestor-vm-type
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/azs?
+  value: *ingestor-azs
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/networks?
+  value: *ingestor-networks
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/persistent_disk_type?
+  value: *ingestor-disk
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/stemcell?
+  value: *ingestor-stemcell
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/vm_extensions?
+  value: *ingestor-vm-extensions
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs/vm_type?
+  value: *ingestor-vm-type
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/azs?
+  value: *ingestor-azs
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/networks?
+  value: *ingestor-networks
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/persistent_disk_type?
+  value: *ingestor-disk
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/stemcell?
+  value: *ingestor-stemcell
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/vm_extensions?
+  value: *ingestor-vm-extensions
+
+- type: replace
+  path: /instance_groups/name=ingestor_falco/vm_type?
+  value: *ingestor-vm-type
