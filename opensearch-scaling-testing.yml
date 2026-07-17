@@ -64,7 +64,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=archiver?/vm_type?
@@ -72,7 +72,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor?/vm_type?
@@ -80,19 +80,19 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor_falco?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=ingestor_s3?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
@@ -123,7 +123,7 @@
 
 - type: replace
   path: /instance_groups/name=maintenance?/instances?
-  value: 1
+  value: 0
 
 - type: replace
   path: /instance_groups/name=maintenance?/vm_type?
