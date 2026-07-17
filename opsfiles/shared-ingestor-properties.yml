@@ -14,7 +14,7 @@
 # Shared "opensearch" sidecar job properties (identical for all ingestors)
 # ---------------------------------------------------------------------------
 - type: replace
-  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties/opensearch?
+  path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties?/opensearch?
   value: &ingestor-opensearch-properties
     deployment_type:
     - app
@@ -25,15 +25,15 @@
     - -Dlog4j2.formatMsgNoLookups=true
 
 - type: replace
-  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=opensearch/properties/opensearch?
+  path: /instance_groups/name=ingestor_aws_metrics/jobs/name=opensearch/properties?/opensearch?
   value: *ingestor-opensearch-properties
 
 - type: replace
-  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=opensearch/properties/opensearch?
+  path: /instance_groups/name=ingestor_cloudwatch_logs/jobs/name=opensearch/properties?/opensearch?
   value: *ingestor-opensearch-properties
 
 - type: replace
-  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties/opensearch?
+  path: /instance_groups/name=ingestor_falco/jobs/name=opensearch/properties?/opensearch?
   value: *ingestor-opensearch-properties
 
 # ---------------------------------------------------------------------------
