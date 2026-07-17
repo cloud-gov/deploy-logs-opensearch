@@ -16,8 +16,6 @@
 - type: replace
   path: /instance_groups/name=ingestor_s3/jobs/name=opensearch/properties/opensearch?
   value: &ingestor-opensearch-properties
-    anomaly_detection:
-      enabled: true
     deployment_type:
     - app
     - metric

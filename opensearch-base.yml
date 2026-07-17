@@ -46,8 +46,6 @@ instance_groups:
         ip_addresses: true
     properties:
       opensearch:
-        anomaly_detection: &opensearch-anomaly-detection
-          enabled: true
         deployment_type: &opensearch-deployment-type
         - app
         - metric
@@ -94,7 +92,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        anomaly_detection: *opensearch-anomaly-detection
         deployment_type: *opensearch-deployment-type
         node:
           attributes:
@@ -148,7 +145,6 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
-        anomaly_detection: *opensearch-anomaly-detection
         deployment_type: *opensearch-deployment-type
         clustername: opensearch
         limits:
@@ -191,7 +187,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        anomaly_detection: *opensearch-anomaly-detection
         deployment_type: *opensearch-deployment-type
         clustername: opensearch
         limits:
@@ -336,7 +331,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        anomaly_detection: *opensearch-anomaly-detection
         deployment_type: *opensearch-deployment-type
         jvm_options: *opensearch-jvm-options
         migrate_data_path: true
@@ -394,7 +388,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        anomaly_detection: *opensearch-anomaly-detection
         deployment_type: *opensearch-deployment-type
         heap_size: 1G
         http_host: 127.0.0.1
@@ -586,7 +579,6 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        anomaly_detection: *opensearch-anomaly-detection
         deployment_type: *opensearch-deployment-type
         heap_size: 1G
         http_host: 127.0.0.1
