@@ -432,6 +432,7 @@ jobs:
           stemcells:
             - opensearch-stemcell-jammy/*.tgz
           ops_files:
+            - deploy-logs-opensearch-test-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-node-tls.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-dashboard-dns.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-dashboards-tls.yml
@@ -551,6 +552,7 @@ jobs:
           stemcells:
             - opensearch-stemcell-jammy/*.tgz
           ops_files:
+            - deploy-logs-opensearch-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
             - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
             - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
@@ -791,6 +793,7 @@ jobs:
           stemcells:
             - opensearch-stemcell-jammy/*.tgz
           ops_files:
+            - deploy-logs-opensearch-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
             - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
             - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
@@ -1034,6 +1037,7 @@ jobs:
           stemcells:
             - opensearch-stemcell-jammy/*.tgz
           ops_files:
+            - deploy-logs-opensearch-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
             - deploy-logs-opensearch-config/opsfiles/enable-dashboard-dns.yml
             - deploy-logs-opensearch-config/opsfiles/enable-dashboards-tls.yml
@@ -1343,7 +1347,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/opensearch-boshrelease
-      branch:  ((test-opensearch-release-branch))
+      branch: ((test-opensearch-release-branch))
 
   - name: opensearch-final-builds-dir-tarball
     type: s3-iam

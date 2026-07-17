@@ -68,7 +68,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor?/instances?
-  value: 12
+  value: 14
 
 - type: replace
   path: /instance_groups/name=ingestor?/vm_type?

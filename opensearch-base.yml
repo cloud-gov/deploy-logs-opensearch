@@ -46,7 +46,7 @@ instance_groups:
         ip_addresses: true
     properties:
       opensearch:
-        deployment_type:
+        deployment_type: &opensearch-deployment-type
         - app
         - metric
         node:
@@ -63,8 +63,8 @@ instance_groups:
           delay_allocation_restart: "15m"
         config_options:
           indices.query.bool.max_clause_count: 2048
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
+        jvm_options: &opensearch-jvm-options
+        - "-Dlog4j2.formatMsgNoLookups=true"
         cf:
           client_id: opensearch_client_id
   persistent_disk_type: logs_opensearch_os_old_data
@@ -92,9 +92,7 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        deployment_type:
-        - app
-        - metric
+        deployment_type: *opensearch-deployment-type
         node:
           attributes:
             box_type: hot
@@ -109,8 +107,7 @@ instance_groups:
           delay_allocation_restart: "10m"
         config_options:
           indices.query.bool.max_clause_count: 2048
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
+        jvm_options: *opensearch-jvm-options
         cf:
           client_id: opensearch_client_id
   persistent_disk_type: logs_opensearch_os_data
@@ -148,14 +145,11 @@ instance_groups:
         as: opensearch_manager
     properties:
       opensearch:
-        deployment_type:
-        - app
-        - metric
+        deployment_type: *opensearch-deployment-type
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
+        jvm_options: *opensearch-jvm-options
         node:
           allow_cluster_manager: true
           allow_data: false
@@ -193,14 +187,11 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        deployment_type:
-        - app
-        - metric
+        deployment_type: *opensearch-deployment-type
         clustername: opensearch
         limits:
           fd: 131072 # 2 ** 17
-        jvm_options:
-          - "-Dlog4j2.formatMsgNoLookups=true"
+        jvm_options: *opensearch-jvm-options
   - consumes:
       ingestor_link:
         from: ingestor_syslog
@@ -340,11 +331,8 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        deployment_type:
-        - app
-        - metric
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
+        deployment_type: *opensearch-deployment-type
+        jvm_options: *opensearch-jvm-options
         migrate_data_path: true
     release: opensearch
   - consumes:
@@ -400,19 +388,15 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        deployment_type:
-        - app
-        - metric
+        deployment_type: *opensearch-deployment-type
         heap_size: 1G
         http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
+        jvm_options: *opensearch-jvm-options
   - name: ingestor_syslog
     consumes: *consumes-opensearch-manager
     properties:
       logstash:
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
+        jvm_options: *opensearch-jvm-options
         queue:
           max_bytes: 30gb
       logstash_ingestor:
@@ -454,6 +438,10 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 5
 
+# NOTE: opensearch/logstash/parser/ssl and instance-group infra properties
+# common to all S3 ingestors live in opsfiles/shared-ingestor-properties.yml.
+# Only the differentiating fields (logstash.type, s3.bucket, parser index) are
+# kept here.
 - name: ingestor_s3
   instances: 1
   jobs:
@@ -462,57 +450,25 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        deployment_type:
-        - app
-        - metric
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
   - consumes: *consumes-opensearch-manager
     name: ingestor_s3
     properties:
       logstash:
         type: audit
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
       logstash_ingestor:
         s3:
           bucket: ((audit_bucket))
           region: ((region))
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
       logstash_parser:
         opensearch:
-          data_hosts:
-          - localhost
           index: ((alias))
           index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
     provides:
       ingestor:
         as: ingestor_s3
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 20GB_ephemeral_disk
-  vm_type: t3.large
   update:
     serial: true # Block on this job to create deploy group 6
 
@@ -524,57 +480,25 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        deployment_type:
-        - app
-        - metric
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
   - consumes: *consumes-opensearch-manager
     name: ingestor_s3
     properties:
       logstash:
         type: metric
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
       logstash_ingestor:
         s3:
           bucket: ((metric_stream_bucket))
           region: ((region))
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
       logstash_parser:
         opensearch:
-          data_hosts:
-          - localhost
           index: ((metric_alias))
           index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
     provides:
       ingestor:
         as: ingestor_s3
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
-  azs: [z1,z2]
-  networks:
-  - name: services
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 20GB_ephemeral_disk
-  vm_type: t3.large
   update:
     serial: true # Block on this job to create deploy group 6
 
@@ -586,57 +510,25 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        deployment_type:
-        - app
-        - metric
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
   - consumes: *consumes-opensearch-manager
     name: ingestor_s3
     properties:
       logstash:
         type: cloudwatch
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
       logstash_ingestor:
         s3:
           bucket: ((cloudwatch_bucket))
           region: ((region))
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
       logstash_parser:
         opensearch:
-          data_hosts:
-          - localhost
           index: ((alias))
           index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
     provides:
       ingestor:
         as: ingestor_s3
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  azs: [z1,z2]
-  vm_type: t3.large
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 20GB_ephemeral_disk
-  networks:
-  - name: services
   update:
     serial: true # Block on this job to create deploy group 7
 
@@ -648,58 +540,26 @@ instance_groups:
   - name: opensearch
     release: opensearch
     consumes: *consumes-opensearch-manager
-    properties:
-      opensearch:
-        deployment_type:
-        - app
-        - metric
-        heap_size: 1G
-        http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
   - consumes: *consumes-opensearch-manager
     name: ingestor_s3
     properties:
       logstash:
         type: falco
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
-        queue:
-          max_bytes: 30gb
       logstash_ingestor:
         s3:
           bucket: ((falco_bucket))
           region: ((region))
           prefix: falco
-        syslog_tls:
-          port: 6972
-          ssl_cert: ((ingestor_syslog_server_tls.certificate))
-          ssl_key: ((ingestor_syslog_server_tls.private_key))
       logstash_parser:
         opensearch:
-          data_hosts:
-          - localhost
           index: ((alias))
           index_type: '%{@type}'
-          ssl:
-            ca: ((opensearch_node.ca))
-            certificate: ((logstash.certificate))
-            private_key: ((logstash.private_key))
     provides:
       ingestor:
         as: ingestor_s3
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
-  persistent_disk_type: logs_opensearch_ingestor
-  stemcell: default
-  azs: [z1,z2]
-  vm_type: t3.large
-  vm_extensions:
-  - logs-opensearch-ingestor-profile
-  - 20GB_ephemeral_disk
-  networks:
-  - name: services
   update:
     serial: true # Block on this job to create deploy group 8
 
@@ -719,13 +579,10 @@ instance_groups:
     consumes: *consumes-opensearch-manager
     properties:
       opensearch:
-        deployment_type:
-        - app
-        - metric
+        deployment_type: *opensearch-deployment-type
         heap_size: 1G
         http_host: 127.0.0.1
-        jvm_options:
-        - -Dlog4j2.formatMsgNoLookups=true
+        jvm_options: *opensearch-jvm-options
   - name: opensearch_dashboards
     consumes: *consumes-opensearch-manager
     properties:
