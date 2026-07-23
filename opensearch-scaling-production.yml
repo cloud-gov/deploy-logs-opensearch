@@ -27,7 +27,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/instances?
-  value: 18
+  value: 14
 
 
 - type: replace
@@ -132,7 +132,7 @@
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/shard_count?
-  value: 18
+  value: 14
 
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/metrics_shard_count?
