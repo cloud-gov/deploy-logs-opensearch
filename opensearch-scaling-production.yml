@@ -27,7 +27,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/instances?
-  value: 14
+  value: 13
 
 
 - type: replace
