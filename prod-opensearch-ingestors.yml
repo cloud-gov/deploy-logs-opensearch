@@ -63,7 +63,7 @@ instance_groups:
     release: opensearch
   - name: deployment_lookup_config
     release: opensearch
-  vm_type: r6i.xlarge.logsearch.ingestor
+  vm_type: r6i.xlarge.opensearch.ingestor
   networks:
   - name: services
   persistent_disk_type: logs_opensearch_ingestor
