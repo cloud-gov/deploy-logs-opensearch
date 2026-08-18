@@ -9,5 +9,5 @@ run:
   - -c
   - |
    cd deploy-logs-opensearch-config/
-   python -m pip install -r requirements-test.txt
+   python -m pip install --retries 5 --timeout 60 -r requirements-test.txt
    python -m pytest tests

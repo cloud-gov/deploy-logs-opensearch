@@ -9,7 +9,7 @@ run:
   - -c
   - |
    cd deploy-logs-opensearch-config/
-   python -m pip install --retries 5 --timeout 60 -r requirements-test.txt
+   python -m pip install --retries 5 --timeout 60 -r requirements.txt
    python ci/upload_audit_events_s3.py
 params:
   AWS_DEFAULT_REGION:
