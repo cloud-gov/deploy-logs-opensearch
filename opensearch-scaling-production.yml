@@ -20,7 +20,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_data?/update?
-  value: 
+  value:
     max_in_flight: 1
     canaries: 1
     serial: true
@@ -36,7 +36,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_old_data?/update?
-  value: 
+  value:
     max_in_flight: 1
     canaries: 1
     serial: true
@@ -51,7 +51,7 @@
 
 - type: replace
   path: /instance_groups/name=opensearch_dashboards/update?
-  value: 
+  value:
     max_in_flight: 100%
     canaries: 100%
     serial: true
@@ -72,7 +72,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor?/vm_type?
-  value: r6i.xlarge.logsearch.ingestor
+  value: r6i.xlarge.opensearch.ingestor
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs?/instances?
