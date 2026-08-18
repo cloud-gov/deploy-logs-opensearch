@@ -1,4 +1,7 @@
 -r requirements.txt
 pytest
+playwright
+pytest-playwright
+pyotp
 requests_mock
 uuid
