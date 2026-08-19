@@ -1393,7 +1393,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
-      branch: main
+      branch: simplify
 
   - name: deploy-logs-opensearch-test-config
     type: git
@@ -1428,6 +1428,14 @@ resources:
     type: time
     source:
       interval: 10m
+
+  - name: weekly
+    type: time
+    source:
+      start: 12:00 AM
+      stop: 1:00 AM
+      location: America/New_York
+      days: [Thursday]
 
   - name: slack
     type: slack-notification
