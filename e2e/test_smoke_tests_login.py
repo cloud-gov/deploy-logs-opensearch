@@ -14,4 +14,4 @@ logging.basicConfig(level=logging.DEBUG)
 def test_user_login(user_1, page):
     log_in(user_1, page, AUTH_PROXY_URL)
     expect(page).to_have_url(re.compile(f"{urljoin(AUTH_PROXY_URL, 'app/home')}.*"))
-    switch_tenants(page, tenant="cloud-gov")
+    switch_tenants(page, CF_ORG_1_NAME)
