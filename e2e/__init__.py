@@ -19,9 +19,6 @@ required_env_vars = [
     "TEST_USER_4_USERNAME",
     "TEST_USER_4_PASSWORD",
     "TEST_USER_4_TOTP_SEED",
-    "SMTP_SENDER_HOST",
-    "SMTP_SENDER_PORT",
-    "SMTP_SENDER_FROM",
 ]
 
 for env_var in required_env_vars:
@@ -34,6 +31,3 @@ UAA_BASE_URL = os.environ["AUTH_PROXY_URL"]
 CF_ORG_1_NAME = os.environ["CF_ORG_1_NAME"]
 CF_ORG_2_NAME = os.environ["CF_ORG_2_NAME"]
 CF_ORG_3_NAME = os.environ["CF_ORG_3_NAME"]
-SMTP_SENDER_HOST = os.environ["SMTP_SENDER_HOST"]
-SMTP_SENDER_PORT = os.environ["SMTP_SENDER_PORT"]
-SMTP_SENDER_FROM = os.environ["SMTP_SENDER_FROM"]

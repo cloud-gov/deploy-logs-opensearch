@@ -51,3 +51,4 @@ playwright show-trace ci-test-results/<dir>/trace.zip
 where `<dir>` is an abitrary directory name generated for the test run by Playwright.
 
 See <https://playwright.dev/python/docs/trace-viewer> for more information about working with Playwright traces.
+
