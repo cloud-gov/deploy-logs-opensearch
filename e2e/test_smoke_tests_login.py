@@ -6,7 +6,7 @@ from playwright.sync_api import expect
 from urllib.parse import urljoin
 
 from .utils import log_in, switch_tenants
-from . import AUTH_PROXY_URL
+from . import AUTH_PROXY_URL, CF_ORG_1_NAME
 
 logging.basicConfig(level=logging.DEBUG)
 
