@@ -116,6 +116,10 @@
   path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/metrics_shard_count?
   value: 1
 
+- type: replace
+  path: /instance_groups/name=maintenance?/jobs?/name=upload_opensearch_config?/properties?/opensearch_config?/app_warm_conversion_enabled?
+  value: false
+
 
 
 - type: replace
