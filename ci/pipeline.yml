@@ -450,6 +450,7 @@ jobs:
     serial: true
     plan:
     - in_parallel:
+      - get: general-task
       - get: after-hours
         trigger: true
       - get: deploy-logs-opensearch-test-config
