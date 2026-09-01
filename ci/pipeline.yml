@@ -397,7 +397,7 @@ jobs:
           - get: deploy-logs-opensearch-test-config
           - get: opensearch-test-release
             trigger: true
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
           - get: terraform-yaml
             resource: terraform-yaml-development
@@ -430,7 +430,7 @@ jobs:
           releases:
             - opensearch-test-release/*.tgz
           stemcells:
-            - opensearch-stemcell-jammy/*.tgz
+            - opensearch-stemcell-noble/*.tgz
           ops_files:
             - deploy-logs-opensearch-test-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-node-tls.yml
@@ -492,7 +492,7 @@ jobs:
       - in_parallel:
           - get: pipeline-tasks
           - get: opensearch-release
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
           - get: deploy-logs-opensearch-test-config
             passed: [deploy-opensearch-test]
             trigger: true
@@ -520,7 +520,7 @@ jobs:
             passed: [run-tests]
           - get: opensearch-release
             trigger: true
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
           - get: general-task
           - get: terraform-yaml
@@ -551,7 +551,7 @@ jobs:
           releases:
             - opensearch-release/*.tgz
           stemcells:
-            - opensearch-stemcell-jammy/*.tgz
+            - opensearch-stemcell-noble/*.tgz
           ops_files:
             - deploy-logs-opensearch-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
@@ -584,7 +584,7 @@ jobs:
           - get: opensearch-release
             trigger: true
             passed: [deploy-opensearch-development]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
             passed: [deploy-opensearch-development]
           - get: deploy-logs-opensearch-config
@@ -619,7 +619,7 @@ jobs:
           - get: opensearch-release
             trigger: true
             passed: [deploy-opensearch-development]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
             passed: [deploy-opensearch-development]
           - get: deploy-logs-opensearch-config
@@ -720,7 +720,7 @@ jobs:
       - in_parallel:
           - get: pipeline-tasks
           - get: opensearch-release
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
           - get: deploy-logs-opensearch-config
             passed: [tenant-development]
             trigger: true
@@ -756,7 +756,7 @@ jobs:
           - get: opensearch-release
             trigger: true
             passed: [smoke-tests-development, e2e-tests-development]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
             passed: [smoke-tests-development, e2e-tests-development]
           - get: general-task
@@ -788,7 +788,7 @@ jobs:
           releases:
             - opensearch-release/*.tgz
           stemcells:
-            - opensearch-stemcell-jammy/*.tgz
+            - opensearch-stemcell-noble/*.tgz
           ops_files:
             - deploy-logs-opensearch-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
@@ -821,7 +821,7 @@ jobs:
           - get: opensearch-release
             trigger: true
             passed: [deploy-opensearch-staging]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
             passed: [deploy-opensearch-staging]
           - get: deploy-logs-opensearch-config
@@ -856,7 +856,7 @@ jobs:
           - get: opensearch-release
             trigger: true
             passed: [deploy-opensearch-staging]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
             passed: [deploy-opensearch-staging]
           - get: deploy-logs-opensearch-config
@@ -958,7 +958,7 @@ jobs:
       - in_parallel:
           - get: pipeline-tasks
           - get: opensearch-release
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
           - get: deploy-logs-opensearch-config
             passed: [tenant-staging]
             trigger: true
@@ -994,7 +994,7 @@ jobs:
           - get: opensearch-release
             trigger: true
             passed: [smoke-tests-staging, e2e-tests-staging]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
             passed: [smoke-tests-staging, e2e-tests-staging]
           - get: terraform-yaml
@@ -1028,7 +1028,7 @@ jobs:
           releases:
             - opensearch-release/*.tgz
           stemcells:
-            - opensearch-stemcell-jammy/*.tgz
+            - opensearch-stemcell-noble/*.tgz
           ops_files:
             - deploy-logs-opensearch-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-config/opsfiles/enable-node-tls.yml
@@ -1060,7 +1060,7 @@ jobs:
             passed: [plan-opensearch-production]
           - get: opensearch-release
             passed: [plan-opensearch-production]
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             passed: [plan-opensearch-production]
           - get: terraform-yaml
             resource: terraform-yaml-production
@@ -1093,7 +1093,7 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
             trigger: true
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
           - get: deploy-logs-opensearch-config
             trigger: true
@@ -1124,7 +1124,7 @@ jobs:
           - get: pipeline-tasks
           - get: opensearch-release
             trigger: true
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
             trigger: true
           - get: deploy-logs-opensearch-config
             trigger: true
@@ -1223,7 +1223,7 @@ jobs:
       - in_parallel:
           - get: pipeline-tasks
           - get: opensearch-release
-          - get: opensearch-stemcell-jammy
+          - get: opensearch-stemcell-noble
           - get: deploy-logs-opensearch-config
             passed: [tenant-production]
             trigger: true
@@ -1403,9 +1403,9 @@ resources:
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
       branch: ((deploy-logs-opensearch-config-test-branch))
 
-  - name: opensearch-stemcell-jammy
+  - name: opensearch-stemcell-noble
     source:
-      name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
+      name: bosh-aws-xen-hvm-ubuntu-noble-go_agent
     type: bosh-io-stemcell
 
   - name: pipeline-tasks
