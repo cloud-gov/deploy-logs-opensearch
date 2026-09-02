@@ -338,7 +338,7 @@ instance_groups:
         - {type: visualization, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/visualization/App-*.json"}
         - {type: dashboard, pattern: "/var/vcap/jobs/upload-dashboards-objects/dashboards-objects/dashboard/App-*.json"}
       opensearch_dashboards:
-        host: opensearch_dashboards.opensearch.internal
+        host: opensearch_dashboards.opensearch-test.internal
   stemcell: default
   azs: [z1,z2]
   vm_type: t3.large
