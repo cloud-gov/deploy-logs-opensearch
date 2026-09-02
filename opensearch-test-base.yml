@@ -21,7 +21,7 @@ releases:
 
 stemcells:
 - alias: default
-  os: ubuntu-noble
+  os: ubuntu-jammy
   version: latest
 
 
