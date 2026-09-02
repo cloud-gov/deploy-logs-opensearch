@@ -397,7 +397,7 @@ jobs:
           - get: deploy-logs-opensearch-test-config
           - get: opensearch-test-release
             trigger: true
-          - get: opensearch-stemcell-noble
+          - get: opensearch-stemcell-jammy
             trigger: true
           - get: terraform-yaml
             resource: terraform-yaml-development
@@ -430,7 +430,7 @@ jobs:
           releases:
             - opensearch-test-release/*.tgz
           stemcells:
-            - opensearch-stemcell-noble/*.tgz
+            - opensearch-stemcell-jammy/*.tgz
           ops_files:
             - deploy-logs-opensearch-test-config/opsfiles/shared-ingestor-properties.yml
             - deploy-logs-opensearch-test-config/opsfiles/enable-node-tls.yml
@@ -1406,6 +1406,11 @@ resources:
   - name: opensearch-stemcell-noble
     source:
       name: bosh-aws-xen-hvm-ubuntu-noble-go_agent
+    type: bosh-io-stemcell
+
+  - name: opensearch-stemcell-jammy
+    source:
+      name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
     type: bosh-io-stemcell
 
   - name: pipeline-tasks
