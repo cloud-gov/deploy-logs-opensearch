@@ -1408,11 +1408,6 @@ resources:
       name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
     type: bosh-io-stemcell
 
-  - name: opensearch-stemcell-jammy
-    source:
-      name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
-    type: bosh-io-stemcell
-
   - name: pipeline-tasks
     type: git
     source:
