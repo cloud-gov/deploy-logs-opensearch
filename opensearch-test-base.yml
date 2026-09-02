@@ -210,6 +210,7 @@ instance_groups:
       opensearch_config:
         alias: ((alias))
         metric_alias: ((metric_alias))
+        app_warm_conversion_enabled: false
         component_templates:
         - shards-and-replicas: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas.json
         - metric-shards-and-replica: /var/vcap/jobs/upload_opensearch_config/index-templates/shards-and-replicas-metrics.json
