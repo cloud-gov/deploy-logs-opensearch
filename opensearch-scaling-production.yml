@@ -80,7 +80,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs?/vm_type?
-  value: m6i.large
+  value: r6i.large
 
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/instances?
