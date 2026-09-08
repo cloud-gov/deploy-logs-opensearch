@@ -211,7 +211,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs/vm_type?
-  value: *ingestor-vm-type
+  value: r6i.large
 
 - type: replace
   path: /instance_groups/name=ingestor_falco/azs?
