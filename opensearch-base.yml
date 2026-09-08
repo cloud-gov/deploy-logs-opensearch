@@ -299,6 +299,7 @@ instance_groups:
         - Audit
         - Metrics
         - Falco
+        - Cloudwatch
         client_id: opensearch_client_id
       dashboards_objects:
         delete_list_dashboard: ((delete_list_dashboard))
