@@ -1,0 +1,26 @@
+platform: linux
+
+inputs:
+- name: deploy-logs-opensearch-config
+
+run:
+  path: sh
+  args:
+  - -ec
+  - |
+   retry() {
+     n=1; max=3; delay=15
+     until "$@"; do
+       if [ $n -ge $max ]; then echo "Failed after $max attempts: $*"; return 1; fi
+       echo "Attempt $n failed, retrying in ${delay}s..."; sleep $delay; n=$((n+1))
+     done
+   }
+   cd deploy-logs-opensearch-config/
+   retry python -m pip install --retries 3 --timeout 60 -r requirements.txt
+   python ci/upload_audit_events_s3_org_keyed.py
+params:
+  AWS_DEFAULT_REGION:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+  BUCKET:
+  DEFAULT_TIME:
