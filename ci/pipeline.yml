@@ -204,18 +204,19 @@ jobs:
       image: general-task
       file: deploy-logs-opensearch-config/ci/run-unit-tests.yml
 
+
   - name: audit-to-s3-development
     plan:
     - get: general-task
     - get: ten-minute-timer
       trigger: true
-    - get: deploy-logs-opensearch-config
+    - get: deploy-logs-opensearch-dev-config
     - get: pipeline-tasks
     - task: transfer-audit-logs-to-s3
       image: general-task
-      # Development only: organization keyed S3 object names. Staging and
-      # production use ci/upload-audit-events-s3.yml.
-      file: deploy-logs-opensearch-config/ci/upload-audit-events-s3-org-keyed.yml
+      input_mapping:
+        deploy-logs-opensearch-config: deploy-logs-opensearch-dev-config
+      file: deploy-logs-opensearch-dev-config/ci/upload-audit-events-s3-org-keyed.yml
       params:
         BUCKET: ((opensearch-audit-bucket-development))
         UAA_API_URL: ((uaa-url-development))
@@ -1404,6 +1405,14 @@ resources:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
       branch: ((deploy-logs-opensearch-config-test-branch))
+
+
+  - name: deploy-logs-opensearch-dev-config
+    type: git
+    source:
+      commit_verification_keys: ((cloud-gov-pgp-keys))
+      uri: https://github.com/cloud-gov/deploy-logs-opensearch.git
+      branch: audit-filter
 
   - name: opensearch-stemcell-jammy
     source:
