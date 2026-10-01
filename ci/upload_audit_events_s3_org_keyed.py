@@ -15,9 +15,11 @@ from datetime import datetime, timedelta, timezone
 s3_client = boto3.client("s3")
 timestamp_key = "timestamp"
 
+orgs_key_prefix = "orgs"
 no_org_key_segment = "_no-org"
+no_space_key_segment = "_no-space"
 
-org_guid_pattern = re.compile(r"[A-Za-z0-9-]{1,64}")
+guid_pattern = re.compile(r"[A-Za-z0-9-]{1,64}")
 
 
 class AuditEventsS3Uploader:
@@ -108,34 +110,48 @@ class AuditEventsS3Uploader:
 
         return transformed_event
 
+    def get_key_segment(self, entity, placeholder):
+        """
+        Returns the GUID of a CF entity for use as a single S3 key segment, or
+        the placeholder when the GUID is absent or could rewrite the key path.
+        """
+        guid = (entity or {}).get("guid") or ""
+
+        if not guid_pattern.fullmatch(guid):
+            return placeholder
+
+        return guid
+
     def get_org_key_segment(self, audit_event):
-        organization = audit_event.get("organization") or {}
-        org_guid = organization.get("guid") or ""
+        organization = audit_event.get("organization")
+        return self.get_key_segment(organization, no_org_key_segment)
 
-        if not org_guid_pattern.fullmatch(org_guid):
-            return no_org_key_segment
+    def get_space_key_segment(self, audit_event):
+        return self.get_key_segment(audit_event.get("space"), no_space_key_segment)
 
-        return org_guid
+    def get_key_segments(self, audit_event):
+        return (
+            self.get_org_key_segment(audit_event),
+            self.get_space_key_segment(audit_event),
+        )
 
-    def group_audit_events_by_org(self, audit_events):
+    def group_audit_events_by_org_and_space(self, audit_events):
         grouped_events = {}
 
         for audit_event in audit_events:
-            org_key_segment = self.get_org_key_segment(audit_event)
-            grouped_events.setdefault(org_key_segment, []).append(audit_event)
+            key_segments = self.get_key_segments(audit_event)
+            grouped_events.setdefault(key_segments, []).append(audit_event)
 
         return grouped_events
 
-    def build_object_name(self, now, org_key_segment):
-        date_path = (
-            f"{now.month:02d}/{now.day:02d}"
+    def build_object_name(self, now, key_segments):
+        (org_key_segment, space_key_segment) = key_segments
+
+        return (
+            f"{orgs_key_prefix}/{org_key_segment}/{space_key_segment}"
+            f"/{now.year}/{now.month:02d}/{now.day:02d}"
             f"/{now.hour:02d}/{now.minute:02d}/{now.second:02d}"
         )
-
-        if org_key_segment == no_org_key_segment:
-            return f"{no_org_key_segment}/{now.year}/{date_path}"
-
-        return f"{now.year}/{org_key_segment}/{date_path}"
 
     # Upload a batch of audit events to S3 as a single object
     def put_audit_events_to_s3(self, object_name, audit_events):
@@ -188,19 +204,18 @@ class AuditEventsS3Uploader:
         audit_logs = self.get_audit_logs(start_time, end_time)
         if len(audit_logs) > 0:
             timestamp = audit_logs[-1]["created_at"]
-            for org_key_segment, org_audit_logs in self.group_audit_events_by_org(
-                audit_logs
-            ).items():
-                object_name = self.build_object_name(now, org_key_segment)
+            grouped_events = self.group_audit_events_by_org_and_space(audit_logs)
+            for key_segments, grouped_audit_logs in grouped_events.items():
+                object_name = self.build_object_name(now, key_segments)
                 try:
-                    self.put_audit_events_to_s3(object_name, org_audit_logs)
+                    self.put_audit_events_to_s3(object_name, grouped_audit_logs)
                     print(
-                        f"success for org {org_key_segment} with start time "
+                        f"success for {object_name} with start time "
                         f"{start_time} and end time {end_time}"
                     )
                 except Exception as e:
                     print(
-                        f"Error upload file to S3 for org {org_key_segment} for "
+                        f"Error upload file to S3 for {object_name} for "
                         f"time starting {start_time} and end time {end_time}"
                     )
                     raise e
