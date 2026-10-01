@@ -162,10 +162,6 @@
   - 20GB_ephemeral_disk
 
 - type: replace
-  path: /instance_groups/name=ingestor_s3/vm_type?
-  value: &ingestor-vm-type t3.large
-
-- type: replace
   path: /instance_groups/name=ingestor_aws_metrics/azs?
   value: *ingestor-azs
 
@@ -184,10 +180,6 @@
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics/vm_extensions?
   value: *ingestor-vm-extensions
-
-- type: replace
-  path: /instance_groups/name=ingestor_aws_metrics/vm_type?
-  value: *ingestor-vm-type
 
 - type: replace
   path: /instance_groups/name=ingestor_cloudwatch_logs/azs?
@@ -210,10 +202,6 @@
   value: *ingestor-vm-extensions
 
 - type: replace
-  path: /instance_groups/name=ingestor_cloudwatch_logs/vm_type?
-  value: *ingestor-vm-type
-
-- type: replace
   path: /instance_groups/name=ingestor_falco/azs?
   value: *ingestor-azs
 
@@ -232,7 +220,3 @@
 - type: replace
   path: /instance_groups/name=ingestor_falco/vm_extensions?
   value: *ingestor-vm-extensions
-
-- type: replace
-  path: /instance_groups/name=ingestor_falco/vm_type?
-  value: *ingestor-vm-type

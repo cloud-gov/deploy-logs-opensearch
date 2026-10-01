@@ -88,7 +88,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/vm_type?
-  value: r6i.xlarge
+  value: r6i.large
 
 - type: replace
   path: /instance_groups/name=ingestor_s3?/instances?
