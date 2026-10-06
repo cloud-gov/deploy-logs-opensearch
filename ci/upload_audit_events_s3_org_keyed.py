@@ -18,6 +18,7 @@ timestamp_key = "timestamp"
 orgs_key_prefix = "orgs"
 no_org_key_segment = "_no-org"
 no_space_key_segment = "_no-space"
+org_events_key_segment = "org_events"
 
 guid_pattern = re.compile(r"[A-Za-z0-9-]{1,64}")
 
@@ -130,10 +131,18 @@ class AuditEventsS3Uploader:
         return self.get_key_segment(audit_event.get("space"), no_space_key_segment)
 
     def get_key_segments(self, audit_event):
-        return (
-            self.get_org_key_segment(audit_event),
-            self.get_space_key_segment(audit_event),
-        )
+        org_key_segment = self.get_org_key_segment(audit_event)
+        space_key_segment = self.get_space_key_segment(audit_event)
+
+        # An event that belongs to a known org but to no space is an org level
+        # event, so key it under the org rather than a space placeholder.
+        if (
+            space_key_segment == no_space_key_segment
+            and org_key_segment != no_org_key_segment
+        ):
+            space_key_segment = org_events_key_segment
+
+        return (org_key_segment, space_key_segment)
 
     def group_audit_events_by_org_and_space(self, audit_events):
         grouped_events = {}

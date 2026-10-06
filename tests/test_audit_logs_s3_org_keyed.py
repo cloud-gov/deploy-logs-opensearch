@@ -9,6 +9,7 @@ from ci.upload_audit_events_s3_org_keyed import (
     AuditEventsS3Uploader,
     no_org_key_segment,
     no_space_key_segment,
+    org_events_key_segment,
     orgs_key_prefix,
 )
 
@@ -232,6 +233,20 @@ def test_get_key_segments_falls_back_to_placeholders(fake_requests, entity):
     )
 
 
+def test_get_key_segments_keys_org_level_events_under_the_org(fake_requests):
+    """
+    An event with an organization but no space is an org level event, so it is
+    keyed under the org rather than under a space placeholder.
+    """
+    org_guid = str(uuid.uuid4())
+
+    audit_events_s3_uploader = AuditEventsS3Uploader()
+
+    assert audit_events_s3_uploader.get_key_segments(
+        make_audit_event(organization={"guid": org_guid}, space=None)
+    ) == (org_guid, org_events_key_segment)
+
+
 def test_get_key_segments_falls_back_per_entity(fake_requests):
     """
     A missing space must not drag the organization segment to the placeholder,
@@ -244,7 +259,7 @@ def test_get_key_segments_falls_back_per_entity(fake_requests):
 
     assert audit_events_s3_uploader.get_key_segments(
         make_audit_event(organization={"guid": org_guid}, space=None)
-    ) == (org_guid, no_space_key_segment)
+    ) == (org_guid, org_events_key_segment)
 
     assert audit_events_s3_uploader.get_key_segments(
         make_audit_event(organization=None, space={"guid": space_guid})
@@ -262,6 +277,7 @@ def test_get_key_segments_falls_back_per_entity(fake_requests):
         "a" * 65,
         no_org_key_segment,
         no_space_key_segment,
+        org_events_key_segment,
     ],
     ids=[
         "traversal",
@@ -272,6 +288,7 @@ def test_get_key_segments_falls_back_per_entity(fake_requests):
         "over-length",
         "impersonates-no-org",
         "impersonates-no-space",
+        "impersonates-org-events",
     ],
 )
 def test_get_key_segments_rejects_unsafe_guid(fake_requests, guid):
@@ -320,8 +337,10 @@ def test_build_object_name_keeps_placeholders_under_orgs_prefix(fake_requests):
     )
 
     assert audit_events_s3_uploader.build_object_name(
-        now, ("fake-org-guid", no_space_key_segment)
-    ) == (f"{orgs_key_prefix}/fake-org-guid/{no_space_key_segment}/2026/09/18/14/30/05")
+        now, ("fake-org-guid", org_events_key_segment)
+    ) == (
+        f"{orgs_key_prefix}/fake-org-guid/{org_events_key_segment}/2026/09/18/14/30/05"
+    )
 
 
 def test_build_object_name_zero_pads_time_segments(fake_requests):
@@ -381,7 +400,7 @@ def test_group_audit_events_by_org_and_space(fake_requests):
         (org_a_guid, space_a_guid): [space_a_first, space_a_second],
         (org_b_guid, space_b_guid): [org_b_first],
         (org_a_guid, space_b_guid): [space_b_in_org_a],
-        (org_a_guid, no_space_key_segment): [org_level_event],
+        (org_a_guid, org_events_key_segment): [org_level_event],
         (no_org_key_segment, no_space_key_segment): [platform_event],
     }
     # Per group batches must stay in the created_at order the CF API returned.
@@ -484,7 +503,7 @@ def test_upload_writes_one_object_per_org_and_space(fake_requests, frozen_now):
             [org_b_first],
         ),
         (
-            f"{orgs_key_prefix}/{org_a_guid}/{no_space_key_segment}/{date_path}",
+            f"{orgs_key_prefix}/{org_a_guid}/{org_events_key_segment}/{date_path}",
             [org_level_event],
         ),
         (no_org_no_space_key, [platform_event]),
@@ -598,6 +617,7 @@ def test_shared_script_has_no_org_keying_helpers(fake_requests):
     assert not hasattr(shared, "orgs_key_prefix")
     assert not hasattr(shared, "no_org_key_segment")
     assert not hasattr(shared, "no_space_key_segment")
+    assert not hasattr(shared, "org_events_key_segment")
     assert not hasattr(shared.AuditEventsS3Uploader, "get_key_segment")
     assert not hasattr(shared.AuditEventsS3Uploader, "get_key_segments")
     assert not hasattr(shared.AuditEventsS3Uploader, "get_org_key_segment")
