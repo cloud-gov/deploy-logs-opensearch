@@ -90,6 +90,19 @@
   
 
 - type: replace
+  path: /instance_groups/name=ingestor_s3?/jobs/name=ingestor_s3/properties/logstash_ingestor/s3/prefix?
+  value: orgs
+
+- type: replace
+  path: /instance_groups/name=ingestor_cloudwatch_logs?/jobs/name=ingestor_s3/properties/logstash_ingestor/s3/prefix?
+  value: orgs
+
+- type: replace
+  path: /instance_groups/name=ingestor_aws_metrics?/jobs/name=ingestor_s3/properties/logstash_ingestor/s3/prefix?
+  value: orgs
+
+
+- type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
   value:
     index_pattern: logs-app-*
