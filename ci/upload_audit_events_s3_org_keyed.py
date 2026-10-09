@@ -218,10 +218,6 @@ class AuditEventsS3Uploader:
                 object_name = self.build_object_name(now, key_segments)
                 try:
                     self.put_audit_events_to_s3(object_name, grouped_audit_logs)
-                    print(
-                        f"success for {object_name} with start time "
-                        f"{start_time} and end time {end_time}"
-                    )
                 except Exception as e:
                     print(
                         f"Error upload file to S3 for {object_name} for "
