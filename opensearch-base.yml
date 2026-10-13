@@ -134,7 +134,7 @@ instance_groups:
   instances: 3
   vm_extensions:
   - logs-opensearch-profile
-  - 15GB_ephemeral_disk
+  - 20GB_ephemeral_disk
   jobs:
   - name: bpm
     release: bpm
