@@ -99,7 +99,7 @@
 
 - type: replace
   path: /instance_groups/name=ingestor_aws_metrics?/jobs/name=ingestor_s3/properties/logstash_ingestor/s3/prefix?
-  value: orgs
+  value: 20
   
 - type: replace
   path: /instance_groups/name=maintenance?/jobs?/name=smoke_tests?/properties?/smoke_tests?/count_test?
