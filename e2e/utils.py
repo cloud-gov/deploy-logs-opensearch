@@ -25,7 +25,7 @@ def log_in(user, page, start_at):
     username_field.fill(user.username)
     password_field.fill(user.password)
 
-    login_button = page.get_by_text("Login")
+    login_button = page.get_by_role("button", name="Login")
     login_button.wait_for()
     login_button.click()
 
@@ -33,7 +33,7 @@ def log_in(user, page, start_at):
     totp_field.wait_for()
     totp_field.fill(user.totp.now())
 
-    login_button = page.get_by_text("Login")
+    login_button = page.get_by_role("button", name="Login")
     login_button.wait_for()
     login_button.click()
 
