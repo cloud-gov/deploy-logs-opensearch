@@ -480,14 +480,13 @@ jobs:
       - task: create-tenants
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
           BOSH_DEPLOYMENT: logs-opensearch-test
           BOSH_ERRAND: upload_tenant
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
-
   - name: upload-dashboards-objects-test
     plan:
       - in_parallel:
@@ -503,13 +502,13 @@ jobs:
       - task: upload-dashboards-objects
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
           BOSH_DEPLOYMENT: logs-opensearch-test
           BOSH_ERRAND: upload-dashboards-objects
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
 
   - name: deploy-opensearch-development
     serial_groups: [bosh-development]
@@ -597,13 +596,13 @@ jobs:
       - task: smoke-tests
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: smoke_tests
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -681,13 +680,13 @@ jobs:
       - task: create-tenants
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: upload_tenant
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -712,13 +711,13 @@ jobs:
       - task: upload-dashboards-objects
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_development_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_development_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: upload-dashboards-objects
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -815,13 +814,13 @@ jobs:
       - task: smoke-tests
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_staging_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.staging.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.staging.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.staging.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.staging.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: smoke_tests
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -900,13 +899,13 @@ jobs:
       - task: create-tenants
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_staging_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.staging.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.staging.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.staging.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.staging.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: upload_tenant
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -931,13 +930,13 @@ jobs:
       - task: upload-dashboards-objects
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_staging_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_staging_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.staging.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.staging.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.staging.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.staging.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: upload-dashboards-objects
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -1065,13 +1064,13 @@ jobs:
       - task: smoke-tests
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_production_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.production.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: smoke_tests
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -1148,13 +1147,13 @@ jobs:
       - task: create-tenants
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_production_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.production.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: upload_tenant
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
     on_failure:
       put: slack
       params:
@@ -1180,22 +1179,22 @@ jobs:
       - task: upload-dashboards-objects
         file: pipeline-tasks/bosh-logs-errand.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_production_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
+          BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.production.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
           BOSH_DEPLOYMENT: logs-opensearch
           BOSH_ERRAND: upload-dashboards-objects
           BOSH_FLAGS: "--keep-alive"
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
       # Updating the dashboards touches files on the os, reset the aide db
       - task: reset-aide-opensearch_dashboards
         image: general-task
         file: deploy-logs-opensearch-config/ci/reset-aide.yml
         params:
-          BOSH_ENVIRONMENT: ((bosh_production_environment))
-          BOSH_CLIENT: ((bosh_client))
-          BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-          BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+          BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+          BOSH_CLIENT: ((bosh-director-info.production.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+          BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
           BOSH_DEPLOYMENT_NAME: logs-opensearch
           BOSH_INSTANCE_NAME: opensearch_dashboards
 
@@ -1211,60 +1210,60 @@ jobs:
             image: general-task
             file: deploy-logs-opensearch-config/ci/reset-aide.yml
             params:
-              BOSH_ENVIRONMENT: ((bosh_production_environment))
-              BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+              BOSH_CLIENT: ((bosh-director-info.production.client))
+              BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+              BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: opensearch_dashboards
           - task: reset-aide-ingestor_cloudwatch_logs
             image: general-task
             file: deploy-logs-opensearch-config/ci/reset-aide.yml
             params:
-              BOSH_ENVIRONMENT: ((bosh_production_environment))
-              BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+              BOSH_CLIENT: ((bosh-director-info.production.client))
+              BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+              BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: ingestor_cloudwatch_logs
           - task: reset-aide-ingestor_s3
             image: general-task
             file: deploy-logs-opensearch-config/ci/reset-aide.yml
             params:
-              BOSH_ENVIRONMENT: ((bosh_production_environment))
-              BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+              BOSH_CLIENT: ((bosh-director-info.production.client))
+              BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+              BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: ingestor_s3
           - task: reset-aide-ingestor_aws_metrics
             image: general-task
             file: deploy-logs-opensearch-config/ci/reset-aide.yml
             params:
-              BOSH_ENVIRONMENT: ((bosh_production_environment))
-              BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+              BOSH_CLIENT: ((bosh-director-info.production.client))
+              BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+              BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: ingestor_aws_metrics
           - task: reset-aide-ingestor_s3
             image: general-task
             file: deploy-logs-opensearch-config/ci/reset-aide.yml
             params:
-              BOSH_ENVIRONMENT: ((bosh_production_environment))
-              BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+              BOSH_CLIENT: ((bosh-director-info.production.client))
+              BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+              BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: ingestor_s3
           - task: reset-aide-maintenance
             image: general-task
             file: deploy-logs-opensearch-config/ci/reset-aide.yml
             params:
-              BOSH_ENVIRONMENT: ((bosh_production_environment))
-              BOSH_CLIENT: ((bosh_client))
-              BOSH_CLIENT_SECRET: ((bosh_production_client_secret))
-              BOSH_CA_CERT: ((bosh_ca_cert_store.certificate))
+              BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+              BOSH_CLIENT: ((bosh-director-info.production.client))
+              BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
+              BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
               BOSH_DEPLOYMENT_NAME: logs-opensearch
               BOSH_INSTANCE_NAME: maintenance
 
