@@ -64,7 +64,7 @@
 
 - type: replace
   path: /instance_groups/name=archiver?/instances?
-  value: 0
+  value: 1
 
 - type: replace
   path: /instance_groups/name=archiver?/vm_type?
