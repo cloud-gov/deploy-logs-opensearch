@@ -443,6 +443,7 @@ jobs:
             - deploy-logs-opensearch-test-config/opsfiles/opensearch-notification.yml
             - deploy-logs-opensearch-test-config/opsfiles/test-name.yml
             - deploy-logs-opensearch-test-config/opsfiles/add-keystore-credentials-errand.yml
+            - deploy-logs-opensearch-test-config/opsfiles/temp-json-confidence-ingestor.yml
           vars_files:
             - terraform-secrets/terraform.yml
 

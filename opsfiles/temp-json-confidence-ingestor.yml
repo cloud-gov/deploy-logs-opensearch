@@ -1,0 +1,64 @@
+- type: replace
+  path: /instance_groups/-
+  value:
+    name: ingestor_json_confidence
+    instances: 1
+    jobs:
+    - name: bpm
+      release: bpm
+    - name: opensearch
+      release: opensearch
+      consumes:
+        opensearch:
+          from: opensearch_manager
+          ip_addresses: true
+      properties:
+        opensearch:
+          heap_size: 1G
+          http_host: 127.0.0.1
+          jvm_options:
+          - -Dlog4j2.formatMsgNoLookups=true
+    - name: ingestor_syslog
+      consumes:
+        opensearch:
+          from: opensearch_manager
+          ip_addresses: true
+      properties:
+        logstash_ingestor:
+          type: platform
+          health:
+            disable_post_start: true
+        logstash_parser:
+          inputs:
+          - plugin: s3
+            options:
+              bucket: ((json_confidence_bucket))
+              region: ((region))
+              prefix: ((confidence_prefix))
+              codec: plain
+          enable_json_filter: true
+          opensearch:
+            data_hosts:
+            - localhost
+            index: "logs-app-%{+YYYY.MM.dd}"
+            index_type: '%{@type}'
+            ssl:
+              ca: ((opensearch_node.ca))
+              certificate: ((logstash.certificate))
+              private_key: ((logstash.private_key))
+      provides:
+        ingestor:
+          as: ingestor_json_confidence
+      release: opensearch
+    - name: deployment_lookup_config
+      release: opensearch
+    persistent_disk_type: logs_opensearch_ingestor
+    stemcell: default
+    azs: [z1, z2]
+    vm_type: t3.medium
+    vm_extensions:
+    - logs-opensearch-ingestor-profile
+    networks:
+    - name: services
+    update:
+      serial: true
