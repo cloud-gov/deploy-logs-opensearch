@@ -9,12 +9,7 @@ fi
 
 required_env_vars=(
   TEST_USER_1_USERNAME
-  TEST_USER_2_USERNAME
-  TEST_USER_3_USERNAME
-  TEST_USER_4_USERNAME
   CF_ORG_1_NAME
-  CF_ORG_2_NAME
-  CF_ORG_3_NAME
 )
 for var in "${required_env_vars[@]}"; do
   if [ -z "${!var+x}" ]; then
@@ -67,7 +62,7 @@ EOF
     -X POST \
     -d "@$TMP_FILE" \
     --fail > /dev/null
-  
+
   rm "$TMP_FILE"
 }
 
@@ -101,33 +96,11 @@ function delete_sandbox_org_roles() {
 #  - User 4 is in org 1 and org 3. User 4 shares all orgs with User 1.
 
 cf create-org "$CF_ORG_1_NAME"
-cf create-org "$CF_ORG_2_NAME"
-cf create-org "$CF_ORG_3_NAME"
 
 # Delete sandbox org roles for test users so we can be sure that
 # their only orgs are the ones we have provisioned
 delete_sandbox_org_roles "$TEST_USER_1_USERNAME"
-delete_sandbox_org_roles "$TEST_USER_2_USERNAME"
-delete_sandbox_org_roles "$TEST_USER_3_USERNAME"
-delete_sandbox_org_roles "$TEST_USER_4_USERNAME"
 
 # User 1 is an org manager in org 1 and org 3
 cf set-org-role "$TEST_USER_1_USERNAME" "$CF_ORG_1_NAME" OrgManager
 set_org_user "$TEST_USER_1_USERNAME" "$CF_ORG_1_NAME"
-cf set-org-role "$TEST_USER_1_USERNAME" "$CF_ORG_3_NAME" OrgManager
-set_org_user "$TEST_USER_1_USERNAME" "$CF_ORG_3_NAME"
-
-# User 2 is an org manager in org 2
-cf set-org-role "$TEST_USER_2_USERNAME" "$CF_ORG_2_NAME" OrgManager
-set_org_user "$TEST_USER_2_USERNAME" "$CF_ORG_2_NAME"
-
-# User 3 is an org manager in org 1
-cf set-org-role "$TEST_USER_3_USERNAME" "$CF_ORG_1_NAME" OrgManager
-set_org_user "$TEST_USER_3_USERNAME" "$CF_ORG_1_NAME"
-
-# User 4 is an org manager in org 1 and org 3
-cf set-org-role "$TEST_USER_4_USERNAME" "$CF_ORG_1_NAME" OrgManager
-set_org_user "$TEST_USER_4_USERNAME" "$CF_ORG_1_NAME"
-cf set-org-role "$TEST_USER_4_USERNAME" "$CF_ORG_3_NAME" OrgManager
-set_org_user "$TEST_USER_4_USERNAME" "$CF_ORG_3_NAME"
-

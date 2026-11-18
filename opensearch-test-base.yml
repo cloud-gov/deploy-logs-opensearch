@@ -411,6 +411,7 @@ instance_groups:
 # kept here.
 - name: ingestor_s3
   instances: 1
+  vm_type: t3.large
   jobs:
   - name: bpm
     release: bpm
@@ -441,6 +442,7 @@ instance_groups:
 
 - name: ingestor_aws_metrics
   instances: 1
+  vm_type: t3.large
   jobs:
   - name: bpm
     release: bpm
@@ -471,6 +473,7 @@ instance_groups:
 
 - name: ingestor_cloudwatch_logs
   instances: 1
+  vm_type: t3.large
   jobs:
   - name: bpm
     release: bpm
@@ -501,6 +504,7 @@ instance_groups:
 
 - name: ingestor_falco
   instances: 0
+  vm_type: t3.large
   jobs:
   - name: bpm
     release: bpm
