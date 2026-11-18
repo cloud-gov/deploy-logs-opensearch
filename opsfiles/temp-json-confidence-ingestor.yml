@@ -18,6 +18,9 @@
           http_host: 127.0.0.1
           jvm_options:
           - -Dlog4j2.formatMsgNoLookups=true
+          notification:
+            keystorepass: ((keystore_password))
+            defaultkeystorepass: ((default_keystore_password))
     - name: ingestor_syslog
       consumes:
         opensearch:
