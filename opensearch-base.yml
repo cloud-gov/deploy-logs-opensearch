@@ -474,6 +474,42 @@ instance_groups:
   update:
     serial: true # Block on this job to create deploy group 6
 
+
+- name: ingestor_s3_dataprepper_audit
+  instances: 0
+  vm_type: t3.large
+  jobs:
+  - name: bpm
+    release: bpm
+  - consumes: *consumes-opensearch-manager
+    name: ingestor_s3_dataprepper
+    properties:
+      data_prepper:
+        type: audit
+      data_prepper_ingestor:
+        s3:
+          bucket: ((audit_bucket))
+          region: ((region))
+          sqs:
+            queue_url: ((audit_sqs_queue_url))
+      data_prepper_parser:
+        opensearch:
+          index: ((alias))
+    provides:
+      ingestor:
+        as: ingestor_s3_dataprepper_audit
+    release: opensearch
+  azs: [z1, z2]
+  networks:
+  - name: services
+  persistent_disk_type: logs_opensearch_ingestor
+  stemcell: default
+  vm_extensions:
+  - logs-opensearch-ingestor-profile
+  - 20GB_ephemeral_disk
+  update:
+    serial: true
+
 - name: ingestor_aws_metrics
   instances: 1
   vm_type: t3.large
